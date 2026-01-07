@@ -1,6 +1,7 @@
 package ui.scenes;
 
 import game.BattleManager;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -14,22 +15,30 @@ public class BattleScene {
 	private final BattleManager battleManager;
 
     private Label playerHpLabel;
-    private Label enemyHpLabel;
-
-    public BattleScene(BattleManager battleManager) {
-    	this.battleManager = battleManager;
+    public BattleScene(BattleManager battleManagerParam) {
+    	this.battleManager = battleManagerParam;
     	
     	BorderPane root = new BorderPane();
 	    root.setPrefSize(1400, 800);
 	    
 	    HBox topBar = new HBox(20);
 	    topBar.setAlignment(Pos.CENTER);
-	    playerHpLabel = new Label("Player HP: " + this.battleManager.getCurrentCharacter().getCurrentHP() + "/" + this.battleManager.getCurrentCharacter().getMaxHP());
-	    enemyHpLabel = new Label("Enemy HP: 80");
+	    
+	    playerHpLabel = new Label();
+	    playerHpLabel.textProperty().bind(
+    	    Bindings.createStringBinding(
+    	            () -> String.format(
+    	                "Player HP: %d/%d",
+    	                battleManager.getCurrentCharacter().getCurrentHP(),
+    	                battleManager.getCurrentCharacter().getMaxHP()
+    	            ),
+    	            battleManager.getCurrentCharacter().currentHPProperty()
+    	    )
+    	);
+	    
 	    playerHpLabel.setFont(Font.font(18));
-	    enemyHpLabel.setFont(Font.font(18));
-	    topBar.getChildren().addAll(playerHpLabel, enemyHpLabel);
-	    root.setBottom(topBar);
+	    topBar.getChildren().addAll(playerHpLabel);
+	    root.setCenter(topBar);
 	
 	    scene = new Scene(root);
     }
