@@ -7,7 +7,6 @@ public class MenuScene {
 
     private final Scene scene;
 
-
     public MenuScene() {
         BorderPane root = new BorderPane();
 

@@ -1,4 +1,4 @@
-package entities.characters;
+package entities;
 
 import java.util.Map;
 
@@ -7,28 +7,38 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 public class Character {
 
+	private static int nextCharacterId;
+	
+	private int id;
 	private String name;
 	private int maxHP;
 	private IntegerProperty currentHP = new SimpleIntegerProperty();
 	private int maxAP;
 	private int currentAP;
-	private Map<entities.CharacterElement, entities.Resistance> resistances;
+	private boolean isAlly;
+	private Map<CharacterElement, Resistance> resistances;
+	private Map<CharacterElement, Boolean> discoveredResistances;
+	private Map<Stat, Double> stats;
+	private boolean isStun;
 	private String imagePath;
 	
 	
-	public Character(String name, int maxHP, int maxAP, Map<entities.CharacterElement, entities.Resistance> resistances, String imagePath) {
+	public Character(String name, int maxHP, int maxAP, boolean isAlly, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
+		this.id = nextCharacterId;
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
 		this.maxAP = maxAP;
 		this.currentAP = maxAP;
+		this.isAlly = isAlly;
 		this.resistances = resistances;
+		this.discoveredResistances = discoveredResistances;
+		this.stats = stats;
+		isStun = false;
 		this.imagePath = imagePath;
+		
+		nextCharacterId++;
 	}
-
-	public void takeDamage(int dmg) {
-        setCurrentHP(Math.max(0, getCurrentHP() - dmg));
-    }
 
 	public int getMaxHP() {
 		return maxHP;
@@ -42,11 +52,11 @@ public class Character {
 		return currentHP;
 	}
 
-
 	public void setCurrentHP(int currentHP) {
 		this.currentHP.set(currentHP);
 	}
-	
-	
-	
+
+	public boolean isDead() {
+		return currentHP.get() == 0;
+	}
 }

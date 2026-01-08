@@ -27,6 +27,4 @@ public enum CharacterElement {
 	public String getFileName() {
 		return fileName;
 	}
-    
-    
 }

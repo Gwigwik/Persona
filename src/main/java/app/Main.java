@@ -8,8 +8,9 @@ import ui.scenes.MenuScene;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Character;
 import entities.ResistanceFactory;
-import entities.characters.Character;
+import entities.StatFactory;
 import game.BattleManager;
 
 public class Main extends Application {
@@ -19,10 +20,11 @@ public class Main extends Application {
     	SceneManager sceneManager = new SceneManager(stage);
         
         stage.setTitle("Persona");
-        stage.setResizable(false);
+        stage.setMinWidth(700);
+        stage.setMinHeight(400);
         
-        Character hero = new Character("Héros", 100, 200, ResistanceFactory.characterResistances(), "/images/characters/hero.png");
-        Character enemy = new Character("Slime", 80, 150, ResistanceFactory.characterResistances(), "/images/characters/slime.png");
+        Character hero = new Character("Héros", 100, 200, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/hero.png");
+        Character enemy = new Character("Slime", 80, 150, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
 
         List<Character> charactersInBattle = new ArrayList<>();
         charactersInBattle.add(hero);

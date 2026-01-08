@@ -1,7 +1,8 @@
 package game;
 
 import java.util.List;
-import entities.characters.Character;
+
+import entities.Character;
 
 public class BattleManager {
 	private final List<Character> turnOrder;
