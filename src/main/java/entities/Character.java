@@ -14,7 +14,7 @@ public class Character {
 	private int maxHP;
 	private IntegerProperty currentHP = new SimpleIntegerProperty();
 	private int maxAP;
-	private int currentAP;
+	private IntegerProperty currentAP = new SimpleIntegerProperty();
 	private boolean isAlly;
 	private Map<CharacterElement, Resistance> resistances;
 	private Map<CharacterElement, Boolean> discoveredResistances;
@@ -29,7 +29,7 @@ public class Character {
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
 		this.maxAP = maxAP;
-		this.currentAP = maxAP;
+		this.currentAP.set(maxAP);;
 		this.isAlly = isAlly;
 		this.resistances = resistances;
 		this.discoveredResistances = discoveredResistances;
@@ -50,6 +50,18 @@ public class Character {
 
 	public IntegerProperty currentHPProperty() {
 		return currentHP;
+	}
+
+	public void setCurrentAP(int currentAP) {
+		this.currentHP.set(currentAP);
+	}
+	
+	public int getCurrentAP() {
+		return currentAP.get();
+	}
+
+	public IntegerProperty currentAPProperty() {
+		return currentAP;
 	}
 
 	public void setCurrentHP(int currentHP) {
