@@ -24,6 +24,9 @@ public class BattleScene {
 	private final Scene scene;
 	private final BattleManager battleManager;
 
+    Label ennemyName = new Label();
+    Label allyName = new Label();
+	
     public Scene getScene() {
         return scene;
     }
@@ -55,13 +58,6 @@ public class BattleScene {
 	    //------------------------------ Characters display ------------------------------
 	    VBox rightPane = getRightPane(globalPane);
 	    HBox.setMargin(rightPane, new Insets(10, 0, 10, 0));
-
-	    rightPane.hoverProperty().addListener((_, _, isHover) -> {
-	    	if (isHover)
-	    		leftPane.setStyle(greenBorderStyle());
-	    	else
-	    		leftPane.setStyle(redBorderStyle());
-	    });
 	    
 	    globalPane.getChildren().addAll(leftPane, globalPaneSpacer, rightPane);
 	
@@ -72,6 +68,21 @@ public class BattleScene {
 		VBox leftPane = new VBox();
 	    leftPane.prefWidthProperty().bind(globalPane.widthProperty().multiply(0.45));
 	    leftPane.setStyle(redBorderStyle());
+	    
+		ennemyName.setAlignment(Pos.CENTER);
+		ennemyName.prefWidthProperty().bind(leftPane.widthProperty());
+		ennemyName.widthProperty().addListener((_, _, newW) -> {
+		    ennemyName.setFont(Font.font(newW.doubleValue() * 0.03));
+		}); 
+
+		allyName.setAlignment(Pos.CENTER);
+		allyName.prefWidthProperty().bind(leftPane.widthProperty());
+		allyName.widthProperty().addListener((_, _, newW) -> {
+			allyName.setFont(Font.font(newW.doubleValue() * 0.03));
+		}); 
+
+	    
+	    leftPane.getChildren().addAll(ennemyName, allyName);
 		return leftPane;
 	}
 
@@ -91,18 +102,20 @@ public class BattleScene {
 		return rightPane;
 	}
 
-
 	private HBox getEnemiesPane(VBox rightPane) {
 		HBox enemiesPane = new HBox();
 		enemiesPane.prefHeightProperty().bind(rightPane.heightProperty().multiply(.35));
 		enemiesPane.setStyle(greenBorderStyle());
 		
 		Region enemiesPaneSpacer1 = getEnemiesPaneSpacer(enemiesPane);
-		VBox enemyPane1 = getEnemyPane(enemiesPane);
+		VBox enemyPane1 = getEnemyPane(enemiesPane, 5);
+		enemyPane1.visibleProperty().bind(battleManager.getICharacter(5).isAliveProperty());
 		Region enemiesPaneSpacer2 = getEnemiesPaneSpacer(enemiesPane);
-		VBox enemyPane2 = getEnemyPane(enemiesPane);
+		VBox enemyPane2 = getEnemyPane(enemiesPane, 1);
+		enemyPane2.visibleProperty().bind(battleManager.getICharacter(1).isAliveProperty());
 		Region enemiesPaneSpacer3 = getEnemiesPaneSpacer(enemiesPane);
-		VBox enemyPane3 = getEnemyPane(enemiesPane);
+		VBox enemyPane3 = getEnemyPane(enemiesPane, 3);
+		enemyPane3.visibleProperty().bind(battleManager.getICharacter(3).isAliveProperty());
 		Region enemiesPaneSpacer4 = getEnemiesPaneSpacer(enemiesPane);
 		
 		enemiesPane.getChildren().addAll(enemiesPaneSpacer1, enemyPane1, enemiesPaneSpacer3, enemyPane2, enemiesPaneSpacer2, enemyPane3, enemiesPaneSpacer4);
@@ -115,10 +128,17 @@ public class BattleScene {
 		return enemiesPaneSpacer;
 	}
 
-	private VBox getEnemyPane(HBox enemiesPane) {
+	private VBox getEnemyPane(HBox enemiesPane, int ennemyIndex) {
 		VBox enemyPane = new VBox();
 		enemyPane.prefWidthProperty().bind(enemiesPane.widthProperty().multiply(0.3));
 		enemyPane.setStyle(redBorderStyle());
+		
+		enemyPane.hoverProperty().addListener((_, _, isHover) -> {
+	    	if (isHover)
+	    		ennemyName.setText(battleManager.getICharacter(ennemyIndex).getName());
+	    	else
+	    		ennemyName.setText("prout");
+	    });
 
 		Region enemyPaneSpacer1 = new Region();
 		enemyPaneSpacer1.prefHeightProperty().bind(enemyPane.heightProperty().multiply(.1));
@@ -155,11 +175,14 @@ public class BattleScene {
 		alliesPane.setStyle(greenBorderStyle());
 		
 		Region alliesPaneSPacer1 = getAlliesPaneSpacer(alliesPane);
-		VBox allyPane1 = getAllyPane(alliesPane);
+		VBox allyPane1 = getAllyPane(alliesPane, 4);
+		allyPane1.visibleProperty().bind(battleManager.getICharacter(4).isAliveProperty());
 		Region alliesPaneSPacer2 = getAlliesPaneSpacer(alliesPane);
-		VBox allyPane2 = getAllyPane(alliesPane);
+		VBox allyPane2 = getAllyPane(alliesPane, 0);
+		allyPane2.visibleProperty().bind(battleManager.getICharacter(0).isAliveProperty());
 		Region alliesPaneSPacer3 = getAlliesPaneSpacer(alliesPane);
-		VBox allyPane3 = getAllyPane(alliesPane);
+		VBox allyPane3 = getAllyPane(alliesPane, 2);
+		allyPane3.visibleProperty().bind(battleManager.getICharacter(2).isAliveProperty());
 		Region alliesPaneSPacer4 = getAlliesPaneSpacer(alliesPane);
 		
 		
@@ -173,10 +196,17 @@ public class BattleScene {
 		return enemiesPaneSpacer;
 	}
 	
-	private VBox getAllyPane(HBox alliesPane) {
+	private VBox getAllyPane(HBox alliesPane, int allyIndex) {
 		VBox allyPane = new VBox();
 		allyPane.prefWidthProperty().bind(alliesPane.widthProperty().multiply(0.3));
 		allyPane.setStyle(redBorderStyle());
+		
+		allyPane.hoverProperty().addListener((_, _, isHover) -> {
+	    	if (isHover)
+	    		allyName.setText(battleManager.getICharacter(allyIndex).getName());
+	    	else
+	    		allyName.setText("prout");
+	    });
 		
 		Pane allyIconPane = new Pane();
 		allyIconPane.prefWidthProperty().bind(allyPane.widthProperty());
@@ -203,6 +233,7 @@ public class BattleScene {
 		Label healthPoints = new Label();
 		healthPoints.textProperty().bind(battleManager.getCurrentCharacter().currentHPProperty().asString());
 		healthPoints.setAlignment(Pos.CENTER);
+		healthPoints.setTextFill(Color.PURPLE);
 		healthPoints.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.2));
 		healthPoints.widthProperty().addListener((_, _, newW) -> {
 		    double fontSize = Math.max(10, newW.doubleValue() * 0.5);
@@ -225,6 +256,7 @@ public class BattleScene {
 		Label APPoints = new Label();
 		APPoints.textProperty().bind(battleManager.getCurrentCharacter().currentAPProperty().asString());
 		APPoints.setAlignment(Pos.CENTER);
+		APPoints.setTextFill(Color.BLUE);
 		APPoints.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.2));
 		APPoints.widthProperty().addListener((_, _, newW) -> {
 		    double fontSize = Math.max(10, newW.doubleValue() * 0.5);

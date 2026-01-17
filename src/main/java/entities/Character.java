@@ -2,7 +2,9 @@ package entities;
 
 import java.util.Map;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class Character {
@@ -13,6 +15,7 @@ public class Character {
 	private String name;
 	private int maxHP;
 	private IntegerProperty currentHP = new SimpleIntegerProperty();
+	private BooleanProperty isAlive = new SimpleBooleanProperty();
 	private int maxAP;
 	private IntegerProperty currentAP = new SimpleIntegerProperty();
 	private boolean isAlly;
@@ -23,11 +26,12 @@ public class Character {
 	private String imagePath;
 	
 	
-	public Character(String name, int maxHP, int maxAP, boolean isAlly, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
+	public Character(String name, int maxHP, int maxAP, boolean isAlive, boolean isAlly, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
 		this.id = nextCharacterId;
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
+		this.isAlive.set(isAlive);
 		this.maxAP = maxAP;
 		this.currentAP.set(maxAP);;
 		this.isAlly = isAlly;
@@ -40,6 +44,10 @@ public class Character {
 		nextCharacterId++;
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 	public int getMaxHP() {
 		return maxHP;
 	}
@@ -68,7 +76,7 @@ public class Character {
 		this.currentHP.set(currentHP);
 	}
 
-	public boolean isDead() {
-		return currentHP.get() == 0;
+	public BooleanProperty isAliveProperty() {
+		return isAlive;
 	}
 }

@@ -23,12 +23,21 @@ public class Main extends Application {
         stage.setMinWidth(700);
         stage.setMinHeight(400);
         
-        Character hero = new Character("Héros", 100, 200, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/hero.png");
-        Character enemy = new Character("Slime", 80, 150, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
-
+        Character hero = new Character("Héros1", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/hero.png");
+        Character hero2 = new Character("Héros2", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/hero.png");
+        Character hero3 = new Character("Héros3", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/hero.png");
+        Character enemy = new Character("Slime1", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
+        Character enemy2 = new Character("Slime2", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
+        Character enemy3 = new Character("Slime3", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
+        Character noCharacter = new Character("No character", 0, 0, false, true, null, null, null, null);
+        
         List<Character> charactersInBattle = new ArrayList<>();
         charactersInBattle.add(hero);
         charactersInBattle.add(enemy);
+        charactersInBattle.add(hero2);
+        charactersInBattle.add(enemy2);
+        charactersInBattle.add(hero3);
+        charactersInBattle.add(enemy3);
 
         BattleManager battleManager = new BattleManager(charactersInBattle);
 

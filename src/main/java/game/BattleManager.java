@@ -5,22 +5,22 @@ import java.util.List;
 import entities.Character;
 
 public class BattleManager {
-	private final List<Character> turnOrder;
+	private final List<Character> charactersInBattle;
+	private int playingIndex = 0;
 
     public BattleManager(List<Character> charactersInBattle) {
-        this.turnOrder = charactersInBattle;
-    }
-
-    public List<Character> getTurnOrder() {
-        return turnOrder;
+        this.charactersInBattle = charactersInBattle;
     }
 
     public Character getCurrentCharacter() {
-        return turnOrder.get(0);
+        return charactersInBattle.get(playingIndex);
     }
 
     public void nextTurn() {
-        Character c = turnOrder.remove(0);
-        turnOrder.add(c);
+    	playingIndex = (playingIndex + 1)%charactersInBattle.size();
+    }
+    
+    public Character getICharacter(int i) {
+    	return i < charactersInBattle.size() ? charactersInBattle.get(i) : null;
     }
 }
