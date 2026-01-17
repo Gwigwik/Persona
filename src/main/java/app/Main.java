@@ -20,8 +20,8 @@ public class Main extends Application {
     	SceneManager sceneManager = new SceneManager(stage);
         
         stage.setTitle("Persona");
-        stage.setMinWidth(700);
-        stage.setMinHeight(400);
+        stage.setMinWidth(1050);
+        stage.setMinHeight(600);
         
         Character hero = new Character("Héros1", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/hero.png");
         Character hero2 = new Character("Héros2", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/hero.png");

@@ -1,12 +1,16 @@
 package ui.scenes;
 
+import entities.Character;
 import entities.CharacterElement;
+import entities.Stat;
+import entities.StatStatus;
 import game.BattleManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -26,7 +30,16 @@ public class BattleScene {
 
     Label ennemyName = new Label();
     Label allyName = new Label();
-	
+    HBox ennemyStatsPane = new HBox();
+    BorderPane ennemyStatsAttackPane = new BorderPane();
+    BorderPane ennemyStatsDefensePane = new BorderPane();
+    BorderPane ennemyStatsAccuEvaPane = new BorderPane();
+    BorderPane ennemyStatsCriticalPane = new BorderPane();
+    ImageView ennemyStatsAttackImage = new ImageView();
+    ImageView ennemyStatsDefenseImage = new ImageView();
+    ImageView ennemyStatsAccuEvaImage = new ImageView();
+    ImageView ennemyStatsCriticalImage = new ImageView();
+    
     public Scene getScene() {
         return scene;
     }
@@ -73,17 +86,78 @@ public class BattleScene {
 		ennemyName.prefWidthProperty().bind(leftPane.widthProperty());
 		ennemyName.widthProperty().addListener((_, _, newW) -> {
 		    ennemyName.setFont(Font.font(newW.doubleValue() * 0.03));
-		}); 
+		});
 
+		HBox ennemyStatsPane = getEnnemyStatsPane(leftPane);
+		ennemyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
+		
 		allyName.setAlignment(Pos.CENTER);
 		allyName.prefWidthProperty().bind(leftPane.widthProperty());
 		allyName.widthProperty().addListener((_, _, newW) -> {
 			allyName.setFont(Font.font(newW.doubleValue() * 0.03));
-		}); 
+		});
 
 	    
-	    leftPane.getChildren().addAll(ennemyName, allyName);
+	    leftPane.getChildren().addAll(ennemyName, ennemyStatsPane, allyName);
 		return leftPane;
+	}
+	
+	private HBox getEnnemyStatsPane(VBox leftPane) {
+		ennemyStatsPane.setStyle(greenBorderStyle());
+		ennemyStatsPane.setAlignment(Pos.CENTER);
+		ennemyStatsPane.setVisible(false);
+		double fontSize = 0.25;
+		int marginRight = 40;
+	    
+	    Label ennemyStatsAttackLabel = new Label();
+	    ennemyStatsAttackLabel.setText("Atk");
+	    ennemyStatsAttackLabel.setAlignment(Pos.CENTER);
+	    ennemyStatsAttackLabel.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsAttackLabel.widthProperty().addListener((_, _, newW) -> {
+	    	ennemyStatsAttackLabel.setFont(Font.font(newW.doubleValue() * fontSize));
+		});
+	    
+	    ennemyStatsAttackPane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsAttackPane.prefHeightProperty().bind(ennemyStatsPane.heightProperty().multiply(.7));
+	    HBox.setMargin(ennemyStatsAttackPane, new Insets(0, marginRight, 0, 0));
+	    
+	    Label ennemyStatsDefenseLabel = new Label();
+	    ennemyStatsDefenseLabel.setText("Def");
+	    ennemyStatsDefenseLabel.setAlignment(Pos.CENTER);
+	    ennemyStatsDefenseLabel.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsDefenseLabel.widthProperty().addListener((_, _, newW) -> {
+	    	ennemyStatsDefenseLabel.setFont(Font.font(newW.doubleValue() * fontSize));
+		});
+
+	    ennemyStatsDefensePane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsDefensePane.prefHeightProperty().bind(ennemyStatsPane.heightProperty().multiply(.7));
+	    HBox.setMargin(ennemyStatsDefensePane, new Insets(0, marginRight, 0, 0));
+	    
+	    Label ennemyStatsAccuEvaLabel = new Label();
+	    ennemyStatsAccuEvaLabel.setText("Prec/Esq");
+	    ennemyStatsAccuEvaLabel.setAlignment(Pos.CENTER);
+	    ennemyStatsAccuEvaLabel.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsAccuEvaLabel.widthProperty().addListener((_, _, newW) -> {
+	    	ennemyStatsAccuEvaLabel.setFont(Font.font(newW.doubleValue() * fontSize));
+		});
+
+	    ennemyStatsAccuEvaPane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsAccuEvaPane.prefHeightProperty().bind(ennemyStatsPane.heightProperty().multiply(.7));
+	    HBox.setMargin(ennemyStatsAccuEvaPane, new Insets(0, marginRight, 0, 0));
+	    
+	    Label ennemyStatsCriticalLabel = new Label();
+	    ennemyStatsCriticalLabel.setText("Crit");
+	    ennemyStatsCriticalLabel.setAlignment(Pos.CENTER);
+	    ennemyStatsCriticalLabel.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsCriticalLabel.widthProperty().addListener((_, _, newW) -> {
+	    	ennemyStatsCriticalLabel.setFont(Font.font(newW.doubleValue() * fontSize));
+		});
+
+	    ennemyStatsCriticalPane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
+	    ennemyStatsCriticalPane.prefHeightProperty().bind(ennemyStatsPane.heightProperty().multiply(.7));
+	    
+	    ennemyStatsPane.getChildren().addAll(ennemyStatsAttackLabel, ennemyStatsAttackPane, ennemyStatsDefenseLabel, ennemyStatsDefensePane, ennemyStatsAccuEvaLabel, ennemyStatsAccuEvaPane, ennemyStatsCriticalLabel, ennemyStatsCriticalPane);
+		return ennemyStatsPane;
 	}
 
 	private VBox getRightPane(HBox globalPane) {
@@ -134,10 +208,59 @@ public class BattleScene {
 		enemyPane.setStyle(redBorderStyle());
 		
 		enemyPane.hoverProperty().addListener((_, _, isHover) -> {
-	    	if (isHover)
-	    		ennemyName.setText(battleManager.getICharacter(ennemyIndex).getName());
-	    	else
-	    		ennemyName.setText("prout");
+    		Character ennemy = battleManager.getICharacter(ennemyIndex);
+	    	if (isHover) {
+				ennemyName.setText(ennemy.getName());
+	    		ennemyStatsPane.setVisible(true);
+	    		switch (ennemy.getStatStatus(Stat.ATTACK)) {
+		    		case StatStatus.UPGRADED:
+			    		ennemyStatsAttackImage = ui.IconProvider.getCharacterStatIcon("upgraded", 50);
+			    		break;
+		    		case StatStatus.DECREASED:
+			    		ennemyStatsAttackImage = ui.IconProvider.getCharacterStatIcon("decreased", 50);
+			    		break;
+		    		default:
+			    		ennemyStatsAttackImage = ui.IconProvider.getCharacterStatIcon("default", 50);
+	    		}
+	    		ennemyStatsAttackPane.setCenter(ennemyStatsAttackImage);
+	    		switch (ennemy.getStatStatus(Stat.DEFENSE)) {
+		    		case StatStatus.UPGRADED:
+			    		ennemyStatsDefenseImage = ui.IconProvider.getCharacterStatIcon("upgraded", 50);
+			    		break;
+		    		case StatStatus.DECREASED:
+		    			ennemyStatsDefenseImage = ui.IconProvider.getCharacterStatIcon("decreased", 50);
+			    		break;
+		    		default:
+		    			ennemyStatsDefenseImage = ui.IconProvider.getCharacterStatIcon("default", 50);
+	    		}
+	    		ennemyStatsDefensePane.setCenter(ennemyStatsDefenseImage);
+	    		switch (ennemy.getStatStatus(Stat.ACCURACY)) {
+		    		case StatStatus.UPGRADED:
+			    		ennemyStatsAccuEvaImage = ui.IconProvider.getCharacterStatIcon("upgraded", 50);
+			    		break;
+		    		case StatStatus.DECREASED:
+		    			ennemyStatsAccuEvaImage = ui.IconProvider.getCharacterStatIcon("decreased", 50);
+			    		break;
+		    		default:
+		    			ennemyStatsAccuEvaImage = ui.IconProvider.getCharacterStatIcon("default", 50);
+		    		}
+				ennemyStatsAccuEvaPane.setCenter(ennemyStatsAccuEvaImage);
+				switch (ennemy.getStatStatus(Stat.CRITICAL)) {
+					case StatStatus.UPGRADED:
+			    		ennemyStatsCriticalImage = ui.IconProvider.getCharacterStatIcon("upgraded", 50);
+			    		break;
+					case StatStatus.DECREASED:
+						ennemyStatsCriticalImage = ui.IconProvider.getCharacterStatIcon("decreased", 50);
+			    		break;
+					default:
+						ennemyStatsCriticalImage = ui.IconProvider.getCharacterStatIcon("default", 50);
+				}
+				ennemyStatsCriticalPane.setCenter(ennemyStatsCriticalImage);
+	    	}
+	    	else {
+	    		ennemyName.setText("");
+	    		ennemyStatsPane.setVisible(false);
+	    	}
 	    });
 
 		Region enemyPaneSpacer1 = new Region();
@@ -155,15 +278,12 @@ public class BattleScene {
 		Region enemyPaneSpacer2 = new Region();
 		enemyPaneSpacer2.prefHeightProperty().bind(enemyPane.heightProperty().multiply(.1));
 		
-		Pane enemyIconPane = new Pane();
+		BorderPane enemyIconPane = new BorderPane();
 		enemyIconPane.prefWidthProperty().bind(enemyPane.widthProperty());
 		enemyIconPane.prefHeightProperty().bind(enemyPane.heightProperty().multiply(.7));
 		enemyIconPane.setStyle(greenBorderStyle());
-		ImageView enemyIconImageView = ui.IconProvider.getCharacterElementIcon(CharacterElement.FIRE, 1);
-		enemyIconImageView.setPreserveRatio(true);
-		enemyIconImageView.fitWidthProperty().bind(enemyIconPane.widthProperty());
-		enemyIconImageView.fitHeightProperty().bind(enemyIconPane.heightProperty());
-		enemyIconPane.getChildren().addAll(enemyIconImageView);
+		ImageView enemyIconImageView = ui.IconProvider.getCharacterElementIcon(CharacterElement.FIRE, 150);
+		enemyIconPane.setCenter(enemyIconImageView);
 		
 		enemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, enemyIconPane);
 		return enemyPane;
@@ -205,19 +325,16 @@ public class BattleScene {
 	    	if (isHover)
 	    		allyName.setText(battleManager.getICharacter(allyIndex).getName());
 	    	else
-	    		allyName.setText("prout");
+	    		allyName.setText("");
 	    });
 		
-		Pane allyIconPane = new Pane();
+		BorderPane allyIconPane = new BorderPane();
 		allyIconPane.prefWidthProperty().bind(allyPane.widthProperty());
 		allyIconPane.prefHeightProperty().bind(allyPane.heightProperty().multiply(.7));
 		allyIconPane.setStyle(greenBorderStyle());
-		ImageView allyIconImageView = ui.IconProvider.getCharacterElementIcon(CharacterElement.FIRE, 1);
-		allyIconImageView.setPreserveRatio(true);
-		allyIconImageView.fitWidthProperty().bind(allyIconPane.widthProperty());
-		allyIconImageView.fitHeightProperty().bind(allyIconPane.heightProperty());
-		allyIconPane.getChildren().addAll(allyIconImageView);
-
+		ImageView allyIconImageView = ui.IconProvider.getCharacterElementIcon(CharacterElement.FIRE, 150);
+		allyIconPane.setCenter(allyIconImageView);
+		
 		Region allyPaneSpacer1 = new Region();
 		allyPaneSpacer1.prefHeightProperty().bind(allyPane.heightProperty().multiply(.1));
 		

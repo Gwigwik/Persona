@@ -15,7 +15,7 @@ public class StatFactory {
         		1.,
         		0.98,
         		0.02,
-        		0.02)
+        		0.05)
         );
         return map;
     }

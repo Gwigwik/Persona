@@ -13,4 +13,12 @@ public class IconProvider {
         view.setFitHeight(size);
         return view;
     }
+    
+    public static ImageView getCharacterStatIcon(String stat, double size) {
+        Image image = ResourceLoader.loadImage("/images/stats/" + stat + ".png");
+        ImageView view = new ImageView(image);
+        view.setFitWidth(size);
+        view.setFitHeight(size);
+        return view;
+    }
 }

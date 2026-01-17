@@ -19,7 +19,21 @@ public enum Stat {
         this.decreasedValue = decreasedValue;
     }
 
-    public String getDisplayName() {
+    
+    
+    
+    public double getDefaultValue() {
+		return defaultValue;
+	}
+
+	public double getUpgradedValue() {
+		return upgradedValue;
+	}
+	public double getDecreasedValue() {
+		return decreasedValue;
+	}
+
+	public String getDisplayName() {
         return displayName;
     }
 }

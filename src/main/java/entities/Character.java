@@ -79,4 +79,15 @@ public class Character {
 	public BooleanProperty isAliveProperty() {
 		return isAlive;
 	}
+	
+	public StatStatus getStatStatus(Stat stat) {
+		if (stats.get(stat) == stat.getDefaultValue()) {
+			return StatStatus.DEFAULT;
+		} else if (stats.get(stat) > stat.getDefaultValue()) {
+			return StatStatus.UPGRADED;
+		} else {
+			return StatStatus.DECREASED;
+		}
+		
+	}
 }
