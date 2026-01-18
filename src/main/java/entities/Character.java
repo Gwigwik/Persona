@@ -88,6 +88,13 @@ public class Character {
 		} else {
 			return StatStatus.DECREASED;
 		}
-		
+	}
+	
+	public Resistance getDiscoveredResistance(CharacterElement element) {
+		if (discoveredResistances.get(element)) {
+			return resistances.get(element);
+		} else {
+			return Resistance.UNKNOWN;
+		}
 	}
 }

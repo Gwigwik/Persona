@@ -1,21 +1,21 @@
 package entities;
 
 public enum Resistance {
-	NEUTRAL(""),
-	STRONG("Resiste"),
-	WEAK("Faible"),
-	NULL("Nul"),
-	ABSORB("Abosrbe"),
-	RETURN("Renvoie");
+	UNKNOWN("unknown"),
+	NEUTRAL("neutral"),
+	STRONG("resist"),
+	WEAK("weak"),
+	NULL("null"),
+	ABSORB("absorb"),
+	RETURN("return");
 	
-	private final String displayName;
+	private final String fileName;
 
-    Resistance(String displayName) {
-        this.displayName = displayName;
+    Resistance(String fileName) {
+    	this.fileName = fileName;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getFileName() {
+        return fileName;
     }
-
 }

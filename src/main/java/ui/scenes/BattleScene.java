@@ -20,10 +20,6 @@ import javafx.scene.text.Font;
 
 public class BattleScene {
 	
-//	Pour plus tard, quand je voudrai que différent pane puissent occuper le meme mais sans cohabiter t'as capté le rectangle rose
-//	pane1.setVisible(false);
-//	pane1.setManaged(false);
-	
 	private final Scene scene;
 	private final BattleManager battleManager;
 
@@ -37,6 +33,7 @@ public class BattleScene {
     ImageView ennemyStatsDefenseImage = new ImageView();
     ImageView ennemyStatsAccuEvaImage = new ImageView();
     ImageView ennemyStatsCriticalImage = new ImageView();
+    HBox ennemyResPane = new HBox();
 	BorderPane ennemyResPhysicalValuePane = new BorderPane();
 	BorderPane ennemyResGunValuePane = new BorderPane();
 	BorderPane ennemyResFireValuePane = new BorderPane();
@@ -57,21 +54,20 @@ public class BattleScene {
 	ImageView ennemyResNuclearValueImage = new ImageView();
 	ImageView ennemyResDivineValueImage = new ImageView();
 	ImageView ennemyResCursedValueImage = new ImageView();
-    HBox ennemyResPane = new HBox();
     Label allyName = new Label();
     
     public Scene getScene() {
         return scene;
     }
 
+    boolean debug = false;
+    
 	private String redBorderStyle() {
-		return "-fx-border-color: red; -fx-border-width: 2; -fx-border-style: solid;";
-//		return "";
+		return debug?"-fx-border-color: red; -fx-border-width: 2; -fx-border-style: solid;":"";
 	}
 
 	private String greenBorderStyle() {
-		return "-fx-border-color: green; -fx-border-width: 2; -fx-border-style: solid;";
-//		return "";
+		return debug?"-fx-border-color: green; -fx-border-width: 2; -fx-border-style: solid;":"";
 	}
 
 	
@@ -168,8 +164,7 @@ public class BattleScene {
 	private void setEnnemyResPane(VBox leftPane) {
 		ennemyResPane.setStyle(greenBorderStyle());
 		ennemyResPane.setAlignment(Pos.CENTER);
-//		ennemyStatsPane.setVisible(false);
-//		int marginRight = 20;
+		ennemyResPane.setVisible(false);
 		
 		VBox ennemyResPhysicalBox = getEnnemyResUnitPane(leftPane, CharacterElement.PHYSICAL, ennemyResPhysicalValuePane, ennemyResPhysicalValueImage);
 		VBox ennemyResGunBox = getEnnemyResUnitPane(leftPane, CharacterElement.GUN, ennemyResGunValuePane, ennemyResGunValueImage);
@@ -197,8 +192,6 @@ public class BattleScene {
 		ennemyResPhysicalPane.setCenter(ennemyResPhysicalImage);
 		valuePane.prefWidthProperty().bind(leftPane.widthProperty());
 		valuePane.prefHeightProperty().bind(leftPane.heightProperty().multiply(.5));
-		valueImage = ui.IconProvider.getCharacterElementIcon(CharacterElement.FIRE, 50);
-		valuePane.setCenter(valueImage);
 		ennemyResPhysicalBox.getChildren().addAll(ennemyResPhysicalPane, valuePane);
 		return ennemyResPhysicalBox;
 	}
@@ -263,10 +256,32 @@ public class BattleScene {
 				ennemyStatsAccuEvaPane.setCenter(ennemyStatsAccuEvaImage);
 			    ennemyStatsCriticalImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.CRITICAL), 50);
 				ennemyStatsCriticalPane.setCenter(ennemyStatsCriticalImage);
+				ennemyResPane.setVisible(true);
+				ennemyResPhysicalValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.PHYSICAL), 50);
+				ennemyResPhysicalValuePane.setCenter(ennemyResPhysicalValueImage);
+				ennemyResGunValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.GUN), 50);
+				ennemyResGunValuePane.setCenter(ennemyResGunValueImage);
+				ennemyResFireValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.FIRE), 50);
+				ennemyResFireValuePane.setCenter(ennemyResFireValueImage);
+				ennemyResIceValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.ICE), 50);
+				ennemyResIceValuePane.setCenter(ennemyResIceValueImage);
+				ennemyResElectricValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.ELECTRIC), 50);
+				ennemyResElectricValuePane.setCenter(ennemyResElectricValueImage);
+				ennemyResWindValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.WIND), 50);
+				ennemyResWindValuePane.setCenter(ennemyResWindValueImage);
+				ennemyResPsyValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.PSY), 50);
+				ennemyResPsyValuePane.setCenter(ennemyResPsyValueImage);
+				ennemyResNuclearValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.NUCLEAR), 50);
+				ennemyResNuclearValuePane.setCenter(ennemyResNuclearValueImage);
+				ennemyResDivineValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.DIVINE), 50);
+				ennemyResDivineValuePane.setCenter(ennemyResDivineValueImage);
+				ennemyResCursedValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.CURSED), 50);
+				ennemyResCursedValuePane.setCenter(ennemyResCursedValueImage);
 	    	}
 	    	else {
 	    		ennemyName.setText("");
 	    		ennemyStatsPane.setVisible(false);
+				ennemyResPane.setVisible(false);
 	    	}
 	    });
 

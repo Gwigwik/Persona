@@ -7,17 +7,35 @@ import java.util.Map;
 
 public class ResistanceFactory {
 
-    public static Map<CharacterElement, Resistance> characterResistances() {
+//    public static Map<CharacterElement, Resistance> characterResistances() {
+//        Map<CharacterElement, Resistance> map = new EnumMap<>(CharacterElement.class);
+//        
+//        map = getResistances(Arrays.asList(
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL,
+//        		Resistance.NEUTRAL)
+//        );
+//        return map;
+//    }
+	
+	public static Map<CharacterElement, Resistance> characterResistances() {
         Map<CharacterElement, Resistance> map = new EnumMap<>(CharacterElement.class);
         
         map = getResistances(Arrays.asList(
         		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
+        		Resistance.ABSORB,
+        		Resistance.NULL,
+        		Resistance.RETURN,
+        		Resistance.STRONG,
+        		Resistance.UNKNOWN,
+        		Resistance.WEAK,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL)
@@ -42,8 +60,10 @@ public class ResistanceFactory {
     	return resistancesMap;
     }
 
-    public static Map<CharacterElement, Boolean> initialDiscoveredResistances() {
+    public static Map<CharacterElement, Boolean> initialDiscoveredResistancesFalse() {
     	Map<CharacterElement, Boolean> discoveredStatsMap = new EnumMap<>(CharacterElement.class);
+    	discoveredStatsMap.put(CharacterElement.PHYSICAL, false);
+    	discoveredStatsMap.put(CharacterElement.GUN, false);
     	discoveredStatsMap.put(CharacterElement.FIRE, false);
     	discoveredStatsMap.put(CharacterElement.ICE, false);
     	discoveredStatsMap.put(CharacterElement.ELECTRIC, false);
@@ -52,8 +72,22 @@ public class ResistanceFactory {
     	discoveredStatsMap.put(CharacterElement.NUCLEAR, false);
     	discoveredStatsMap.put(CharacterElement.DIVINE, false);
     	discoveredStatsMap.put(CharacterElement.CURSED, false);
-    	discoveredStatsMap.put(CharacterElement.PHYSICAL, false);
-    	discoveredStatsMap.put(CharacterElement.GUN, false);
+    	
+    	return discoveredStatsMap;
+    }
+
+    public static Map<CharacterElement, Boolean> initialDiscoveredResistancesTrue() {
+    	Map<CharacterElement, Boolean> discoveredStatsMap = new EnumMap<>(CharacterElement.class);
+    	discoveredStatsMap.put(CharacterElement.PHYSICAL, true);
+    	discoveredStatsMap.put(CharacterElement.GUN, true);
+    	discoveredStatsMap.put(CharacterElement.FIRE, true);
+    	discoveredStatsMap.put(CharacterElement.ICE, true);
+    	discoveredStatsMap.put(CharacterElement.ELECTRIC, true);
+    	discoveredStatsMap.put(CharacterElement.WIND, true);
+    	discoveredStatsMap.put(CharacterElement.PSY, true);
+    	discoveredStatsMap.put(CharacterElement.NUCLEAR, true);
+    	discoveredStatsMap.put(CharacterElement.DIVINE, true);
+    	discoveredStatsMap.put(CharacterElement.CURSED, true);
     	
     	return discoveredStatsMap;
     }

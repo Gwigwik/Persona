@@ -1,6 +1,8 @@
 package entities.spells;
 
 public enum SpellElement {
+	PHYSICAL("Physique", "physical"),
+	GUN("Percant", "gun"),
 	FIRE("Feu", "fire"),
 	ICE("Glace", "ice"),
 	ELECTRIC("Electrique", "electric"),
@@ -9,8 +11,6 @@ public enum SpellElement {
 	NUCLEAR("Nucleaire", "nuclear"),
 	DIVINE("Divin", "divine"),
 	CURSED("Maudit", "cursed"),
-	PHYSICAL("Physique", "physical"),
-	GUN("Percant", "gun"),
 	HEAL("Soin", "heal"),
 	STAT("Stat", "stat");
 	

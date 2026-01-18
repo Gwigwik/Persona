@@ -1,5 +1,7 @@
 package entities.spells;
 
+import java.util.List;
+
 public class Spell {
 
 	private String name;
@@ -10,7 +12,7 @@ public class Spell {
 		this.element = element;
 	}
 	
-	public void spellEffect(Character sender, Character receveir) {
+	public void spellEffect(Character sender, List<Character> receveir) {
 		
 	}
 	
