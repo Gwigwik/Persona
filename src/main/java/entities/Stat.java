@@ -18,9 +18,6 @@ public enum Stat {
         this.upgradedValue = upgradedValue;
         this.decreasedValue = decreasedValue;
     }
-
-    
-    
     
     public double getDefaultValue() {
 		return defaultValue;

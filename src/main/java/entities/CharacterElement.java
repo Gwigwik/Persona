@@ -1,6 +1,8 @@
 package entities;
 
 public enum CharacterElement {
+	PHYSICAL("Physique", "physical"),
+	GUN("Percant", "gun"),
 	FIRE("Feu", "fire"),
 	ICE("Glace", "ice"),
 	ELECTRIC("Electrique", "electric"),
@@ -8,9 +10,7 @@ public enum CharacterElement {
 	PSY("Psy", "psy"),
 	NUCLEAR("Nucleaire", "nuclear"),
 	DIVINE("Divin", "divine"),
-	CURSED("Maudit", "cursed"),
-	PHYSICAL("Physique", "physical"),
-	GUN("Percant", "gun");
+	CURSED("Maudit", "cursed");
 	
 	private final String displayName;
 	private final String fileName;

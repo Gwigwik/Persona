@@ -29,7 +29,7 @@ public class Main extends Application {
         Character enemy = new Character("Slime1", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
         Character enemy2 = new Character("Slime2", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
         Character enemy3 = new Character("Slime3", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistances(), StatFactory.CharacterStats(), "/images/characters/slime.png");
-        Character noCharacter = new Character("No character", 0, 0, false, true, null, null, null, null);
+//        Character noCharacter = new Character("No character", 0, 0, false, true, null, null, null, null);
         
         List<Character> charactersInBattle = new ArrayList<>();
         charactersInBattle.add(hero);

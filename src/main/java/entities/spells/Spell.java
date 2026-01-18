@@ -1,4 +1,4 @@
-package entities;
+package entities.spells;
 
 public class Spell {
 
@@ -10,7 +10,7 @@ public class Spell {
 		this.element = element;
 	}
 	
-	public void spellEffect() {
+	public void spellEffect(Character sender, Character receveir) {
 		
 	}
 	

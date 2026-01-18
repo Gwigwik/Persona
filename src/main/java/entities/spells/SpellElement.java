@@ -1,4 +1,4 @@
-package entities;
+package entities.spells;
 
 public enum SpellElement {
 	FIRE("Feu", "fire"),
