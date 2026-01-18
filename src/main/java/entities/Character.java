@@ -23,6 +23,7 @@ public class Character {
 	private Map<CharacterElement, Boolean> discoveredResistances;
 	private Map<Stat, Double> stats;
 	private boolean isStun;
+	private boolean isParrying;
 	private String imagePath;
 	
 	
@@ -97,4 +98,10 @@ public class Character {
 			return Resistance.UNKNOWN;
 		}
 	}
+
+	public String getFileName() {
+		return imagePath;
+	}
+	
+	
 }

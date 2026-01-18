@@ -54,13 +54,22 @@ public class BattleScene {
 	ImageView ennemyResNuclearValueImage = new ImageView();
 	ImageView ennemyResDivineValueImage = new ImageView();
 	ImageView ennemyResCursedValueImage = new ImageView();
+    HBox allyStatsPane = new HBox();
+    BorderPane allyStatsAttackPane = new BorderPane();
+    BorderPane allyStatsDefensePane = new BorderPane();
+    BorderPane allyStatsAccuEvaPane = new BorderPane();
+    BorderPane allyStatsCriticalPane = new BorderPane();
+    ImageView allyStatsAttackImage = new ImageView();
+    ImageView allyStatsDefenseImage = new ImageView();
+    ImageView allyStatsAccuEvaImage = new ImageView();
+    ImageView allyStatsCriticalImage = new ImageView();
     Label allyName = new Label();
     
     public Scene getScene() {
         return scene;
     }
 
-    boolean debug = false;
+    boolean debug = true;
     
 	private String redBorderStyle() {
 		return debug?"-fx-border-color: red; -fx-border-width: 2; -fx-border-style: solid;":"";
@@ -100,6 +109,7 @@ public class BattleScene {
 	    
 		ennemyName.setAlignment(Pos.CENTER);
 		ennemyName.prefWidthProperty().bind(leftPane.widthProperty());
+		ennemyName.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.05));
 		ennemyName.widthProperty().addListener((_, _, newW) -> {
 		    ennemyName.setFont(Font.font(newW.doubleValue() * 0.03));
 		});
@@ -110,14 +120,22 @@ public class BattleScene {
 		setEnnemyResPane(leftPane);
 		ennemyResPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.15));
 		
+		BorderPane lactionLa = new BorderPane();
+		lactionLa.setStyle(greenBorderStyle());
+		lactionLa.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.55));
+
+		setAllyStatsPane(leftPane);
+		allyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
+		
 		allyName.setAlignment(Pos.CENTER);
 		allyName.prefWidthProperty().bind(leftPane.widthProperty());
+		allyName.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.05));
 		allyName.widthProperty().addListener((_, _, newW) -> {
 			allyName.setFont(Font.font(newW.doubleValue() * 0.03));
 		});
 
 	    
-	    leftPane.getChildren().addAll(ennemyName, ennemyStatsPane, ennemyResPane, allyName);
+	    leftPane.getChildren().addAll(ennemyName, ennemyStatsPane, ennemyResPane, lactionLa, allyStatsPane, allyName);
 		return leftPane;
 	}
 	
@@ -195,6 +213,46 @@ public class BattleScene {
 		ennemyResPhysicalBox.getChildren().addAll(ennemyResPhysicalPane, valuePane);
 		return ennemyResPhysicalBox;
 	}
+
+	private void setAllyStatsPane(VBox leftPane) {
+		allyStatsPane.setStyle(greenBorderStyle());
+		allyStatsPane.setAlignment(Pos.CENTER);
+		allyStatsPane.setVisible(false);
+		int marginRight = 40;
+	    
+	    Label allyStatsAttackLabel = getAllyStatsLabel("Atk");
+	    
+	    allyStatsAttackPane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
+	    HBox.setMargin(allyStatsAttackPane, new Insets(0, marginRight, 0, 0));
+	    
+	    Label allyStatsDefenseLabel = getAllyStatsLabel("Def");
+
+	    allyStatsDefensePane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
+	    HBox.setMargin(allyStatsDefensePane, new Insets(0, marginRight, 0, 0));
+	    
+	    Label allyStatsAccuEvaLabel = getAllyStatsLabel("Prec/Esq");
+
+	    allyStatsAccuEvaPane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
+	    HBox.setMargin(allyStatsAccuEvaPane, new Insets(0, marginRight, 0, 0));
+	    
+	    Label allyStatsCriticalLabel = getAllyStatsLabel("Crit");
+
+	    allyStatsCriticalPane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
+	    
+	    allyStatsPane.getChildren().addAll(allyStatsAttackLabel, allyStatsAttackPane, allyStatsDefenseLabel, allyStatsDefensePane, allyStatsAccuEvaLabel, allyStatsAccuEvaPane, allyStatsCriticalLabel, allyStatsCriticalPane);
+	}
+
+	private Label getAllyStatsLabel(String text) {
+		Label allyStatsLabel = new Label();
+		double fontSize = .26;
+		allyStatsLabel.setText(text);
+		allyStatsLabel.setAlignment(Pos.CENTER);
+		allyStatsLabel.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
+		allyStatsLabel.widthProperty().addListener((_, _, newW) -> {
+			allyStatsLabel.setFont(Font.font(newW.doubleValue() * fontSize));
+		});
+		return allyStatsLabel;
+	}
 	
 	private VBox getRightPane(HBox globalPane) {
 		VBox rightPane = new VBox();
@@ -247,7 +305,6 @@ public class BattleScene {
     		Character ennemy = battleManager.getICharacter(ennemyIndex);
 	    	if (isHover) {
 				ennemyName.setText(ennemy.getName());
-	    		ennemyStatsPane.setVisible(true);
 	    		ennemyStatsAttackImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.ATTACK), 50);
 	    		ennemyStatsAttackPane.setCenter(ennemyStatsAttackImage);
 	    		ennemyStatsDefenseImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.DEFENSE), 50);
@@ -277,11 +334,12 @@ public class BattleScene {
 				ennemyResDivineValuePane.setCenter(ennemyResDivineValueImage);
 				ennemyResCursedValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(CharacterElement.CURSED), 50);
 				ennemyResCursedValuePane.setCenter(ennemyResCursedValueImage);
+	    		ennemyStatsPane.setVisible(true);
 	    	}
 	    	else {
 	    		ennemyName.setText("");
-	    		ennemyStatsPane.setVisible(false);
 				ennemyResPane.setVisible(false);
+	    		ennemyStatsPane.setVisible(false);
 	    	}
 	    });
 
@@ -304,7 +362,7 @@ public class BattleScene {
 		enemyIconPane.prefWidthProperty().bind(enemyPane.widthProperty());
 		enemyIconPane.prefHeightProperty().bind(enemyPane.heightProperty().multiply(.7));
 		enemyIconPane.setStyle(greenBorderStyle());
-		ImageView enemyIconImageView = ui.IconProvider.getCharacterElementIcon(CharacterElement.FIRE, 150);
+		ImageView enemyIconImageView = ui.IconProvider.getCharacterIcon(battleManager.getICharacter(ennemyIndex), 150);
 		enemyIconPane.setCenter(enemyIconImageView);
 		
 		enemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, enemyIconPane);
@@ -344,17 +402,29 @@ public class BattleScene {
 		allyPane.setStyle(redBorderStyle());
 		
 		allyPane.hoverProperty().addListener((_, _, isHover) -> {
-	    	if (isHover)
+    		Character ally = battleManager.getICharacter(allyIndex);
+	    	if (isHover) {
 	    		allyName.setText(battleManager.getICharacter(allyIndex).getName());
-	    	else
+	    		allyStatsAttackImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.ATTACK), 50);
+	    		allyStatsAttackPane.setCenter(allyStatsAttackImage);
+	    		allyStatsDefenseImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.DEFENSE), 50);
+	    		allyStatsDefensePane.setCenter(allyStatsDefenseImage);
+	    		allyStatsAccuEvaImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.ACCURACY), 50);
+	    		allyStatsAccuEvaPane.setCenter(allyStatsAccuEvaImage);
+	    		allyStatsCriticalImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.CRITICAL), 50);
+	    		allyStatsCriticalPane.setCenter(allyStatsCriticalImage);
+	    		allyStatsPane.setVisible(true);
+	    	} else {
 	    		allyName.setText("");
+	    		allyStatsPane.setVisible(false);
+	    	}
 	    });
 		
 		BorderPane allyIconPane = new BorderPane();
 		allyIconPane.prefWidthProperty().bind(allyPane.widthProperty());
 		allyIconPane.prefHeightProperty().bind(allyPane.heightProperty().multiply(.7));
 		allyIconPane.setStyle(greenBorderStyle());
-		ImageView allyIconImageView = ui.IconProvider.getCharacterElementIcon(CharacterElement.FIRE, 150);
+		ImageView allyIconImageView = ui.IconProvider.getCharacterIcon(battleManager.getICharacter(allyIndex), 150);
 		allyIconPane.setCenter(allyIconImageView);
 		
 		Region allyPaneSpacer1 = new Region();

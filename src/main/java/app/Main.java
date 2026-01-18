@@ -23,12 +23,12 @@ public class Main extends Application {
         stage.setMinWidth(1050);
         stage.setMinHeight(600);
         
-        Character hero = new Character("Héros1", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "/images/characters/hero.png");
-        Character hero2 = new Character("Héros2", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "/images/characters/hero.png");
-        Character hero3 = new Character("Héros3", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "/images/characters/hero.png");
-        Character enemy = new Character("Slime1", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "/images/characters/slime.png");
-        Character enemy2 = new Character("Slime2", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "/images/characters/slime.png");
-        Character enemy3 = new Character("Slime3", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "/images/characters/slime.png");
+        Character hero = new Character("Héros1", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character hero2 = new Character("Héros2", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character hero3 = new Character("Héros3", 100, 200, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character enemy = new Character("Slime1", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character enemy2 = new Character("Slime2", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "pompon");
+        Character enemy3 = new Character("Slime3", 80, 150, true, true, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "pompon");
 //        Character noCharacter = new Character("No character", 0, 0, false, true, null, null, null, null);
         
         List<Character> charactersInBattle = new ArrayList<>();

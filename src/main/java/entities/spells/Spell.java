@@ -2,18 +2,31 @@ package entities.spells;
 
 import java.util.List;
 
-public class Spell {
-
-	private String name;
-	private SpellElement element;
+public enum Spell {
+	PHYSICALATTACK("", SpellElement.PHYSICAL),
+	GUNATTACK("", SpellElement.PHYSICAL);
 	
-	public Spell(String name, SpellElement element) {
+	private final String name;
+	private final SpellElement element;
+	
+	Spell(String name, SpellElement element) {
 		this.name = name;
 		this.element = element;
 	}
 	
-	public void spellEffect(Character sender, List<Character> receveir) {
-		
+	public String getName() { return name; }
+	
+	public SpellElement getElement() { return element; }
+
+	public void spellEffect(List<Character> receiver) {
+		switch (this) {
+			case PHYSICALATTACK:
+				break;
+			case GUNATTACK:
+				break;
+			default:
+	            System.out.println("Spell not implemented");
+		}
 	}
 	
 }
