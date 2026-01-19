@@ -7,6 +7,7 @@ import game.BattleManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -120,9 +121,9 @@ public class BattleScene {
 		setEnnemyResPane(leftPane);
 		ennemyResPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.15));
 		
-		BorderPane lactionLa = new BorderPane();
-		lactionLa.setStyle(greenBorderStyle());
-		lactionLa.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.55));
+		VBox actionPane = firstChoicePane(leftPane);
+		actionPane.setStyle(greenBorderStyle());
+		actionPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.55));
 
 		setAllyStatsPane(leftPane);
 		allyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
@@ -135,7 +136,7 @@ public class BattleScene {
 		});
 
 	    
-	    leftPane.getChildren().addAll(ennemyName, ennemyStatsPane, ennemyResPane, lactionLa, allyStatsPane, allyName);
+	    leftPane.getChildren().addAll(ennemyName, ennemyStatsPane, ennemyResPane, actionPane, allyStatsPane, allyName);
 		return leftPane;
 	}
 	
@@ -213,6 +214,58 @@ public class BattleScene {
 		ennemyResPhysicalBox.getChildren().addAll(ennemyResPhysicalPane, valuePane);
 		return ennemyResPhysicalBox;
 	}
+	
+	private VBox firstChoicePane(VBox leftPane) {
+		VBox firstChoicePane = new VBox();
+		firstChoicePane.prefWidthProperty().bind(leftPane.widthProperty());
+		firstChoicePane.setStyle(redBorderStyle());
+		
+		HBox attackParryPane = new HBox();
+		attackParryPane.prefHeightProperty().bind(firstChoicePane.widthProperty().multiply(.5));
+		
+		VBox attackPane = new VBox();
+		attackPane.prefWidthProperty().bind(attackParryPane.widthProperty().multiply(.5));
+		attackPane.setAlignment(Pos.CENTER);
+		Button attackButton = new Button("Attaquer");
+		attackButton.setFocusTraversable(false);
+		attackButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
+		attackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		attackButton.widthProperty().addListener((_, _, newW) -> {
+			attackButton.setFont(Font.font(newW.doubleValue() * .18));
+		});
+		attackPane.getChildren().addAll(attackButton);
+
+		VBox parryPane = new VBox();
+		parryPane.prefWidthProperty().bind(attackParryPane.widthProperty().multiply(.5));
+		parryPane.setAlignment(Pos.CENTER);
+		Button parryButton = new Button("Parer");
+		parryButton.setFocusTraversable(false);
+		parryButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
+		parryButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		parryButton.widthProperty().addListener((_, _, newW) -> {
+			parryButton.setFont(Font.font(newW.doubleValue() * .18));
+		});
+		parryPane.getChildren().addAll(parryButton);
+		
+		attackParryPane.getChildren().addAll(attackPane, parryPane);
+		
+		VBox personaPane = new VBox();
+		personaPane.prefHeightProperty().bind(firstChoicePane.widthProperty().multiply(.5));
+		personaPane.setAlignment(Pos.CENTER);
+		Button personaButton = new Button("Persona");
+		personaButton.setFocusTraversable(false);
+		personaButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
+		personaButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		personaButton.widthProperty().addListener((_, _, newW) -> {
+			personaButton.setFont(Font.font(newW.doubleValue() * .18));
+		});
+		personaPane.getChildren().addAll(personaButton);
+		
+		firstChoicePane.getChildren().addAll(attackParryPane, personaPane);
+		return firstChoicePane;
+	}
+	
+	
 
 	private void setAllyStatsPane(VBox leftPane) {
 		allyStatsPane.setStyle(greenBorderStyle());
