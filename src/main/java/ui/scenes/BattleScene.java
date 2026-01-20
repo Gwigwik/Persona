@@ -4,6 +4,7 @@ import entities.Character;
 import entities.CharacterElement;
 import entities.Stat;
 import game.BattleManager;
+import game.BattleState;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -65,12 +66,14 @@ public class BattleScene {
     ImageView allyStatsAccuEvaImage = new ImageView();
     ImageView allyStatsCriticalImage = new ImageView();
     Label allyName = new Label();
+	Pane actionPane = new Pane();
+    VBox firstChoicePane = new VBox();
     
     public Scene getScene() {
         return scene;
     }
 
-    boolean debug = true;
+    boolean debug = false;
     
 	private String redBorderStyle() {
 		return debug?"-fx-border-color: red; -fx-border-width: 2; -fx-border-style: solid;":"";
@@ -80,6 +83,9 @@ public class BattleScene {
 		return debug?"-fx-border-color: green; -fx-border-width: 2; -fx-border-style: solid;":"";
 	}
 
+	private String purpleBorderStyle() {
+		return debug?"-fx-border-color: purple; -fx-border-width: 2; -fx-border-style: solid;":"";
+	}
 	
     public BattleScene(BattleManager battleManagerParam) {
     	this.battleManager = battleManagerParam;
@@ -121,9 +127,10 @@ public class BattleScene {
 		setEnnemyResPane(leftPane);
 		ennemyResPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.15));
 		
-		VBox actionPane = firstChoicePane(leftPane);
 		actionPane.setStyle(greenBorderStyle());
 		actionPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.55));
+		setFirstChoicePane();
+		actionPane.getChildren().addAll(firstChoicePane);
 
 		setAllyStatsPane(leftPane);
 		allyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
@@ -215,54 +222,65 @@ public class BattleScene {
 		return ennemyResPhysicalBox;
 	}
 	
-	private VBox firstChoicePane(VBox leftPane) {
-		VBox firstChoicePane = new VBox();
-		firstChoicePane.prefWidthProperty().bind(leftPane.widthProperty());
-		firstChoicePane.setStyle(redBorderStyle());
+	private void setFirstChoicePane() {
+		firstChoicePane.visibleProperty().bind(battleManager.getState().isEqualTo(BattleState.FIRSTCHOICE));
+		firstChoicePane.prefWidthProperty().bind(actionPane.widthProperty());
+		firstChoicePane.prefHeightProperty().bind(actionPane.heightProperty());
+		firstChoicePane.setStyle(purpleBorderStyle());
 		
-		HBox attackParryPane = new HBox();
-		attackParryPane.prefHeightProperty().bind(firstChoicePane.widthProperty().multiply(.5));
+		Region firstChoicePaneSpacer1 = new Region();
+		firstChoicePaneSpacer1.prefHeightProperty().bind(firstChoicePane.heightProperty().multiply(.25));
+		
+		HBox attackPersonaPane = new HBox();
+		attackPersonaPane.setStyle(greenBorderStyle());
+		attackPersonaPane.prefHeightProperty().bind(firstChoicePane.heightProperty().multiply(.25));
 		
 		VBox attackPane = new VBox();
-		attackPane.prefWidthProperty().bind(attackParryPane.widthProperty().multiply(.5));
+		attackPane.setStyle(redBorderStyle());
+		attackPane.prefWidthProperty().bind(attackPersonaPane.widthProperty().multiply(.5));
 		attackPane.setAlignment(Pos.CENTER);
 		Button attackButton = new Button("Attaquer");
 		attackButton.setFocusTraversable(false);
 		attackButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
 		attackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
-		attackButton.widthProperty().addListener((_, _, newW) -> {
-			attackButton.setFont(Font.font(newW.doubleValue() * .18));
+		attackButton.setOnAction(_ -> battleManager.firstChoiceAttack());
+		attackPane.widthProperty().addListener((_, _, newW) -> {
+			attackButton.setFont(Font.font(newW.doubleValue() * .1));
 		});
 		attackPane.getChildren().addAll(attackButton);
 
+		VBox personaPane = new VBox();
+		personaPane.setStyle(redBorderStyle());
+		personaPane.prefWidthProperty().bind(attackPersonaPane.widthProperty().multiply(.5));
+		personaPane.setAlignment(Pos.CENTER);
+		Button personaButton = new Button("Persona");
+		personaButton.setFocusTraversable(false);
+		personaButton.prefWidthProperty().bind(personaPane.widthProperty().multiply(.9));
+		personaButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		personaPane.widthProperty().addListener((_, _, newW) -> {
+			personaButton.setFont(Font.font(newW.doubleValue() * .1));
+		});
+		personaPane.getChildren().addAll(personaButton);
+
+		attackPersonaPane.getChildren().addAll(attackPane, personaPane);
+		
 		VBox parryPane = new VBox();
-		parryPane.prefWidthProperty().bind(attackParryPane.widthProperty().multiply(.5));
+		parryPane.setStyle(redBorderStyle());
+		parryPane.prefHeightProperty().bind(firstChoicePane.heightProperty().multiply(.25));
 		parryPane.setAlignment(Pos.CENTER);
 		Button parryButton = new Button("Parer");
 		parryButton.setFocusTraversable(false);
 		parryButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
 		parryButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
-		parryButton.widthProperty().addListener((_, _, newW) -> {
-			parryButton.setFont(Font.font(newW.doubleValue() * .18));
+		parryPane.widthProperty().addListener((_, _, newW) -> {
+			parryButton.setFont(Font.font(newW.doubleValue() * .05));
 		});
 		parryPane.getChildren().addAll(parryButton);
+
+		Region firstChoicePaneSpacer2 = new Region();
+		firstChoicePaneSpacer2.prefHeightProperty().bind(firstChoicePane.heightProperty().multiply(.25));
 		
-		attackParryPane.getChildren().addAll(attackPane, parryPane);
-		
-		VBox personaPane = new VBox();
-		personaPane.prefHeightProperty().bind(firstChoicePane.widthProperty().multiply(.5));
-		personaPane.setAlignment(Pos.CENTER);
-		Button personaButton = new Button("Persona");
-		personaButton.setFocusTraversable(false);
-		personaButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
-		personaButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
-		personaButton.widthProperty().addListener((_, _, newW) -> {
-			personaButton.setFont(Font.font(newW.doubleValue() * .18));
-		});
-		personaPane.getChildren().addAll(personaButton);
-		
-		firstChoicePane.getChildren().addAll(attackParryPane, personaPane);
-		return firstChoicePane;
+		firstChoicePane.getChildren().addAll(firstChoicePaneSpacer1,attackPersonaPane, parryPane, firstChoicePaneSpacer2);
 	}
 	
 	
