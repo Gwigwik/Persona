@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import ui.AnimatedSprite;
 
 public class BattleScene {
 	
@@ -462,14 +463,15 @@ public class BattleScene {
 		Region enemyPaneSpacer2 = new Region();
 		enemyPaneSpacer2.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.1));
 		
-		BorderPane enemyIconPane = new BorderPane();
-		enemyIconPane.prefWidthProperty().bind(ennemyPane.widthProperty());
-		enemyIconPane.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.7));
-		enemyIconPane.setStyle(greenBorderStyle());
-		ImageView enemyIconImageView = ui.IconProvider.getCharacterIcon(battleManager.getICharacter(ennemyIndex), 150);
-		enemyIconPane.setCenter(enemyIconImageView);
+		BorderPane ennemyIconPane = new BorderPane();
+		ennemyIconPane.prefWidthProperty().bind(ennemyPane.widthProperty());
+		ennemyIconPane.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.7));
+		ennemyIconPane.setStyle(greenBorderStyle());
+		AnimatedSprite ennemySprite = ui.IconProvider.getAnimatedCharacterIcon(battleManager.getICharacter(ennemyIndex), 2, 150, 150, 150, 500);
+		ennemyIconPane.setCenter(ennemySprite.getView());
+		ennemySprite.play();
 		
-		ennemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, enemyIconPane);
+		ennemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, ennemyIconPane);
 		return ennemyPane;
 	}
 	
@@ -543,8 +545,10 @@ public class BattleScene {
 		allyIconPane.prefWidthProperty().bind(allyPane.widthProperty());
 		allyIconPane.prefHeightProperty().bind(allyPane.heightProperty().multiply(.7));
 		allyIconPane.setStyle(greenBorderStyle());
-		ImageView allyIconImageView = ui.IconProvider.getCharacterIcon(battleManager.getICharacter(allyIndex), 150);
-		allyIconPane.setCenter(allyIconImageView);
+		AnimatedSprite allySprite = ui.IconProvider.getAnimatedCharacterIcon(battleManager.getICharacter(allyIndex), 2, 150, 150, 150, 500);
+		allyIconPane.setCenter(allySprite.getView());
+		allySprite.play();
+		
 		
 		Region allyPaneSpacer1 = new Region();
 		allyPaneSpacer1.prefHeightProperty().bind(allyPane.heightProperty().multiply(.1));

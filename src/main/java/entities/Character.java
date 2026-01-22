@@ -10,9 +10,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 public class Character {
 
-	private static int nextCharacterId;
-	
-	private int id;
 	private String name;
 	private int maxHP;
 	private IntegerProperty currentHP = new SimpleIntegerProperty();
@@ -23,13 +20,12 @@ public class Character {
 	private Map<CharacterElement, Boolean> discoveredResistances;
 	private Map<Stat, Double> stats;
 	private Map<Stat, Integer> remainingTurnsStats;
-	private boolean isStun;
+	private BooleanProperty isStun = new SimpleBooleanProperty();
 	private BooleanProperty isParrying = new SimpleBooleanProperty();
 	private BooleanProperty isPlaying = new SimpleBooleanProperty();
 	private String imagePath;
 	
 	public Character(String name, int maxHP, int maxAP, boolean isAlive, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
-		this.id = nextCharacterId;
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
@@ -45,10 +41,8 @@ public class Character {
 		remainingTurnsStats.put(Stat.ACCURACY, 0);
 		remainingTurnsStats.put(Stat.EVASION, 0);
 		remainingTurnsStats.put(Stat.CRITICAL, 0);
-		isStun = false;
+		isStun.set(false);
 		this.imagePath = imagePath;
-		
-		nextCharacterId++;
 	}
 
 	public String getName() {
@@ -69,6 +63,10 @@ public class Character {
 
 	public IntegerProperty currentHPProperty() {
 		return currentHP;
+	}
+
+	public int getMaxAP() {
+		return maxAP;
 	}
 
 	public void setCurrentAP(int currentAP) {

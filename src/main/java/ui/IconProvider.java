@@ -39,4 +39,12 @@ public class IconProvider {
         view.setFitHeight(size);
         return view;
     }
+    
+    public static AnimatedSprite getAnimatedCharacterIcon(entities.Character character, int frameCount, int frameWidth, int frameHeight, int displaySize, int duration) {
+        Image spriteSheet = ResourceLoader.loadImage("/images/characters/" + character.getFileName() + ".png");
+        AnimatedSprite sprite = new AnimatedSprite(spriteSheet, frameCount, frameWidth, frameHeight, duration);
+        sprite.getView().setFitWidth(displaySize);
+        sprite.getView().setFitHeight(displaySize);
+        return sprite;
+    }
 }
