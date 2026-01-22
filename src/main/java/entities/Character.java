@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.EnumMap;
 import java.util.Map;
 
 import javafx.beans.property.BooleanProperty;
@@ -22,10 +23,11 @@ public class Character {
 	private Map<CharacterElement, Resistance> resistances;
 	private Map<CharacterElement, Boolean> discoveredResistances;
 	private Map<Stat, Double> stats;
+	private Map<Stat, Integer> remainingTurnsStats;
 	private boolean isStun;
-	private boolean isParrying;
+	private BooleanProperty isParrying = new SimpleBooleanProperty();
+	private BooleanProperty isPlaying = new SimpleBooleanProperty();
 	private String imagePath;
-	
 	
 	public Character(String name, int maxHP, int maxAP, boolean isAlive, boolean isAlly, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
 		this.id = nextCharacterId;
@@ -39,6 +41,12 @@ public class Character {
 		this.resistances = resistances;
 		this.discoveredResistances = discoveredResistances;
 		this.stats = stats;
+		this.remainingTurnsStats = new EnumMap<>(Stat.class);
+		remainingTurnsStats.put(Stat.ATTACK, 0);
+		remainingTurnsStats.put(Stat.DEFENSE, 0);
+		remainingTurnsStats.put(Stat.ACCURACY, 0);
+		remainingTurnsStats.put(Stat.EVASION, 0);
+		remainingTurnsStats.put(Stat.CRITICAL, 0);
 		isStun = false;
 		this.imagePath = imagePath;
 		
@@ -80,6 +88,22 @@ public class Character {
 	public BooleanProperty isAliveProperty() {
 		return isAlive;
 	}
+
+	public void setIsParrying(boolean isParrying) {
+		this.isParrying.set(isParrying);;
+	}
+
+	public BooleanProperty isParryingProperty() {
+		return isParrying;
+	}
+
+	public void setIsPlaying(boolean isPlaying) {
+		this.isPlaying.set(isPlaying);;
+	}
+
+	public BooleanProperty isPlayingProperty() {
+		return isPlaying;
+	}
 	
 	public StatStatus getStatStatus(Stat stat) {
 		if (stats.get(stat) == stat.getDefaultValue()) {
@@ -89,6 +113,22 @@ public class Character {
 		} else {
 			return StatStatus.DECREASED;
 		}
+	}
+	
+	public int getRemainingTurnsStat(Stat stat) {
+		return remainingTurnsStats.get(stat);
+	}
+	
+	public void setRemainingTurnsStat(Stat stat, int turns) {
+		remainingTurnsStats.put(stat, turns);
+	}
+	
+	public void removeOneTurnFromStats() {
+		remainingTurnsStats.replaceAll((_, turns) -> turns>0 ? turns-1 : 0);
+		remainingTurnsStats.forEach((stat, turn) -> {
+			if (turn == 0)
+				stats.put(stat, stat.getDefaultValue());
+		});
 	}
 	
 	public Resistance getDiscoveredResistance(CharacterElement element) {

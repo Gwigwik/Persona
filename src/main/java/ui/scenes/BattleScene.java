@@ -5,6 +5,7 @@ import entities.CharacterElement;
 import entities.Stat;
 import game.BattleManager;
 import game.BattleState;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -85,6 +86,10 @@ public class BattleScene {
 
 	private String purpleBorderStyle() {
 		return debug?"-fx-border-color: purple; -fx-border-width: 2; -fx-border-style: solid;":"";
+	}
+
+	private String blackBorderStyle() {
+		return "-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;";
 	}
 	
     public BattleScene(BattleManager battleManagerParam) {
@@ -272,6 +277,7 @@ public class BattleScene {
 		parryButton.setFocusTraversable(false);
 		parryButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
 		parryButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		parryButton.setOnAction(_ -> battleManager.firstChoiceParry());
 		parryPane.widthProperty().addListener((_, _, newW) -> {
 			parryButton.setFont(Font.font(newW.doubleValue() * .05));
 		});
@@ -283,8 +289,6 @@ public class BattleScene {
 		firstChoicePane.getChildren().addAll(firstChoicePaneSpacer1,attackPersonaPane, parryPane, firstChoicePaneSpacer2);
 	}
 	
-	
-
 	private void setAllyStatsPane(VBox leftPane) {
 		allyStatsPane.setStyle(greenBorderStyle());
 		allyStatsPane.setAlignment(Pos.CENTER);
@@ -349,12 +353,27 @@ public class BattleScene {
 		Region enemiesPaneSpacer1 = getEnemiesPaneSpacer(enemiesPane);
 		VBox enemyPane1 = getEnemyPane(enemiesPane, 5);
 		enemyPane1.visibleProperty().bind(battleManager.getICharacter(5).isAliveProperty());
+		enemyPane1.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(5).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
 		Region enemiesPaneSpacer2 = getEnemiesPaneSpacer(enemiesPane);
 		VBox enemyPane2 = getEnemyPane(enemiesPane, 1);
 		enemyPane2.visibleProperty().bind(battleManager.getICharacter(1).isAliveProperty());
+		enemyPane2.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(1).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
 		Region enemiesPaneSpacer3 = getEnemiesPaneSpacer(enemiesPane);
 		VBox enemyPane3 = getEnemyPane(enemiesPane, 3);
 		enemyPane3.visibleProperty().bind(battleManager.getICharacter(3).isAliveProperty());
+		enemyPane3.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(3).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
 		Region enemiesPaneSpacer4 = getEnemiesPaneSpacer(enemiesPane);
 		
 		enemiesPane.getChildren().addAll(enemiesPaneSpacer1, enemyPane1, enemiesPaneSpacer3, enemyPane2, enemiesPaneSpacer2, enemyPane3, enemiesPaneSpacer4);
@@ -448,12 +467,27 @@ public class BattleScene {
 		Region alliesPaneSPacer1 = getAlliesPaneSpacer(alliesPane);
 		VBox allyPane1 = getAllyPane(alliesPane, 4);
 		allyPane1.visibleProperty().bind(battleManager.getICharacter(4).isAliveProperty());
+		allyPane1.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(4).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
 		Region alliesPaneSPacer2 = getAlliesPaneSpacer(alliesPane);
 		VBox allyPane2 = getAllyPane(alliesPane, 0);
 		allyPane2.visibleProperty().bind(battleManager.getICharacter(0).isAliveProperty());
+		allyPane2.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(0).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
 		Region alliesPaneSPacer3 = getAlliesPaneSpacer(alliesPane);
 		VBox allyPane3 = getAllyPane(alliesPane, 2);
 		allyPane3.visibleProperty().bind(battleManager.getICharacter(2).isAliveProperty());
+		allyPane3.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(2).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
 		Region alliesPaneSPacer4 = getAlliesPaneSpacer(alliesPane);
 		
 		
