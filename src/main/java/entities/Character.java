@@ -19,7 +19,6 @@ public class Character {
 	private BooleanProperty isAlive = new SimpleBooleanProperty();
 	private int maxAP;
 	private IntegerProperty currentAP = new SimpleIntegerProperty();
-	private boolean isAlly;
 	private Map<CharacterElement, Resistance> resistances;
 	private Map<CharacterElement, Boolean> discoveredResistances;
 	private Map<Stat, Double> stats;
@@ -29,7 +28,7 @@ public class Character {
 	private BooleanProperty isPlaying = new SimpleBooleanProperty();
 	private String imagePath;
 	
-	public Character(String name, int maxHP, int maxAP, boolean isAlive, boolean isAlly, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
+	public Character(String name, int maxHP, int maxAP, boolean isAlive, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
 		this.id = nextCharacterId;
 		this.name = name;
 		this.maxHP = maxHP;
@@ -37,7 +36,6 @@ public class Character {
 		this.isAlive.set(isAlive);
 		this.maxAP = maxAP;
 		this.currentAP.set(maxAP);;
-		this.isAlly = isAlly;
 		this.resistances = resistances;
 		this.discoveredResistances = discoveredResistances;
 		this.stats = stats;
@@ -65,6 +63,10 @@ public class Character {
 		return currentHP.get();
 	}
 
+	public void setCurrentHP(IntegerProperty currentHP) {
+		this.currentHP = currentHP;
+	}
+
 	public IntegerProperty currentHPProperty() {
 		return currentHP;
 	}
@@ -87,6 +89,10 @@ public class Character {
 
 	public BooleanProperty isAliveProperty() {
 		return isAlive;
+	}
+
+	public void setIsAlive(boolean isAlive) {
+		this.isAlive.set(isAlive);
 	}
 
 	public void setIsParrying(boolean isParrying) {

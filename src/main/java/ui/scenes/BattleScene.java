@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -67,8 +68,10 @@ public class BattleScene {
     ImageView allyStatsAccuEvaImage = new ImageView();
     ImageView allyStatsCriticalImage = new ImageView();
     Label allyName = new Label();
+     
 	Pane actionPane = new Pane();
     VBox firstChoicePane = new VBox();
+    BorderPane attackSelectionPane = new BorderPane();
     
     public Scene getScene() {
         return scene;
@@ -101,6 +104,8 @@ public class BattleScene {
 	    
 	    //------------------------------ Attacks, persona, defend, stats, elements... ------------------------------
 	    VBox leftPane = getLeftPane(globalPane);
+		setFirstChoicePane();
+		setAttackSelectionPane();
 	    
 	    Region globalPaneSpacer = new Region();
         globalPaneSpacer.prefWidthProperty().bind(globalPane.widthProperty().multiply(0.10));
@@ -134,8 +139,7 @@ public class BattleScene {
 		
 		actionPane.setStyle(greenBorderStyle());
 		actionPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.55));
-		setFirstChoicePane();
-		actionPane.getChildren().addAll(firstChoicePane);
+		actionPane.getChildren().addAll(firstChoicePane, attackSelectionPane);
 
 		setAllyStatsPane(leftPane);
 		allyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
@@ -289,6 +293,24 @@ public class BattleScene {
 		firstChoicePane.getChildren().addAll(firstChoicePaneSpacer1,attackPersonaPane, parryPane, firstChoicePaneSpacer2);
 	}
 	
+	private void setAttackSelectionPane() {
+		attackSelectionPane.visibleProperty().bind(battleManager.getState().isEqualTo(BattleState.ATTACKSELECTION));
+		attackSelectionPane.prefWidthProperty().bind(actionPane.widthProperty());
+		attackSelectionPane.prefHeightProperty().bind(actionPane.heightProperty());
+		attackSelectionPane.setStyle(purpleBorderStyle());
+		
+		Button cancelAttackButton = new Button("Retour");
+		cancelAttackButton.setFocusTraversable(false);
+		cancelAttackButton.prefWidthProperty().bind(attackSelectionPane.widthProperty().multiply(.4));
+		cancelAttackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		cancelAttackButton.setOnAction(_ -> battleManager.cancelAttack());
+		attackSelectionPane.widthProperty().addListener((_, _, newW) -> {
+			cancelAttackButton.setFont(Font.font(newW.doubleValue() * .05));
+		});
+		
+		attackSelectionPane.setCenter(cancelAttackButton);
+	}
+	
 	private void setAllyStatsPane(VBox leftPane) {
 		allyStatsPane.setStyle(greenBorderStyle());
 		allyStatsPane.setAlignment(Pos.CENTER);
@@ -352,28 +374,10 @@ public class BattleScene {
 		
 		Region enemiesPaneSpacer1 = getEnemiesPaneSpacer(enemiesPane);
 		VBox enemyPane1 = getEnemyPane(enemiesPane, 5);
-		enemyPane1.visibleProperty().bind(battleManager.getICharacter(5).isAliveProperty());
-		enemyPane1.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(5).isPlayingProperty())
-		        .then(blackBorderStyle())
-		        .otherwise("")
-		);
 		Region enemiesPaneSpacer2 = getEnemiesPaneSpacer(enemiesPane);
 		VBox enemyPane2 = getEnemyPane(enemiesPane, 1);
-		enemyPane2.visibleProperty().bind(battleManager.getICharacter(1).isAliveProperty());
-		enemyPane2.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(1).isPlayingProperty())
-		        .then(blackBorderStyle())
-		        .otherwise("")
-		);
 		Region enemiesPaneSpacer3 = getEnemiesPaneSpacer(enemiesPane);
 		VBox enemyPane3 = getEnemyPane(enemiesPane, 3);
-		enemyPane3.visibleProperty().bind(battleManager.getICharacter(3).isAliveProperty());
-		enemyPane3.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(3).isPlayingProperty())
-		        .then(blackBorderStyle())
-		        .otherwise("")
-		);
 		Region enemiesPaneSpacer4 = getEnemiesPaneSpacer(enemiesPane);
 		
 		enemiesPane.getChildren().addAll(enemiesPaneSpacer1, enemyPane1, enemiesPaneSpacer3, enemyPane2, enemiesPaneSpacer2, enemyPane3, enemiesPaneSpacer4);
@@ -387,11 +391,21 @@ public class BattleScene {
 	}
 
 	private VBox getEnemyPane(HBox enemiesPane, int ennemyIndex) {
-		VBox enemyPane = new VBox();
-		enemyPane.prefWidthProperty().bind(enemiesPane.widthProperty().multiply(0.3));
-		enemyPane.setStyle(redBorderStyle());
-		
-		enemyPane.hoverProperty().addListener((_, _, isHover) -> {
+		VBox ennemyPane = new VBox();
+		ennemyPane.prefWidthProperty().bind(enemiesPane.widthProperty().multiply(0.3));
+		ennemyPane.setStyle(redBorderStyle());
+		ennemyPane.visibleProperty().bind(battleManager.getICharacter(ennemyIndex).isAliveProperty());
+		ennemyPane.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(ennemyIndex).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
+		ennemyPane.setOnMouseClicked(event -> {
+		    if (event.getButton() == MouseButton.PRIMARY) {
+		    	battleManager.characterClicked(ennemyIndex);
+		    }
+		});
+		ennemyPane.hoverProperty().addListener((_, _, isHover) -> {
     		Character ennemy = battleManager.getICharacter(ennemyIndex);
 	    	if (isHover) {
 				ennemyName.setText(ennemy.getName());
@@ -434,10 +448,10 @@ public class BattleScene {
 	    });
 
 		Region enemyPaneSpacer1 = new Region();
-		enemyPaneSpacer1.prefHeightProperty().bind(enemyPane.heightProperty().multiply(.1));
+		enemyPaneSpacer1.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.1));
 		
 		Pane healthBarPane = new Pane();
-		healthBarPane.prefWidthProperty().bind(enemyPane.widthProperty().multiply(.8));
+		healthBarPane.prefWidthProperty().bind(ennemyPane.widthProperty().multiply(.8));
 		healthBarPane.setPrefHeight(30);
 		Rectangle healthBar = new Rectangle();
 		healthBar.widthProperty().bind(healthBarPane.widthProperty());
@@ -446,17 +460,17 @@ public class BattleScene {
 		healthBarPane.getChildren().add(healthBar);
 		
 		Region enemyPaneSpacer2 = new Region();
-		enemyPaneSpacer2.prefHeightProperty().bind(enemyPane.heightProperty().multiply(.1));
+		enemyPaneSpacer2.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.1));
 		
 		BorderPane enemyIconPane = new BorderPane();
-		enemyIconPane.prefWidthProperty().bind(enemyPane.widthProperty());
-		enemyIconPane.prefHeightProperty().bind(enemyPane.heightProperty().multiply(.7));
+		enemyIconPane.prefWidthProperty().bind(ennemyPane.widthProperty());
+		enemyIconPane.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.7));
 		enemyIconPane.setStyle(greenBorderStyle());
 		ImageView enemyIconImageView = ui.IconProvider.getCharacterIcon(battleManager.getICharacter(ennemyIndex), 150);
 		enemyIconPane.setCenter(enemyIconImageView);
 		
-		enemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, enemyIconPane);
-		return enemyPane;
+		ennemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, enemyIconPane);
+		return ennemyPane;
 	}
 	
 	private HBox getAlliesPane(VBox rightPane) {

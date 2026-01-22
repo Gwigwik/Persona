@@ -24,16 +24,17 @@ public class BattleManager {
     	return i < charactersInBattle.size() ? charactersInBattle.get(i) : null;
     }
     
-    private boolean isAllyPlaying() {
-    	return playingIndex%2 == 0;
+    private boolean isAlly(int index) {
+    	return index%2 == 0;
     }
     
     private void nextTurn() {
+		state.set(BattleState.FIRSTCHOICE);
 		charactersInBattle.get(playingIndex).setIsPlaying(false);
     	playingIndex = (playingIndex + 1)%charactersInBattle.size();
 		charactersInBattle.get(playingIndex).setIsPlaying(true);
 		charactersInBattle.get(playingIndex).removeOneTurnFromStats();
-		if (isAllyPlaying())
+		if (isAlly(playingIndex))
 			allyTurn();
 		else
 			ennemyTurn();
@@ -56,8 +57,29 @@ public class BattleManager {
     	state.set(BattleState.ATTACKSELECTION);
     }
 	
+	public void cancelAttack() {
+		state.set(BattleState.FIRSTCHOICE);
+	}
+	
 	public void firstChoiceParry() {
 		charactersInBattle.get(playingIndex).setIsParrying(true);
 		nextTurn();
+	}
+	
+	public void characterClicked(int index) {
+		switch (state.get()) {
+			case ATTACKSELECTION:
+				if (isAlly(index))
+					return;
+				attack(charactersInBattle.get(playingIndex), charactersInBattle.get(index));
+				nextTurn();
+			default:
+				return;
+		}
+	}
+	
+	private void attack(Character attacker, Character defender) {
+		defender.setCurrentHP(0);
+		defender.setIsAlive(false);
 	}
 }
