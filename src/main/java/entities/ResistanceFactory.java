@@ -5,6 +5,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import entities.spells.SpellElement;
+
 public class ResistanceFactory {
 
 //    public static Map<CharacterElement, Resistance> characterResistances() {
@@ -25,8 +27,8 @@ public class ResistanceFactory {
 //        return map;
 //    }
 	
-	public static Map<CharacterElement, Resistance> characterResistances() {
-        Map<CharacterElement, Resistance> map = new EnumMap<>(CharacterElement.class);
+	public static Map<SpellElement, Resistance> characterResistances() {
+        Map<SpellElement, Resistance> map = new EnumMap<>(SpellElement.class);
         
         map = getResistances(Arrays.asList(
         		Resistance.NEUTRAL,
@@ -43,51 +45,51 @@ public class ResistanceFactory {
         return map;
     }
     
-    public static Map<CharacterElement, Resistance> getResistances(List<Resistance> resistances) {
-        Map<CharacterElement, Resistance> resistancesMap = new EnumMap<>(CharacterElement.class);
+    public static Map<SpellElement, Resistance> getResistances(List<Resistance> resistances) {
+        Map<SpellElement, Resistance> resistancesMap = new EnumMap<>(SpellElement.class);
 
-        resistancesMap.put(CharacterElement.FIRE, resistances.get(0)); 
-        resistancesMap.put(CharacterElement.ICE, resistances.get(1)); 
-        resistancesMap.put(CharacterElement.ELECTRIC, resistances.get(2)); 
-        resistancesMap.put(CharacterElement.WIND, resistances.get(3)); 
-        resistancesMap.put(CharacterElement.PSY, resistances.get(4)); 
-        resistancesMap.put(CharacterElement.NUCLEAR, resistances.get(5)); 
-        resistancesMap.put(CharacterElement.DIVINE, resistances.get(6)); 
-        resistancesMap.put(CharacterElement.CURSED, resistances.get(7)); 
-        resistancesMap.put(CharacterElement.PHYSICAL, resistances.get(8)); 
-        resistancesMap.put(CharacterElement.GUN, resistances.get(9)); 
+        resistancesMap.put(SpellElement.FIRE, resistances.get(0)); 
+        resistancesMap.put(SpellElement.ICE, resistances.get(1)); 
+        resistancesMap.put(SpellElement.ELECTRIC, resistances.get(2)); 
+        resistancesMap.put(SpellElement.WIND, resistances.get(3)); 
+        resistancesMap.put(SpellElement.PSY, resistances.get(4)); 
+        resistancesMap.put(SpellElement.NUCLEAR, resistances.get(5)); 
+        resistancesMap.put(SpellElement.DIVINE, resistances.get(6)); 
+        resistancesMap.put(SpellElement.CURSED, resistances.get(7)); 
+        resistancesMap.put(SpellElement.PHYSICAL, resistances.get(8)); 
+        resistancesMap.put(SpellElement.GUN, resistances.get(9)); 
         
     	return resistancesMap;
     }
 
-    public static Map<CharacterElement, Boolean> initialDiscoveredResistancesFalse() {
-    	Map<CharacterElement, Boolean> discoveredStatsMap = new EnumMap<>(CharacterElement.class);
-    	discoveredStatsMap.put(CharacterElement.PHYSICAL, false);
-    	discoveredStatsMap.put(CharacterElement.GUN, false);
-    	discoveredStatsMap.put(CharacterElement.FIRE, false);
-    	discoveredStatsMap.put(CharacterElement.ICE, false);
-    	discoveredStatsMap.put(CharacterElement.ELECTRIC, false);
-    	discoveredStatsMap.put(CharacterElement.WIND, false);
-    	discoveredStatsMap.put(CharacterElement.PSY, false);
-    	discoveredStatsMap.put(CharacterElement.NUCLEAR, false);
-    	discoveredStatsMap.put(CharacterElement.DIVINE, false);
-    	discoveredStatsMap.put(CharacterElement.CURSED, false);
+    public static Map<SpellElement, Boolean> initialDiscoveredResistancesFalse() {
+    	Map<SpellElement, Boolean> discoveredStatsMap = new EnumMap<>(SpellElement.class);
+    	discoveredStatsMap.put(SpellElement.PHYSICAL, false);
+    	discoveredStatsMap.put(SpellElement.GUN, false);
+    	discoveredStatsMap.put(SpellElement.FIRE, false);
+    	discoveredStatsMap.put(SpellElement.ICE, false);
+    	discoveredStatsMap.put(SpellElement.ELECTRIC, false);
+    	discoveredStatsMap.put(SpellElement.WIND, false);
+    	discoveredStatsMap.put(SpellElement.PSY, false);
+    	discoveredStatsMap.put(SpellElement.NUCLEAR, false);
+    	discoveredStatsMap.put(SpellElement.DIVINE, false);
+    	discoveredStatsMap.put(SpellElement.CURSED, false);
     	
     	return discoveredStatsMap;
     }
 
-    public static Map<CharacterElement, Boolean> initialDiscoveredResistancesTrue() {
-    	Map<CharacterElement, Boolean> discoveredStatsMap = new EnumMap<>(CharacterElement.class);
-    	discoveredStatsMap.put(CharacterElement.PHYSICAL, true);
-    	discoveredStatsMap.put(CharacterElement.GUN, true);
-    	discoveredStatsMap.put(CharacterElement.FIRE, true);
-    	discoveredStatsMap.put(CharacterElement.ICE, true);
-    	discoveredStatsMap.put(CharacterElement.ELECTRIC, true);
-    	discoveredStatsMap.put(CharacterElement.WIND, true);
-    	discoveredStatsMap.put(CharacterElement.PSY, true);
-    	discoveredStatsMap.put(CharacterElement.NUCLEAR, true);
-    	discoveredStatsMap.put(CharacterElement.DIVINE, true);
-    	discoveredStatsMap.put(CharacterElement.CURSED, true);
+    public static Map<SpellElement, Boolean> initialDiscoveredResistancesTrue() {
+    	Map<SpellElement, Boolean> discoveredStatsMap = new EnumMap<>(SpellElement.class);
+    	discoveredStatsMap.put(SpellElement.PHYSICAL, true);
+    	discoveredStatsMap.put(SpellElement.GUN, true);
+    	discoveredStatsMap.put(SpellElement.FIRE, true);
+    	discoveredStatsMap.put(SpellElement.ICE, true);
+    	discoveredStatsMap.put(SpellElement.ELECTRIC, true);
+    	discoveredStatsMap.put(SpellElement.WIND, true);
+    	discoveredStatsMap.put(SpellElement.PSY, true);
+    	discoveredStatsMap.put(SpellElement.NUCLEAR, true);
+    	discoveredStatsMap.put(SpellElement.DIVINE, true);
+    	discoveredStatsMap.put(SpellElement.CURSED, true);
     	
     	return discoveredStatsMap;
     }

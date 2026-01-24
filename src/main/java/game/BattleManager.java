@@ -1,8 +1,10 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import entities.Character;
+import entities.spells.Spell;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -71,15 +73,10 @@ public class BattleManager {
 			case ATTACKSELECTION:
 				if (isAlly(index))
 					return;
-				attack(charactersInBattle.get(playingIndex), charactersInBattle.get(index));
+				Spell.PHYSICALATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
 				nextTurn();
 			default:
 				return;
 		}
-	}
-	
-	private void attack(Character attacker, Character defender) {
-		defender.setCurrentHP(0);
-		defender.setIsAlive(false);
 	}
 }

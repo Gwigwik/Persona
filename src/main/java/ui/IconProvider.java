@@ -1,8 +1,8 @@
 package ui;
 
-import entities.CharacterElement;
 import entities.Resistance;
 import entities.StatStatus;
+import entities.spells.SpellElement;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import utils.ResourceLoader;
@@ -16,7 +16,7 @@ public class IconProvider {
         return view;
     }
 	
-    public static ImageView getCharacterElementIcon(CharacterElement element, int size) {
+    public static ImageView getCharacterElementIcon(SpellElement element, int size) {
         Image image = ResourceLoader.loadImage("/images/elements/icons/" + element.getFileName() + ".png");
         ImageView view = new ImageView(image);
         view.setFitWidth(size);

@@ -3,6 +3,7 @@ package entities;
 import java.util.EnumMap;
 import java.util.Map;
 
+import entities.spells.SpellElement;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,8 +17,9 @@ public class Character {
 	private BooleanProperty isAlive = new SimpleBooleanProperty();
 	private int maxAP;
 	private IntegerProperty currentAP = new SimpleIntegerProperty();
-	private Map<CharacterElement, Resistance> resistances;
-	private Map<CharacterElement, Boolean> discoveredResistances;
+	private SpellElement attackType;
+	private Map<SpellElement, Resistance> resistances;
+	private Map<SpellElement, Boolean> discoveredResistances;
 	private Map<Stat, Double> stats;
 	private Map<Stat, Integer> remainingTurnsStats;
 	private BooleanProperty isStun = new SimpleBooleanProperty();
@@ -25,13 +27,14 @@ public class Character {
 	private BooleanProperty isPlaying = new SimpleBooleanProperty();
 	private String imagePath;
 	
-	public Character(String name, int maxHP, int maxAP, boolean isAlive, Map<CharacterElement, Resistance> resistances, Map<CharacterElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
+	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, Map<SpellElement, Resistance> resistances, Map<SpellElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
 		this.isAlive.set(isAlive);
 		this.maxAP = maxAP;
-		this.currentAP.set(maxAP);;
+		this.currentAP.set(maxAP);
+		this.attackType = attackType;
 		this.resistances = resistances;
 		this.discoveredResistances = discoveredResistances;
 		this.stats = stats;
@@ -82,7 +85,20 @@ public class Character {
 	}
 
 	public void setCurrentHP(int currentHP) {
-		this.currentHP.set(currentHP);
+		if (currentHP > 0)
+			this.currentHP.set(currentHP);
+		else {
+			this.currentHP.set(0);
+			this.setIsAlive(false);;
+		}
+	}
+	
+	public SpellElement getAttackType() {
+		return attackType;
+	}
+	
+	public Resistance getResistanceForElement(SpellElement element) {
+		return resistances.get(element);
 	}
 
 	public BooleanProperty isAliveProperty() {
@@ -107,6 +123,10 @@ public class Character {
 
 	public BooleanProperty isPlayingProperty() {
 		return isPlaying;
+	}
+	
+	public double getValueForStat(Stat stat) {
+		return stats.get(stat);
 	}
 	
 	public StatStatus getStatStatus(Stat stat) {
@@ -135,7 +155,7 @@ public class Character {
 		});
 	}
 	
-	public Resistance getDiscoveredResistance(CharacterElement element) {
+	public Resistance getDiscoveredResistance(SpellElement element) {
 		if (discoveredResistances.get(element)) {
 			return resistances.get(element);
 		} else {
