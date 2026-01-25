@@ -11,6 +11,7 @@ public enum SpellElement {
 	NUCLEAR("Nucleaire", "nuclear"),
 	DIVINE("Divin", "divine"),
 	CURSED("Maudit", "cursed"),
+	TRUEDAMAGE("Degats bruts", "truedamage"),
 	HEAL("Soin", "heal"),
 	STAT("Stat", "stat");
 	

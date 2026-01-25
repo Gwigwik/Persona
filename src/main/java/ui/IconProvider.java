@@ -1,7 +1,7 @@
 package ui;
 
-import entities.Resistance;
 import entities.StatStatus;
+import entities.resistances.Resistance;
 import entities.spells.SpellElement;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

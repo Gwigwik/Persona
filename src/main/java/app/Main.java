@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Character;
-import entities.ResistanceFactory;
-import entities.StatFactory;
+import entities.resistances.ResistanceFactory;
 import entities.spells.SpellElement;
+import entities.stats.StatFactory;
 import game.BattleManager;
 
 public class Main extends Application {

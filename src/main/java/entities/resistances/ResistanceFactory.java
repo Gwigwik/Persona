@@ -1,4 +1,4 @@
-package entities;
+package entities.resistances;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -48,16 +48,16 @@ public class ResistanceFactory {
     public static Map<SpellElement, Resistance> getResistances(List<Resistance> resistances) {
         Map<SpellElement, Resistance> resistancesMap = new EnumMap<>(SpellElement.class);
 
-        resistancesMap.put(SpellElement.FIRE, resistances.get(0)); 
-        resistancesMap.put(SpellElement.ICE, resistances.get(1)); 
-        resistancesMap.put(SpellElement.ELECTRIC, resistances.get(2)); 
-        resistancesMap.put(SpellElement.WIND, resistances.get(3)); 
-        resistancesMap.put(SpellElement.PSY, resistances.get(4)); 
-        resistancesMap.put(SpellElement.NUCLEAR, resistances.get(5)); 
-        resistancesMap.put(SpellElement.DIVINE, resistances.get(6)); 
-        resistancesMap.put(SpellElement.CURSED, resistances.get(7)); 
-        resistancesMap.put(SpellElement.PHYSICAL, resistances.get(8)); 
-        resistancesMap.put(SpellElement.GUN, resistances.get(9)); 
+        resistancesMap.put(SpellElement.PHYSICAL, resistances.get(0)); 
+        resistancesMap.put(SpellElement.GUN, resistances.get(1)); 
+        resistancesMap.put(SpellElement.FIRE, resistances.get(2)); 
+        resistancesMap.put(SpellElement.ICE, resistances.get(3)); 
+        resistancesMap.put(SpellElement.ELECTRIC, resistances.get(4)); 
+        resistancesMap.put(SpellElement.WIND, resistances.get(5)); 
+        resistancesMap.put(SpellElement.PSY, resistances.get(6)); 
+        resistancesMap.put(SpellElement.NUCLEAR, resistances.get(7)); 
+        resistancesMap.put(SpellElement.DIVINE, resistances.get(8)); 
+        resistancesMap.put(SpellElement.CURSED, resistances.get(9)); 
         
     	return resistancesMap;
     }

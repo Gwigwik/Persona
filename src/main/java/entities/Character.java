@@ -3,7 +3,9 @@ package entities;
 import java.util.EnumMap;
 import java.util.Map;
 
+import entities.resistances.Resistance;
 import entities.spells.SpellElement;
+import entities.stats.Stat;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -60,10 +62,17 @@ public class Character {
 		return currentHP.get();
 	}
 
-	public void setCurrentHP(IntegerProperty currentHP) {
-		this.currentHP = currentHP;
+	public void setCurrentHP(int currentHP) {
+		if (currentHP <= 0) {
+			this.currentHP.set(0);
+			this.setIsAlive(false);
+		} else if (currentHP > maxHP) {
+			this.currentHP.set(maxHP);
+		} else {
+			this.currentHP.set(currentHP);
+		}
 	}
-
+	
 	public IntegerProperty currentHPProperty() {
 		return currentHP;
 	}
@@ -84,15 +93,6 @@ public class Character {
 		return currentAP;
 	}
 
-	public void setCurrentHP(int currentHP) {
-		if (currentHP > 0)
-			this.currentHP.set(currentHP);
-		else {
-			this.currentHP.set(0);
-			this.setIsAlive(false);;
-		}
-	}
-	
 	public SpellElement getAttackType() {
 		return attackType;
 	}
@@ -109,6 +109,10 @@ public class Character {
 		this.isAlive.set(isAlive);
 	}
 
+	public boolean isParrying() {
+		return isParrying.get();
+	}
+	
 	public void setIsParrying(boolean isParrying) {
 		this.isParrying.set(isParrying);;
 	}
@@ -155,12 +159,24 @@ public class Character {
 		});
 	}
 	
+	public BooleanProperty getIsStun() {
+		return isStun;
+	}
+
+	public void setIsStun(boolean isStun) {
+		this.isStun.set(isStun);;
+	}
+
 	public Resistance getDiscoveredResistance(SpellElement element) {
 		if (discoveredResistances.get(element)) {
 			return resistances.get(element);
 		} else {
 			return Resistance.UNKNOWN;
 		}
+	}
+	
+	public void setDiscoveredResistance(SpellElement element, boolean discovered) {
+		discoveredResistances.put(element, discovered);
 	}
 
 	public String getFileName() {

@@ -5,13 +5,20 @@ import java.util.List;
 
 import entities.Character;
 import entities.spells.Spell;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.util.Duration;
 
 public class BattleManager {
 	private final List<Character> charactersInBattle;
 	private int playingIndex = 0;
 	private final ObjectProperty<BattleState> state = new SimpleObjectProperty<>(BattleState.FIRSTCHOICE);
+	private StringProperty message = new SimpleStringProperty("");
+    private Timeline messageTimeline;
 
     public BattleManager(List<Character> charactersInBattle) {
         this.charactersInBattle = charactersInBattle;
@@ -55,6 +62,21 @@ public class BattleManager {
 		return state;
 	}
 
+	public StringProperty getMessage() {
+		return message;
+	}
+	
+	public void showMessage(String text, int duration) {
+        message.set(text);
+        if (messageTimeline != null)
+        	messageTimeline.stop();
+        messageTimeline = new Timeline(
+            new KeyFrame(Duration.seconds(duration), _ -> message.set(""))
+        );
+        messageTimeline.setCycleCount(1);
+        messageTimeline.play();
+    }
+	
 	public void firstChoiceAttack() {
     	state.set(BattleState.ATTACKSELECTION);
     }
@@ -73,7 +95,15 @@ public class BattleManager {
 			case ATTACKSELECTION:
 				if (isAlly(index))
 					return;
-				Spell.PHYSICALATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+				switch (charactersInBattle.get(playingIndex).getAttackType()) {
+					case PHYSICAL:
+						Spell.PHYSICALATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))), this);
+						break;
+					case GUN:
+						Spell.GUNATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))), this);
+						break;
+					default:
+				}
 				nextTurn();
 			default:
 				return;

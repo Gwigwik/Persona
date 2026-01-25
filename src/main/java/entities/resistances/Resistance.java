@@ -1,4 +1,4 @@
-package entities;
+package entities.resistances;
 
 public enum Resistance {
 	UNKNOWN("unknown"),

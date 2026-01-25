@@ -1,4 +1,4 @@
-package entities;
+package entities.stats;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -7,28 +7,15 @@ import java.util.Map;
 
 public class StatFactory {
 
-//    public static Map<Stat, Double> CharacterStats() {
-//        Map<Stat, Double> map = new EnumMap<>(Stat.class);
-//        
-//        map = getStats(Arrays.asList(
-//        		1.,
-//        		1.,
-//        		0.98,
-//        		0.02,
-//        		0.05)
-//        );
-//        return map;
-//    }
-	
-	public static Map<Stat, Double> CharacterStats() {
+    public static Map<Stat, Double> CharacterStats() {
         Map<Stat, Double> map = new EnumMap<>(Stat.class);
         
         map = getStats(Arrays.asList(
-        		1.1,
-        		1.,
-        		0.979,
-        		0.021,
-        		0.051)
+        		Stat.ATTACK.getDefaultValue(),
+        		Stat.DEFENSE.getDefaultValue(),
+        		Stat.ACCURACY.getDefaultValue(),
+        		Stat.EVASION.getDefaultValue(),
+        		Stat.CRITICAL.getDefaultValue())
         );
         return map;
     }
