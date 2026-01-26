@@ -1,11 +1,13 @@
 package ui.scenes;
 
 import entities.Character;
+import entities.resistances.Resistance;
 import entities.spells.SpellElement;
 import entities.stats.Stat;
 import game.BattleManager;
 import game.BattleState;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,6 +19,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -104,7 +107,7 @@ public class BattleScene {
     	
 	    HBox globalPane = new HBox();
 	    globalPane.setPrefSize(1400, 800);
-	    globalPane.setStyle("-fx-background-color: white;");
+	    globalPane.setStyle("-fx-background-color: grey;");
 	    
 	    //------------------------------ Attacks, persona, defend, stats, elements... ------------------------------
 	    VBox leftPane = getLeftPane(globalPane);
@@ -307,7 +310,7 @@ public class BattleScene {
 		cancelAttackButton.setFocusTraversable(false);
 		cancelAttackButton.prefWidthProperty().bind(attackSelectionPane.widthProperty().multiply(.4));
 		cancelAttackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
-		cancelAttackButton.setOnAction(_ -> battleManager.cancelAttack());
+		cancelAttackButton.setOnAction(_ -> battleManager.backToFirstChoice());
 		attackSelectionPane.widthProperty().addListener((_, _, newW) -> {
 			cancelAttackButton.setFont(Font.font(newW.doubleValue() * .05));
 		});
@@ -458,7 +461,22 @@ public class BattleScene {
 		ennemyIconPane.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.7));
 		ennemyIconPane.setStyle(greenBorderStyle());
 		AnimatedSprite ennemySprite = ui.IconProvider.getAnimatedCharacterIcon(battleManager.getICharacter(ennemyIndex), 2, 150, 150, 150, 500);
-		ennemyIconPane.setCenter(ennemySprite.getView());
+		ImageView effectImage = new ImageView();
+		effectImage.setFitWidth(50);
+		effectImage.setFitHeight(50);
+		effectImage.imageProperty().bind(new ObjectBinding<>() {
+            { super.bind(battleManager.getICharacter(ennemyIndex).getAttackEffect()); }
+            protected javafx.scene.image.Image computeValue() {
+            	Resistance attackEffect = battleManager.getICharacter(ennemyIndex).getAttackEffect().get();
+				switch (attackEffect) {
+            		case NEUTRAL, ABSORB, NULL, RETURN, STRONG, WEAK:
+            			return ui.IconProvider.getCharacterResIcon(attackEffect, 100).getImage();
+            		default:
+            			return null;
+            	}
+            }
+        });
+		ennemyIconPane.setCenter(new StackPane(ennemySprite.getView(), effectImage));
 		ennemySprite.play();
 		
 		ennemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, ennemyIconPane);
@@ -569,8 +587,27 @@ public class BattleScene {
 		allyIconPane.prefWidthProperty().bind(allyPane.widthProperty());
 		allyIconPane.prefHeightProperty().bind(allyPane.heightProperty().multiply(.7));
 		allyIconPane.setStyle(greenBorderStyle());
+		
 		AnimatedSprite allySprite = ui.IconProvider.getAnimatedCharacterIcon(battleManager.getICharacter(allyIndex), 2, 150, 150, 150, 500);
-		allyIconPane.setCenter(allySprite.getView());
+		ImageView effectImage = new ImageView();
+		effectImage.setFitWidth(50);
+		effectImage.setFitHeight(50);
+		effectImage.imageProperty().bind(new ObjectBinding<>() {
+            { super.bind(battleManager.getICharacter(allyIndex).getAttackEffect()); }
+            protected javafx.scene.image.Image computeValue() {
+            	Resistance attackEffect = battleManager.getICharacter(allyIndex).getAttackEffect().get();
+				switch (attackEffect) {
+            		case UNKNOWN:
+            			return null;
+            		case NEUTRAL, ABSORB, NULL, RETURN, STRONG, WEAK:
+            			return ui.IconProvider.getCharacterResIcon(attackEffect, 100).getImage();
+            		default:
+            			return null;
+            	}
+            }
+        });
+		StackPane spriteStack = new StackPane(allySprite.getView(), effectImage);
+		allyIconPane.setCenter(spriteStack);
 		allySprite.play();
 		
 		
@@ -578,16 +615,6 @@ public class BattleScene {
 		allyPaneSpacer1.prefHeightProperty().bind(allyPane.heightProperty().multiply(.1));
 		
 		HBox healthBarBox = new HBox();
-//		Pane healthBarPane = new Pane();
-//		healthBarPane.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.8));
-//		healthBarPane.setPrefHeight(30);
-//		Rectangle healthBar = new Rectangle();
-//		healthBar.widthProperty().bind(healthBarPane.widthProperty());
-//		healthBar.heightProperty().bind(healthBarPane.heightProperty());
-//		healthBar.setFill(Color.RED);
-//		healthBarPane.getChildren().add(healthBar);
-		
-
 		Pane healthBarPane = new Pane();
 		healthBarPane.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.8));
 		healthBarPane.setPrefHeight(30);

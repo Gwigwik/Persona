@@ -6,10 +6,13 @@ import java.util.Map;
 import entities.resistances.Resistance;
 import entities.spells.SpellElement;
 import entities.stats.Stat;
+import entities.stats.StatStatus;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 public class Character {
 
@@ -27,6 +30,7 @@ public class Character {
 	private BooleanProperty isStun = new SimpleBooleanProperty();
 	private BooleanProperty isParrying = new SimpleBooleanProperty();
 	private BooleanProperty isPlaying = new SimpleBooleanProperty();
+	private ObjectProperty<Resistance> attackEffect = new SimpleObjectProperty<>(Resistance.UNKNOWN); 
 	private String imagePath;
 	
 	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, Map<SpellElement, Resistance> resistances, Map<SpellElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
@@ -63,13 +67,15 @@ public class Character {
 	}
 
 	public void setCurrentHP(int currentHP) {
-		if (currentHP <= 0) {
-			this.currentHP.set(0);
-			this.setIsAlive(false);
-		} else if (currentHP > maxHP) {
-			this.currentHP.set(maxHP);
-		} else {
-			this.currentHP.set(currentHP);
+		if (isAlive.get()) {
+			if (currentHP <= 0) {
+				this.currentHP.set(0);
+				this.setIsAlive(false);
+			} else if (currentHP > maxHP) {
+				this.currentHP.set(maxHP);
+			} else {
+				this.currentHP.set(currentHP);
+			}
 		}
 	}
 	
@@ -129,6 +135,14 @@ public class Character {
 		return isPlaying;
 	}
 	
+	public ObjectProperty<Resistance> getAttackEffect() {
+		return attackEffect;
+	}
+
+	public void setAttackEffect(Resistance attackEffect) {
+		this.attackEffect.set(attackEffect);
+	}
+
 	public double getValueForStat(Stat stat) {
 		return stats.get(stat);
 	}

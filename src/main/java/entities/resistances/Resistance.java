@@ -3,7 +3,7 @@ package entities.resistances;
 public enum Resistance {
 	UNKNOWN("unknown"),
 	NEUTRAL("neutral"),
-	STRONG("resist"),
+	STRONG("strong"),
 	WEAK("weak"),
 	NULL("null"),
 	ABSORB("absorb"),

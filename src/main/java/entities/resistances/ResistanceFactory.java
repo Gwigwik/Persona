@@ -32,19 +32,19 @@ public class ResistanceFactory {
         
         map = getResistances(Arrays.asList(
         		Resistance.NEUTRAL,
-        		Resistance.ABSORB,
+        		Resistance.RETURN,
         		Resistance.NULL,
         		Resistance.RETURN,
         		Resistance.STRONG,
         		Resistance.UNKNOWN,
         		Resistance.WEAK,
-        		Resistance.NEUTRAL,
+        		Resistance.ABSORB,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL)
         );
         return map;
     }
-    
+
     public static Map<SpellElement, Resistance> getResistances(List<Resistance> resistances) {
         Map<SpellElement, Resistance> resistancesMap = new EnumMap<>(SpellElement.class);
 

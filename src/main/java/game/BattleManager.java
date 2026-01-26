@@ -81,7 +81,7 @@ public class BattleManager {
     	state.set(BattleState.ATTACKSELECTION);
     }
 	
-	public void cancelAttack() {
+	public void backToFirstChoice() {
 		state.set(BattleState.FIRSTCHOICE);
 	}
 	
@@ -97,10 +97,10 @@ public class BattleManager {
 					return;
 				switch (charactersInBattle.get(playingIndex).getAttackType()) {
 					case PHYSICAL:
-						Spell.PHYSICALATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))), this);
+						Spell.PHYSICALATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
 						break;
 					case GUN:
-						Spell.GUNATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))), this);
+						Spell.GUNATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
 						break;
 					default:
 				}

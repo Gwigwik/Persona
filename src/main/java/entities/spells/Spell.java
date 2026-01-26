@@ -2,8 +2,13 @@ package entities.spells;
 
 import java.util.List;
 import entities.Character;
+import entities.resistances.Resistance;
 import entities.stats.Stat;
 import game.BattleManager;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.image.Image;
+import javafx.util.Duration;
 
 public enum Spell {
 	PHYSICALATTACK("Physique", SpellElement.PHYSICAL, 0),
@@ -32,28 +37,28 @@ public enum Spell {
 	
 	public SpellElement getElement() { return element; }
 
-	public void spellEffect(Character sender, List<Character> receivers, BattleManager battleManager) {
+	public void spellEffect(Character sender, List<Character> receivers) {
 		receivers.forEach((receiver) -> {
 			switch (this) {
 				case PHYSICALATTACK, GUNATTACK, FIREATTACK, ICEATTACK, ELECTRICATTACK, WINDATTACK, PSYATTACK, NUCLEARATTACK, DIVINEATTACK, CURSEDATTACK, TRUEDAMAGEATTACK:
 					switch (receiver.getResistanceForElement(this.getElement())) {
 						case NEUTRAL:
-							neutralDamage(sender, receiver, battleManager);
+							neutralDamage(sender, receiver);
 							break;
 						case STRONG:
-							strongDamage(sender, receiver, battleManager);
+							strongDamage(sender, receiver);
 							break;
 						case WEAK:
-							weakDamage(sender, receiver, battleManager);
+							weakDamage(sender, receiver);
 							break;
 						case NULL:
-							nullDamage(sender, receiver, battleManager);
+							nullDamage(sender, receiver);
 							break;
 						case ABSORB:
-							absorbDamage(sender, receiver, battleManager);
+							absorbDamage(sender, receiver);
 							break;
 						case RETURN:
-							returnDamage(sender, receiver, battleManager);
+							returnDamage(sender, receiver);
 							break;
 						default:
 							return;
@@ -66,72 +71,84 @@ public enum Spell {
 		});
 	}
 	
-	private void neutralDamage(Character sender, Character receiver, BattleManager battleManager) {
+	public void showAttackEffect(Character character, Resistance attackEffect) {
+		character.setAttackEffect(attackEffect);
+	    Timeline timeline = new Timeline(
+	            new KeyFrame(
+	                Duration.seconds(1),
+	                _ -> character.setAttackEffect(Resistance.UNKNOWN)
+	            )
+	        );
+	    timeline.play();
+	}
+	
+	private void neutralDamage(Character sender, Character receiver) {
 		if (successHitting(sender, receiver)) {
 			if (successCrit(sender)) {
-				battleManager.showMessage(sender.getName() + " lance " + this.getName() + " et effectue un coup critique !", 3);
 				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+				receiver.setIsStun(true);
+				showAttackEffect(receiver, Resistance.WEAK);
 			} else {				
-				battleManager.showMessage(sender.getName() + " lance " + this.getName() + " !", 3);
 				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+				showAttackEffect(receiver, Resistance.NEUTRAL);
 			}
 		} else {
-			battleManager.showMessage(receiver.getName() + " esquive !", 3);
+			showAttackEffect(receiver, Resistance.UNKNOWN);
 		}
 	}
 
-	private void strongDamage(Character sender, Character receiver, BattleManager battleManager) {
-		if (successHitting(sender, receiver)) {
-			if (successCrit(sender)) {
-				battleManager.showMessage(sender.getName() + " lance " + this.getName() + " et effectue un coup critique ! ", 3);
-				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
-			} else {				
-				battleManager.showMessage(sender.getName() + " lance " + this.getName() + " !", 3);
-				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(12.5*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
-			}
+	private void strongDamage(Character sender, Character receiver) {
+		if (successHitting(sender, receiver)) {			
+			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(12.5*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+			showAttackEffect(receiver, Resistance.STRONG);
+		} else {
+			showAttackEffect(receiver, Resistance.UNKNOWN);
+		}
+	}
+
+	private void weakDamage(Character sender, Character receiver) {
+		if (successHitting(sender, receiver)) {				
+			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+			showAttackEffect(receiver, Resistance.WEAK);
 			receiver.setIsStun(true);
 		} else {
-			battleManager.showMessage(receiver.getName() + " esquive !", 3);
+			showAttackEffect(receiver, Resistance.UNKNOWN);
 		}
 	}
 
-	private void weakDamage(Character sender, Character receiver, BattleManager battleManager) {
-		if (successHitting(sender, receiver)) {
-			if (successCrit(sender)) {
-				battleManager.showMessage(sender.getName() + " lance " + this.getName() + " et effectue un coup critique !" + receiver.getName() + " est etourdi !", 3);
-				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(100*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
-			} else {				
-				battleManager.showMessage(sender.getName() + " lance " + this.getName() + " !" + receiver.getName() + " est etourdi !", 3);
-				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
-			}
-		} else {
-			battleManager.showMessage(receiver.getName() + " esquive !", 3);
-		}
+	private void nullDamage(Character sender, Character receiver) {
+		showAttackEffect(receiver, Resistance.NULL);
 	}
 
-	private void nullDamage(Character sender, Character receiver, BattleManager battleManager) {
-		battleManager.showMessage(sender.getName() + " lance " + this.getName() + " mais rien ne se produit!", 3);
-	}
-
-	private void absorbDamage(Character sender, Character receiver, BattleManager battleManager) {
-		battleManager.showMessage(sender.getName() + " lance " + this.getName() + " et " + receiver.getName()+ " se soigne !", 3);
+	private void absorbDamage(Character sender, Character receiver) {
 		receiver.setCurrentHP((int) (receiver.getCurrentHP()+(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+		showAttackEffect(receiver, Resistance.ABSORB);
 	}
 
-	private void returnDamage(Character sender, Character receiver, BattleManager battleManager) {
-		battleManager.showMessage(sender.getName() + " lance " + this.getName() + " et " + receiver.getName()+ " renvoie l'attaque !", 3);
+	private void returnDamage(Character sender, Character receiver) {
+		showAttackEffect(receiver, Resistance.RETURN);
 		switch (sender.getResistanceForElement(this.getElement())) {
 			case NEUTRAL:
 				sender.setCurrentHP((int) (sender.getCurrentHP()-25*receiver.getValueForStat(Stat.ATTACK)/sender.getValueForStat(Stat.DEFENSE)));
+				showAttackEffect(sender, Resistance.NEUTRAL);
 				break;
 			case STRONG:
 				sender.setCurrentHP((int) (sender.getCurrentHP()-12.5*receiver.getValueForStat(Stat.ATTACK)/sender.getValueForStat(Stat.DEFENSE)));
+				showAttackEffect(sender, Resistance.STRONG);
 				break;
 			case WEAK:
 				sender.setCurrentHP((int) (sender.getCurrentHP()-50*receiver.getValueForStat(Stat.ATTACK)/sender.getValueForStat(Stat.DEFENSE)));
+				showAttackEffect(sender, Resistance.WEAK);
 				break;
 			case ABSORB:
 				sender.setCurrentHP((int) (sender.getCurrentHP()+25*receiver.getValueForStat(Stat.ATTACK)/sender.getValueForStat(Stat.DEFENSE)));
+				showAttackEffect(sender, Resistance.ABSORB);
+				break;
+			case NULL:
+				showAttackEffect(sender, Resistance.NULL);
+				break;
+			case RETURN:
+				showAttackEffect(sender, Resistance.RETURN);
 				break;
 			default:
 		}
