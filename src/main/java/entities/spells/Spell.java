@@ -4,10 +4,8 @@ import java.util.List;
 import entities.Character;
 import entities.resistances.Resistance;
 import entities.stats.Stat;
-import game.BattleManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.image.Image;
 import javafx.util.Duration;
 
 public enum Spell {
@@ -37,6 +35,8 @@ public enum Spell {
 	
 	public SpellElement getElement() { return element; }
 
+	public int getAPCost() { return APCost; }
+	
 	public void spellEffect(Character sender, List<Character> receivers) {
 		receivers.forEach((receiver) -> {
 			switch (this) {
@@ -61,7 +61,6 @@ public enum Spell {
 							returnDamage(sender, receiver);
 							break;
 						default:
-							return;
 					}
 					receiver.setDiscoveredResistance(this.getElement(), true);
 					break;
@@ -69,6 +68,7 @@ public enum Spell {
 		            System.out.println("Spell not implemented");
 			}
 		});
+		sender.setCurrentAP(sender.getCurrentAP() - this.APCost);
 	}
 	
 	public void showAttackEffect(Character character, Resistance attackEffect) {

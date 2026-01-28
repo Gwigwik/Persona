@@ -36,7 +36,7 @@ public class ResistanceFactory {
         		Resistance.NULL,
         		Resistance.RETURN,
         		Resistance.STRONG,
-        		Resistance.UNKNOWN,
+        		Resistance.NEUTRAL,
         		Resistance.WEAK,
         		Resistance.ABSORB,
         		Resistance.NEUTRAL,

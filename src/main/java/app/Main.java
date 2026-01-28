@@ -11,6 +11,7 @@ import java.util.List;
 import entities.Character;
 import entities.resistances.ResistanceFactory;
 import entities.spells.SpellElement;
+import entities.spells.SpellFactory;
 import entities.stats.StatFactory;
 import game.BattleManager;
 
@@ -24,12 +25,12 @@ public class Main extends Application {
         stage.setMinWidth(1050);
         stage.setMinHeight(600);
         
-        Character hero = new Character("Héros1", 400, 200, true, SpellElement.PHYSICAL, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
-        Character hero2 = new Character("Héros2", 400, 200, true, SpellElement.GUN, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
-        Character hero3 = new Character("Héros3", 400, 200, true, SpellElement.PHYSICAL, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
-        Character enemy = new Character("Slime1", 400, 150, true, SpellElement.PHYSICAL, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
-        Character enemy2 = new Character("Slime2", 400, 150, true, SpellElement.PHYSICAL, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "pompon");
-        Character enemy3 = new Character("Slime3", 400, 150, true, SpellElement.PHYSICAL, ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "pompon");
+        Character hero = new Character("Héros1", 400, 200, true, SpellElement.PHYSICAL, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character hero2 = new Character("Héros2", 400, 200, true, SpellElement.GUN, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character hero3 = new Character("Héros3", 400, 200, true, SpellElement.PHYSICAL, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character enemy = new Character("Slime1", 400, 150, true, SpellElement.PHYSICAL, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character enemy2 = new Character("Slime2", 400, 150, true, SpellElement.PHYSICAL, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "pompon");
+        Character enemy3 = new Character("Slime3", 400, 150, true, SpellElement.PHYSICAL, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesFalse(), StatFactory.CharacterStats(), "pompon");
 //        Character noCharacter = new Character("No character", 0, 0, false, true, null, null, null, null);
         
         List<Character> charactersInBattle = new ArrayList<>();

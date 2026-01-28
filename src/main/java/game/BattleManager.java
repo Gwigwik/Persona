@@ -16,6 +16,7 @@ import javafx.util.Duration;
 public class BattleManager {
 	private final List<Character> charactersInBattle;
 	private int playingIndex = 0;
+	private Spell spellSelected;
 	private final ObjectProperty<BattleState> state = new SimpleObjectProperty<>(BattleState.FIRSTCHOICE);
 	private StringProperty message = new SimpleStringProperty("");
     private Timeline messageTimeline;
@@ -81,13 +82,30 @@ public class BattleManager {
     	state.set(BattleState.ATTACKSELECTION);
     }
 	
-	public void backToFirstChoice() {
-		state.set(BattleState.FIRSTCHOICE);
+	public void cancelChoice() {
+		switch(state.get()) {
+			case ATTACKSELECTION, PERSONASPELLSELECTION:
+				state.set(BattleState.FIRSTCHOICE);
+				break;
+			case PERSONAATTACKSELECTION:
+				state.set(BattleState.PERSONASPELLSELECTION);
+				break;
+			default:
+		}
 	}
 	
 	public void firstChoiceParry() {
 		charactersInBattle.get(playingIndex).setIsParrying(true);
 		nextTurn();
+	}
+	
+	public void firstChoicePersona() {
+		state.set(BattleState.PERSONASPELLSELECTION);
+	}
+	
+	public void spellPersonaClicked(Spell spell) {
+		spellSelected = spell;
+		state.set(BattleState.PERSONAATTACKSELECTION);
 	}
 	
 	public void characterClicked(int index) {
@@ -105,6 +123,11 @@ public class BattleManager {
 					default:
 				}
 				nextTurn();
+				break;
+			case PERSONAATTACKSELECTION:
+				spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+				nextTurn();
+				break;
 			default:
 				return;
 		}

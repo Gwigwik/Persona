@@ -2,6 +2,7 @@ package ui.scenes;
 
 import entities.Character;
 import entities.resistances.Resistance;
+import entities.spells.Spell;
 import entities.spells.SpellElement;
 import entities.stats.Stat;
 import game.BattleManager;
@@ -77,6 +78,7 @@ public class BattleScene {
 	Pane actionPane = new Pane();
     VBox firstChoicePane = new VBox();
     BorderPane attackSelectionPane = new BorderPane();
+    VBox personaSpellSelectionPane = new VBox();
 
 	Label messageLabel = new Label();
     
@@ -111,8 +113,10 @@ public class BattleScene {
 	    
 	    //------------------------------ Attacks, persona, defend, stats, elements... ------------------------------
 	    VBox leftPane = getLeftPane(globalPane);
+	    HBox.setMargin(leftPane, new Insets(0, 0, 0, 10));
 		setFirstChoicePane();
 		setAttackSelectionPane();
+		setPersonnaSpellSelectionPane();
 	    
 	    Region globalPaneSpacer = new Region();
         globalPaneSpacer.prefWidthProperty().bind(globalPane.widthProperty().multiply(0.10));
@@ -146,7 +150,7 @@ public class BattleScene {
 		
 		actionPane.setStyle(greenBorderStyle());
 		actionPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.55));
-		actionPane.getChildren().addAll(firstChoicePane, attackSelectionPane);
+		actionPane.getChildren().addAll(firstChoicePane, attackSelectionPane, personaSpellSelectionPane);
 
 		setAllyStatsPane(leftPane);
 		allyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
@@ -223,19 +227,19 @@ public class BattleScene {
 	}
 
 	private VBox getEnnemyResUnitPane(VBox leftPane, SpellElement characterElement, BorderPane valuePane, ImageView valueImage) {
-		VBox ennemyResPhysicalBox = new VBox();
-		ennemyResPhysicalBox.setStyle(redBorderStyle());
-		ennemyResPhysicalBox.prefWidthProperty().bind(ennemyResPane.widthProperty().multiply(.1));
-		BorderPane ennemyResPhysicalPane = new BorderPane();
-		ennemyResPhysicalPane.prefWidthProperty().bind(leftPane.widthProperty());
-		ennemyResPhysicalPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(.5));
-		ImageView ennemyResPhysicalImage = new ImageView();
-		ennemyResPhysicalImage = ui.IconProvider.getCharacterElementIcon(characterElement, 50);
-		ennemyResPhysicalPane.setCenter(ennemyResPhysicalImage);
+		VBox ennemyResBox = new VBox();
+		ennemyResBox.setStyle(redBorderStyle());
+		ennemyResBox.prefWidthProperty().bind(ennemyResPane.widthProperty().multiply(.1));
+		BorderPane ennemyResPane = new BorderPane();
+		ennemyResPane.prefWidthProperty().bind(leftPane.widthProperty());
+		ennemyResPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(.5));
+		ImageView ennemyResImage = new ImageView();
+		ennemyResImage = ui.IconProvider.getCharacterElementIcon(characterElement, 50);
+		ennemyResPane.setCenter(ennemyResImage);
 		valuePane.prefWidthProperty().bind(leftPane.widthProperty());
 		valuePane.prefHeightProperty().bind(leftPane.heightProperty().multiply(.5));
-		ennemyResPhysicalBox.getChildren().addAll(ennemyResPhysicalPane, valuePane);
-		return ennemyResPhysicalBox;
+		ennemyResBox.getChildren().addAll(ennemyResPane, valuePane);
+		return ennemyResBox;
 	}
 	
 	private void setFirstChoicePane() {
@@ -273,6 +277,7 @@ public class BattleScene {
 		personaButton.setFocusTraversable(false);
 		personaButton.prefWidthProperty().bind(personaPane.widthProperty().multiply(.9));
 		personaButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		personaButton.setOnAction(_ -> battleManager.firstChoicePersona());
 		personaPane.widthProperty().addListener((_, _, newW) -> {
 			personaButton.setFont(Font.font(newW.doubleValue() * .1));
 		});
@@ -301,7 +306,7 @@ public class BattleScene {
 	}
 	
 	private void setAttackSelectionPane() {
-		attackSelectionPane.visibleProperty().bind(battleManager.getState().isEqualTo(BattleState.ATTACKSELECTION));
+		attackSelectionPane.visibleProperty().bind(battleManager.getState().isEqualTo(BattleState.ATTACKSELECTION).or(battleManager.getState().isEqualTo(BattleState.PERSONAATTACKSELECTION)));
 		attackSelectionPane.prefWidthProperty().bind(actionPane.widthProperty());
 		attackSelectionPane.prefHeightProperty().bind(actionPane.heightProperty());
 		attackSelectionPane.setStyle(purpleBorderStyle());
@@ -310,12 +315,89 @@ public class BattleScene {
 		cancelAttackButton.setFocusTraversable(false);
 		cancelAttackButton.prefWidthProperty().bind(attackSelectionPane.widthProperty().multiply(.4));
 		cancelAttackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
-		cancelAttackButton.setOnAction(_ -> battleManager.backToFirstChoice());
+		cancelAttackButton.setOnAction(_ -> battleManager.cancelChoice());
 		attackSelectionPane.widthProperty().addListener((_, _, newW) -> {
 			cancelAttackButton.setFont(Font.font(newW.doubleValue() * .05));
 		});
 		
 		attackSelectionPane.setCenter(cancelAttackButton);
+	}
+	
+	private void setPersonnaSpellSelectionPane() {
+		personaSpellSelectionPane.visibleProperty().bind(battleManager.getState().isEqualTo(BattleState.PERSONASPELLSELECTION));
+		personaSpellSelectionPane.prefWidthProperty().bind(actionPane.widthProperty());
+		personaSpellSelectionPane.prefHeightProperty().bind(actionPane.heightProperty());
+		personaSpellSelectionPane.setAlignment(Pos.CENTER);
+		personaSpellSelectionPane.setStyle(redBorderStyle());
+
+		for (int i = 0; i < 5; i++) {
+			Spell spell = battleManager.getCurrentCharacter().getISpell(i);
+			HBox spellPane = getISpellPane(spell, i);
+			personaSpellSelectionPane.getChildren().add(spellPane);
+		}
+		
+		Button cancelAttackButton = new Button("Retour");
+		cancelAttackButton.setFocusTraversable(false);
+		cancelAttackButton.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty().multiply(.4));
+		cancelAttackButton.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.18));
+		cancelAttackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		cancelAttackButton.setOnAction(_ -> battleManager.cancelChoice());
+		attackSelectionPane.widthProperty().addListener((_, _, newW) -> {
+			cancelAttackButton.setFont(Font.font(newW.doubleValue() * .05));
+		});
+
+		personaSpellSelectionPane.getChildren().add(cancelAttackButton);
+	}
+
+	private HBox getISpellPane(Spell spell, int i) {
+		HBox spellPane = new HBox();
+		spellPane.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty());
+		spellPane.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.2));
+		spellPane.setStyle(greenBorderStyle());
+		spellPane.setAlignment(Pos.CENTER);
+
+		if (spell != null) {
+			spellPane.setOnMouseClicked(event -> {
+			    if (event.getButton() == MouseButton.PRIMARY) {
+			    	battleManager.spellPersonaClicked(spell);
+			    }
+			});
+			spellPane.hoverProperty().addListener((_, _, isHover) -> {
+		    	if (isHover) {
+					spellPane.setStyle(blackBorderStyle());
+		    	}
+		    	else {
+		    		spellPane.setStyle(greenBorderStyle());
+		    	}
+		    });
+
+			BorderPane spellElementPane = new BorderPane();
+			spellElementPane.prefWidthProperty().bind(spellPane.widthProperty().multiply(.3));
+			spellElementPane.prefHeightProperty().bind(spellPane.heightProperty());
+			ImageView spellElementImage = new ImageView();
+			spellElementImage = ui.IconProvider.getCharacterElementIcon(spell.getElement(), 50);
+			spellElementPane.setCenter(spellElementImage);
+			
+			Label spellName = new Label();
+			spellName.setText(spell.getName());
+			spellName.setAlignment(Pos.CENTER);
+			spellName.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.4));
+			spellName.widthProperty().addListener((_, _, newW) -> {
+				spellName.setFont(Font.font(newW.doubleValue() * .1));
+			});
+			
+			Label spellCost = new Label();
+			spellCost.setText("" + spell.getAPCost());
+			spellCost.setAlignment(Pos.CENTER);
+			spellCost.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.3));
+			spellCost.widthProperty().addListener((_, _, newW) -> {
+				spellCost.setFont(Font.font(newW.doubleValue() * .15));
+			});
+			
+			spellPane.getChildren().addAll(spellElementPane,spellName, spellCost);
+		}
+		
+		return spellPane;
 	}
 	
 	private void setAllyStatsPane(VBox leftPane) {

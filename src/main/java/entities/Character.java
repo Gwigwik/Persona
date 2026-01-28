@@ -1,9 +1,11 @@
 package entities;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import entities.resistances.Resistance;
+import entities.spells.Spell;
 import entities.spells.SpellElement;
 import entities.stats.Stat;
 import entities.stats.StatStatus;
@@ -23,6 +25,7 @@ public class Character {
 	private int maxAP;
 	private IntegerProperty currentAP = new SimpleIntegerProperty();
 	private SpellElement attackType;
+	private List<Spell> spells;
 	private Map<SpellElement, Resistance> resistances;
 	private Map<SpellElement, Boolean> discoveredResistances;
 	private Map<Stat, Double> stats;
@@ -33,7 +36,7 @@ public class Character {
 	private ObjectProperty<Resistance> attackEffect = new SimpleObjectProperty<>(Resistance.UNKNOWN); 
 	private String imagePath;
 	
-	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, Map<SpellElement, Resistance> resistances, Map<SpellElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
+	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, List<Spell> spells, Map<SpellElement, Resistance> resistances, Map<SpellElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
@@ -41,6 +44,7 @@ public class Character {
 		this.maxAP = maxAP;
 		this.currentAP.set(maxAP);
 		this.attackType = attackType;
+		this.spells = spells;
 		this.resistances = resistances;
 		this.discoveredResistances = discoveredResistances;
 		this.stats = stats;
@@ -70,11 +74,9 @@ public class Character {
 		if (isAlive.get()) {
 			if (currentHP <= 0) {
 				this.currentHP.set(0);
-				this.setIsAlive(false);
-			} else if (currentHP > maxHP) {
-				this.currentHP.set(maxHP);
+				this.isAlive.set(false);
 			} else {
-				this.currentHP.set(currentHP);
+				this.currentHP.set(Math.min(currentHP, maxHP));
 			}
 		}
 	}
@@ -87,20 +89,28 @@ public class Character {
 		return maxAP;
 	}
 
-	public void setCurrentAP(int currentAP) {
-		this.currentHP.set(currentAP);
-	}
-	
 	public int getCurrentAP() {
 		return currentAP.get();
 	}
 
+	public void setCurrentAP(int currentAP) {
+		if (isAlive.get()) {
+			this.currentAP.set(Math.min(currentAP, maxAP));
+		}
+	}
+	
 	public IntegerProperty currentAPProperty() {
 		return currentAP;
 	}
 
 	public SpellElement getAttackType() {
 		return attackType;
+	}
+	
+	public Spell getISpell(int i) {
+		if (i >= 0 && i < spells.size())
+			return spells.get(i);
+		return null;
 	}
 	
 	public Resistance getResistanceForElement(SpellElement element) {
