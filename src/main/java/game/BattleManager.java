@@ -104,8 +104,12 @@ public class BattleManager {
 	}
 	
 	public void spellPersonaClicked(Spell spell) {
-		spellSelected = spell;
-		state.set(BattleState.PERSONAATTACKSELECTION);
+		if (spell.getAPCost() > charactersInBattle.get(playingIndex).getCurrentAP()) {
+			showMessage("AP insuffisants !", 2);
+		} else {
+			spellSelected = spell;
+			state.set(BattleState.PERSONAATTACKSELECTION);
+		}
 	}
 	
 	public void characterClicked(int index) {
@@ -125,8 +129,19 @@ public class BattleManager {
 				nextTurn();
 				break;
 			case PERSONAATTACKSELECTION:
-				spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
-				nextTurn();
+				if (spellSelected.isGlobal()) {
+					if (spellSelected.targetAllies() && isAlly(index)) {
+						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(0), charactersInBattle.get(2), charactersInBattle.get(4))));
+					}
+					if (!spellSelected.targetAllies() && !isAlly(index)) {
+						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(1), charactersInBattle.get(3), charactersInBattle.get(5))));
+					}
+				} else {
+					if ((spellSelected.targetAllies() && isAlly(index)) || (!spellSelected.targetAllies() && !isAlly(index))) {
+						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+						nextTurn();
+					}
+				}
 				break;
 			default:
 				return;

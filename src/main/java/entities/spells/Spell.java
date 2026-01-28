@@ -9,26 +9,30 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 
 public enum Spell {
-	PHYSICALATTACK("Physique", SpellElement.PHYSICAL, 0),
-	GUNATTACK("Pistolet", SpellElement.GUN, 0),
-	FIREATTACK("Feu", SpellElement.FIRE, 20),
-	ICEATTACK("Glace", SpellElement.ICE, 20),
-	ELECTRICATTACK("Electrique", SpellElement.ELECTRIC, 20),
-	WINDATTACK("Vent", SpellElement.WIND, 20),
-	PSYATTACK("Psy", SpellElement.PSY, 20),
-	NUCLEARATTACK("Nucleaire", SpellElement.NUCLEAR, 20),
-	DIVINEATTACK("Divin", SpellElement.DIVINE, 20),
-	CURSEDATTACK("Maudit", SpellElement.CURSED, 20),
-	TRUEDAMAGEATTACK("Degats bruts", SpellElement.TRUEDAMAGE, 20);
+	PHYSICALATTACK("Physique", SpellElement.PHYSICAL, 0, false, false),
+	GUNATTACK("Pistolet", SpellElement.GUN, 0, false, false),
+	FIREATTACK("Feu", SpellElement.FIRE, 20, false, false),
+	ICEATTACK("Glace", SpellElement.ICE, 20, false, false),
+	ELECTRICATTACK("Electrique", SpellElement.ELECTRIC, 20, false, false),
+	WINDATTACK("Vent", SpellElement.WIND, 20, false, false),
+	PSYATTACK("Psy", SpellElement.PSY, 20, false, false),
+	NUCLEARATTACK("Nucleaire", SpellElement.NUCLEAR, 20, false, false),
+	DIVINEATTACK("Divin", SpellElement.DIVINE, 20, false, false),
+	CURSEDATTACK("Maudit", SpellElement.CURSED, 20, false, false),
+	TRUEDAMAGEATTACK("Degats bruts", SpellElement.TRUEDAMAGE, 20, false, false);
 	
 	private final String name;
 	private final SpellElement element;
 	private final int APCost;
+	private boolean targetAllies;
+	private boolean global;
 	
-	Spell(String name, SpellElement element, int APCost) {
+	Spell(String name, SpellElement element, int APCost, boolean targetAllies, boolean global) {
 		this.name = name;
 		this.element = element;
 		this.APCost = APCost;
+		this.targetAllies = targetAllies;
+		this.global = global;
 	}
 	
 	public String getName() { return name; }
@@ -36,6 +40,10 @@ public enum Spell {
 	public SpellElement getElement() { return element; }
 
 	public int getAPCost() { return APCost; }
+	
+	public boolean isGlobal() { return global; }
+	
+	public boolean targetAllies() { return targetAllies; }
 	
 	public void spellEffect(Character sender, List<Character> receivers) {
 		receivers.forEach((receiver) -> {

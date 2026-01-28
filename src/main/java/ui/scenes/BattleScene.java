@@ -713,7 +713,7 @@ public class BattleScene {
 		healthBarPane.getChildren().addAll(healthBar, currentHealthBar);
 		
 		Label healthPoints = new Label();
-		healthPoints.textProperty().bind(battleManager.getCurrentCharacter().currentHPProperty().asString());
+		healthPoints.textProperty().bind(battleManager.getICharacter(allyIndex).currentHPProperty().asString());
 		healthPoints.setAlignment(Pos.CENTER);
 		healthPoints.setTextFill(Color.RED);
 		healthPoints.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.2));
@@ -733,13 +733,20 @@ public class BattleScene {
 		Rectangle APBar = new Rectangle();
 		APBar.widthProperty().bind(APBarPane.widthProperty());
 		APBar.heightProperty().bind(APBarPane.heightProperty());
-		APBar.setFill(Color.BLUE);
-		APBarPane.getChildren().add(APBar);
+		APBar.setFill(Color.TRANSPARENT);
+		APBar.setStroke(Color.BLUE);
+		APBar.setStrokeWidth(2);
+		Rectangle currentAPBar = new Rectangle();
+		currentAPBar.widthProperty().bind(battleManager.getICharacter(allyIndex).currentAPProperty().multiply(APBarBox.widthProperty().multiply(.8).divide(battleManager.getICharacter(allyIndex).getMaxAP())));
+		currentAPBar.heightProperty().bind(APBarPane.heightProperty()); 
+		currentAPBar.setFill(Color.BLUE);
+		APBarPane.getChildren().addAll(APBar, currentAPBar);
+		
 		Label APPoints = new Label();
-		APPoints.textProperty().bind(battleManager.getCurrentCharacter().currentAPProperty().asString());
+		APPoints.textProperty().bind(battleManager.getICharacter(allyIndex).currentAPProperty().asString());
 		APPoints.setAlignment(Pos.CENTER);
 		APPoints.setTextFill(Color.BLUE);
-		APPoints.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.2));
+		APPoints.prefWidthProperty().bind(APBarBox.widthProperty().multiply(.2));
 		APPoints.widthProperty().addListener((_, _, newW) -> {
 		    double fontSize = Math.max(10, newW.doubleValue() * 0.5);
 		    APPoints.setFont(Font.font(fontSize));
