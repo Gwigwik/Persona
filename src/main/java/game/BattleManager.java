@@ -44,10 +44,14 @@ public class BattleManager {
     	playingIndex = (playingIndex + 1)%charactersInBattle.size();
 		charactersInBattle.get(playingIndex).setIsPlaying(true);
 		charactersInBattle.get(playingIndex).removeOneTurnFromStats();
-		if (isAlly(playingIndex))
-			allyTurn();
-		else
-			ennemyTurn();
+		if (charactersInBattle.get(playingIndex).isAlive()) {
+			if (isAlly(playingIndex))
+				allyTurn();
+			else
+				ennemyTurn();
+		} else {
+			nextTurn();
+		}
     }
     
     private void allyTurn() {
@@ -115,14 +119,14 @@ public class BattleManager {
 	public void characterClicked(int index) {
 		switch (state.get()) {
 			case ATTACKSELECTION:
-				if (isAlly(index))
-					return;
+//				if (isAlly(index)) TODO a remettre quand les tests sont finis 
+//					return;
 				switch (charactersInBattle.get(playingIndex).getAttackType()) {
 					case PHYSICAL:
-						Spell.PHYSICALATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+						Spell.PHYSIQUE.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
 						break;
 					case GUN:
-						Spell.GUNATTACK.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+						Spell.PISTOLET.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
 						break;
 					default:
 				}
@@ -132,9 +136,11 @@ public class BattleManager {
 				if (spellSelected.isGlobal()) {
 					if (spellSelected.targetAllies() && isAlly(index)) {
 						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(0), charactersInBattle.get(2), charactersInBattle.get(4))));
+						nextTurn();
 					}
 					if (!spellSelected.targetAllies() && !isAlly(index)) {
 						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(1), charactersInBattle.get(3), charactersInBattle.get(5))));
+						nextTurn();
 					}
 				} else {
 					if ((spellSelected.targetAllies() && isAlly(index)) || (!spellSelected.targetAllies() && !isAlly(index))) {

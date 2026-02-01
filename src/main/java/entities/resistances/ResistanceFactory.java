@@ -9,36 +9,18 @@ import entities.spells.SpellElement;
 
 public class ResistanceFactory {
 
-//    public static Map<CharacterElement, Resistance> characterResistances() {
-//        Map<CharacterElement, Resistance> map = new EnumMap<>(CharacterElement.class);
-//        
-//        map = getResistances(Arrays.asList(
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL,
-//        		Resistance.NEUTRAL)
-//        );
-//        return map;
-//    }
-	
-	public static Map<SpellElement, Resistance> characterResistances() {
+    public static Map<SpellElement, Resistance> characterResistances() {
         Map<SpellElement, Resistance> map = new EnumMap<>(SpellElement.class);
         
         map = getResistances(Arrays.asList(
         		Resistance.NEUTRAL,
-        		Resistance.RETURN,
-        		Resistance.NULL,
-        		Resistance.RETURN,
-        		Resistance.STRONG,
         		Resistance.NEUTRAL,
-        		Resistance.WEAK,
-        		Resistance.ABSORB,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL)
         );

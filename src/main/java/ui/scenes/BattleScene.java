@@ -26,7 +26,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
 import ui.AnimatedSprite;
+import javafx.scene.input.MouseEvent;
 
 public class BattleScene {
 	
@@ -355,6 +357,8 @@ public class BattleScene {
 		spellPane.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.2));
 		spellPane.setStyle(greenBorderStyle());
 		spellPane.setAlignment(Pos.CENTER);
+		
+		
 
 		if (spell != null) {
 			spellPane.setOnMouseClicked(event -> {
@@ -370,6 +374,26 @@ public class BattleScene {
 		    		spellPane.setStyle(greenBorderStyle());
 		    	}
 		    });
+			
+			BorderPane descriptionPane = new BorderPane();
+			descriptionPane.setStyle("-fx-background-color: white;");
+			Label descriptionLabel = new Label(" " + spell.getDescription() + " ");
+			descriptionLabel.setFont(Font.font(16));
+			descriptionPane.setCenter(descriptionLabel);
+			
+			Popup spellDescriptionPopup = new Popup();
+			spellDescriptionPopup.getContent().add(descriptionPane);
+			spellDescriptionPopup.setAutoHide(false);
+			spellPane.addEventHandler(MouseEvent.MOUSE_ENTERED, _ -> {
+			    spellDescriptionPopup.show(spellPane.getScene().getWindow());
+			});
+			spellPane.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+			    spellDescriptionPopup.setX(e.getScreenX() + 20);
+			    spellDescriptionPopup.setY(e.getScreenY());
+			});
+			spellPane.addEventHandler(MouseEvent.MOUSE_EXITED, _ -> {
+			    spellDescriptionPopup.hide();
+			});
 
 			BorderPane spellElementPane = new BorderPane();
 			spellElementPane.prefWidthProperty().bind(spellPane.widthProperty().multiply(.3));
@@ -575,7 +599,7 @@ public class BattleScene {
 		ennemyStatsAccuEvaPane.setCenter(ennemyStatsAccuEvaImage);
 		ennemyStatsCriticalImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.CRITICAL), 50);
 		ennemyStatsCriticalPane.setCenter(ennemyStatsCriticalImage);
-		ennemyResPane.setVisible(true);
+		ennemyStatsPane.setVisible(true);
 		ennemyResPhysicalValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(SpellElement.PHYSICAL), 50);
 		ennemyResPhysicalValuePane.setCenter(ennemyResPhysicalValueImage);
 		ennemyResGunValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(SpellElement.GUN), 50);
@@ -596,7 +620,7 @@ public class BattleScene {
 		ennemyResDivineValuePane.setCenter(ennemyResDivineValueImage);
 		ennemyResCursedValueImage = ui.IconProvider.getCharacterResIcon(ennemy.getDiscoveredResistance(SpellElement.CURSED), 50);
 		ennemyResCursedValuePane.setCenter(ennemyResCursedValueImage);
-		ennemyStatsPane.setVisible(true);
+		ennemyResPane.setVisible(true);
 	}
 	
 	private HBox getAlliesPane(VBox rightPane) {
@@ -606,28 +630,10 @@ public class BattleScene {
 		
 		Region alliesPaneSPacer1 = getAlliesPaneSpacer(alliesPane);
 		VBox allyPane1 = getAllyPane(alliesPane, 4);
-		allyPane1.visibleProperty().bind(battleManager.getICharacter(4).isAliveProperty());
-		allyPane1.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(4).isPlayingProperty())
-		        .then(blackBorderStyle())
-		        .otherwise("")
-		);
 		Region alliesPaneSPacer2 = getAlliesPaneSpacer(alliesPane);
 		VBox allyPane2 = getAllyPane(alliesPane, 0);
-		allyPane2.visibleProperty().bind(battleManager.getICharacter(0).isAliveProperty());
-		allyPane2.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(0).isPlayingProperty())
-		        .then(blackBorderStyle())
-		        .otherwise("")
-		);
 		Region alliesPaneSPacer3 = getAlliesPaneSpacer(alliesPane);
 		VBox allyPane3 = getAllyPane(alliesPane, 2);
-		allyPane3.visibleProperty().bind(battleManager.getICharacter(2).isAliveProperty());
-		allyPane3.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(2).isPlayingProperty())
-		        .then(blackBorderStyle())
-		        .otherwise("")
-		);
 		Region alliesPaneSPacer4 = getAlliesPaneSpacer(alliesPane);
 		
 		
@@ -642,23 +648,25 @@ public class BattleScene {
 	}
 	
 	private VBox getAllyPane(HBox alliesPane, int allyIndex) {
+		Character ally = battleManager.getICharacter(allyIndex);
 		VBox allyPane = new VBox();
 		allyPane.prefWidthProperty().bind(alliesPane.widthProperty().multiply(0.3));
 		allyPane.setStyle(redBorderStyle());
-		
+//		allyPane.visibleProperty().bind(battleManager.getICharacter(allyIndex).isAliveProperty());
+		allyPane.styleProperty().bind(
+		    Bindings.when(battleManager.getICharacter(allyIndex).isPlayingProperty())
+		        .then(blackBorderStyle())
+		        .otherwise("")
+		);
+		allyPane.setOnMouseClicked(event -> {
+		    if (event.getButton() == MouseButton.PRIMARY) {
+		    	battleManager.characterClicked(allyIndex);
+				refreshAllyHover(ally);
+		    }
+		});
 		allyPane.hoverProperty().addListener((_, _, isHover) -> {
-    		Character ally = battleManager.getICharacter(allyIndex);
 	    	if (isHover) {
-	    		allyName.setText(battleManager.getICharacter(allyIndex).getName());
-	    		allyStatsAttackImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.ATTACK), 50);
-	    		allyStatsAttackPane.setCenter(allyStatsAttackImage);
-	    		allyStatsDefenseImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.DEFENSE), 50);
-	    		allyStatsDefensePane.setCenter(allyStatsDefenseImage);
-	    		allyStatsAccuEvaImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.ACCURACY), 50);
-	    		allyStatsAccuEvaPane.setCenter(allyStatsAccuEvaImage);
-	    		allyStatsCriticalImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.CRITICAL), 50);
-	    		allyStatsCriticalPane.setCenter(allyStatsCriticalImage);
-	    		allyStatsPane.setVisible(true);
+	    		refreshAllyHover(ally);
 	    	} else {
 	    		allyName.setText("");
 	    		allyStatsPane.setVisible(false);
@@ -691,6 +699,16 @@ public class BattleScene {
 		StackPane spriteStack = new StackPane(allySprite.getView(), effectImage);
 		allyIconPane.setCenter(spriteStack);
 		allySprite.play();
+		
+		ally.isAliveProperty().addListener(
+	            (_, _, isAlive) -> {
+	                if (isAlive) {
+	            		allySprite.play();
+	                } else {
+	            		allySprite.stop();
+	                }
+	            }
+	        );
 		
 		
 		Region allyPaneSpacer1 = new Region();
@@ -755,5 +773,18 @@ public class BattleScene {
 		
 		allyPane.getChildren().addAll(allyIconPane, allyPaneSpacer1, healthBarBox, allyPaneSpacer2, APBarBox);
 		return allyPane;
+	}
+	
+	private void refreshAllyHover(Character ally) {
+		allyName.setText(ally.getName());
+		allyStatsAttackImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.ATTACK), 50);
+		allyStatsAttackPane.setCenter(allyStatsAttackImage);
+		allyStatsDefenseImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.DEFENSE), 50);
+		allyStatsDefensePane.setCenter(allyStatsDefenseImage);
+		allyStatsAccuEvaImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.ACCURACY), 50);
+		allyStatsAccuEvaPane.setCenter(allyStatsAccuEvaImage);
+		allyStatsCriticalImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.CRITICAL), 50);
+		allyStatsCriticalPane.setCenter(allyStatsCriticalImage);
+		allyStatsPane.setVisible(true);
 	}
 }

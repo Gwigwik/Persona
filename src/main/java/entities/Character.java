@@ -39,7 +39,8 @@ public class Character {
 	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, List<Spell> spells, Map<SpellElement, Resistance> resistances, Map<SpellElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
 		this.name = name;
 		this.maxHP = maxHP;
-		this.currentHP.set(maxHP);
+//		this.currentHP.set(maxHP);
+		this.currentHP.set(1);
 		this.isAlive.set(isAlive);
 		this.maxAP = maxAP;
 		this.currentAP.set(maxAP);
@@ -115,6 +116,10 @@ public class Character {
 	
 	public Resistance getResistanceForElement(SpellElement element) {
 		return resistances.get(element);
+	}
+	
+	public boolean isAlive() {
+		return isAlive.get();
 	}
 
 	public BooleanProperty isAliveProperty() {
