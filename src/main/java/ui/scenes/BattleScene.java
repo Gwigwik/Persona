@@ -214,33 +214,28 @@ public class BattleScene {
 		ennemyResPane.setAlignment(Pos.CENTER);
 		ennemyResPane.setVisible(false);
 		
-		VBox ennemyResPhysicalBox = getEnnemyResUnitPane(leftPane, SpellElement.PHYSICAL, ennemyResPhysicalValuePane, ennemyResPhysicalValueImage);
-		VBox ennemyResGunBox = getEnnemyResUnitPane(leftPane, SpellElement.GUN, ennemyResGunValuePane, ennemyResGunValueImage);
-		VBox ennemyResFireBox = getEnnemyResUnitPane(leftPane, SpellElement.FIRE, ennemyResFireValuePane, ennemyResFireValueImage);
-		VBox ennemyResIceBox = getEnnemyResUnitPane(leftPane, SpellElement.ICE, ennemyResIceValuePane, ennemyResIceValueImage);
-		VBox ennemyResElectricBox = getEnnemyResUnitPane(leftPane, SpellElement.ELECTRIC, ennemyResElectricValuePane, ennemyResElectricValueImage);
-		VBox ennemyResWindBox = getEnnemyResUnitPane(leftPane, SpellElement.WIND, ennemyResWindValuePane, ennemyResWindValueImage);
-		VBox ennemyResPsyBox = getEnnemyResUnitPane(leftPane, SpellElement.PSY, ennemyResPsyValuePane, ennemyResPsyValueImage);
-		VBox ennemyResNuclearBox = getEnnemyResUnitPane(leftPane, SpellElement.NUCLEAR, ennemyResNuclearValuePane, ennemyResNuclearValueImage);
-		VBox ennemyResDivineBox = getEnnemyResUnitPane(leftPane, SpellElement.DIVINE, ennemyResDivineValuePane, ennemyResDivineValueImage);
-		VBox ennemyResCursedBox = getEnnemyResUnitPane(leftPane, SpellElement.CURSED, ennemyResCursedValuePane, ennemyResCursedValueImage);
+		BorderPane ennemyResPhysicalBox = getEnnemyResUnitPane(leftPane, SpellElement.PHYSICAL, ennemyResPhysicalValuePane, ennemyResPhysicalValueImage);
+		BorderPane ennemyResGunBox = getEnnemyResUnitPane(leftPane, SpellElement.GUN, ennemyResGunValuePane, ennemyResGunValueImage);
+		BorderPane ennemyResFireBox = getEnnemyResUnitPane(leftPane, SpellElement.FIRE, ennemyResFireValuePane, ennemyResFireValueImage);
+		BorderPane ennemyResIceBox = getEnnemyResUnitPane(leftPane, SpellElement.ICE, ennemyResIceValuePane, ennemyResIceValueImage);
+		BorderPane ennemyResElectricBox = getEnnemyResUnitPane(leftPane, SpellElement.ELECTRIC, ennemyResElectricValuePane, ennemyResElectricValueImage);
+		BorderPane ennemyResWindBox = getEnnemyResUnitPane(leftPane, SpellElement.WIND, ennemyResWindValuePane, ennemyResWindValueImage);
+		BorderPane ennemyResPsyBox = getEnnemyResUnitPane(leftPane, SpellElement.PSY, ennemyResPsyValuePane, ennemyResPsyValueImage);
+		BorderPane ennemyResNuclearBox = getEnnemyResUnitPane(leftPane, SpellElement.NUCLEAR, ennemyResNuclearValuePane, ennemyResNuclearValueImage);
+		BorderPane ennemyResDivineBox = getEnnemyResUnitPane(leftPane, SpellElement.DIVINE, ennemyResDivineValuePane, ennemyResDivineValueImage);
+		BorderPane ennemyResCursedBox = getEnnemyResUnitPane(leftPane, SpellElement.CURSED, ennemyResCursedValuePane, ennemyResCursedValueImage);
 		
 		ennemyResPane.getChildren().addAll(ennemyResPhysicalBox, ennemyResGunBox, ennemyResFireBox, ennemyResIceBox, ennemyResElectricBox, ennemyResWindBox, ennemyResPsyBox, ennemyResNuclearBox, ennemyResDivineBox, ennemyResCursedBox);
 	}
 
-	private VBox getEnnemyResUnitPane(VBox leftPane, SpellElement characterElement, BorderPane valuePane, ImageView valueImage) {
-		VBox ennemyResBox = new VBox();
-		ennemyResBox.setStyle(redBorderStyle());
-		ennemyResBox.prefWidthProperty().bind(ennemyResPane.widthProperty().multiply(.1));
-		BorderPane ennemyResPane = new BorderPane();
-		ennemyResPane.prefWidthProperty().bind(leftPane.widthProperty());
-		ennemyResPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(.5));
+	private BorderPane getEnnemyResUnitPane(VBox leftPane, SpellElement characterElement, BorderPane valuePane, ImageView valueImage) {
+		BorderPane ennemyResBox = new BorderPane();
+		
 		ImageView ennemyResImage = new ImageView();
-		ennemyResImage = ui.IconProvider.getCharacterElementIcon(characterElement, 50);
-		ennemyResPane.setCenter(ennemyResImage);
+		ennemyResImage = ui.IconProvider.getCharacterElementIcon(characterElement, 60);
 		valuePane.prefWidthProperty().bind(leftPane.widthProperty());
-		valuePane.prefHeightProperty().bind(leftPane.heightProperty().multiply(.5));
-		ennemyResBox.getChildren().addAll(ennemyResPane, valuePane);
+		valuePane.prefHeightProperty().bind(leftPane.heightProperty());
+		ennemyResBox.setCenter(new StackPane(ennemyResImage, valuePane));
 		return ennemyResBox;
 	}
 	
@@ -568,8 +563,8 @@ public class BattleScene {
 		ennemyIconPane.setStyle(greenBorderStyle());
 		AnimatedSprite ennemySprite = ui.IconProvider.getAnimatedCharacterIcon(battleManager.getICharacter(ennemyIndex), 2, 150, 150, 150, 500);
 		ImageView effectImage = new ImageView();
-		effectImage.setFitWidth(50);
-		effectImage.setFitHeight(50);
+		effectImage.setFitWidth(75);
+		effectImage.setFitHeight(75);
 		effectImage.imageProperty().bind(new ObjectBinding<>() {
             { super.bind(battleManager.getICharacter(ennemyIndex).getAttackEffect()); }
             protected javafx.scene.image.Image computeValue() {

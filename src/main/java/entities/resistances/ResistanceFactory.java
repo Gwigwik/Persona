@@ -14,11 +14,11 @@ public class ResistanceFactory {
         
         map = getResistances(Arrays.asList(
         		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
+        		Resistance.ABSORB,
+        		Resistance.NULL,
+        		Resistance.RETURN,
+        		Resistance.STRONG,
+        		Resistance.WEAK,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,

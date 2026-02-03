@@ -8,8 +8,8 @@ public class SpellFactory {
 	public static List<Spell> characterSpells() {
 		List<Spell> spells;
 		spells = Arrays.asList(
-        		Spell.DIARAHAN,
-        		Spell.MEDIARAHAN,
+        		Spell.AGIDYNE,
+        		Spell.MABUFUDYNE,
         		Spell.RECARM,
         		Spell.SAMARECARM);
 		return spells;
