@@ -19,6 +19,7 @@
 *.rar
 /build/
 /dist/
+/runtime-persona/
 
 # BlueJ files
 *.ctxt
@@ -29,3 +30,6 @@
 # Virtual machine crash logs
 hs_err_pid*
 replay_pid*
+
+# Module-info (source, keep only source, ignore compiled if any outside bin/)
+module-info.class

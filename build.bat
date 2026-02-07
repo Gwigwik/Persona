@@ -1,26 +1,44 @@
 @echo off
+setlocal
 
+set JDK=C:\Program Files\Java\jdk-25
+set JAVAFX=D:\javafx\openjfx-25.0.1_windows-x64_bin-sdk
+set BUILD_DIR=%~dp0build
+set DIST_DIR=%~dp0dist
+set RUNTIME_DIR=%~dp0runtime-persona
+set MODULE_NAME=Persona
 set VERSION=1.0
 
-REM Nettoyage des anciens builds
-echo Suppression des anciens JAR et installateurs...
-del /f /q build\Persona.jar 2>nul
-del /f /q dist\Persona-*.msi 2>nul
+echo Creation du JAR modulaire...
+cd build
+"%JDK%\bin\jar.exe" --create --file Persona.jar -C ..\bin .
+cd ..
 
-REM Compilation du projet depuis Eclipse (bin -> jar)
-echo Creation du JAR...
-if not exist build mkdir build
-"C:\Program Files\Java\jdk-25\bin\jar.exe" --create --file build\Persona.jar -C bin .
+REM Nettoyage
+rd /s /q "%DIST_DIR%" 2>nul
+rd /s /q "%RUNTIME_DIR%" 2>nul
+mkdir "%DIST_DIR%"
 
-REM Generation de l'installateur MSI
-echo Creation de l'installateur MSI...
-if not exist dist mkdir dist
-"C:\Program Files\Java\jdk-25\bin\jpackage.exe" ^
---name Persona ^
---input build ^
---main-jar Persona.jar ^
+REM Création du runtime minimal
+"%JDK%\bin\jlink.exe" ^
+--module-path "%JDK%\jmods;%JAVAFX%\javafx-jmods-25.0.2;%BUILD_DIR%" ^
+--add-modules Persona,javafx.controls,javafx.fxml ^
+--output "%RUNTIME_DIR%" ^
+--compress=2 ^
+--strip-debug ^
+--no-header-files ^
+--no-man-pages
+
+REM Création du MSI autonome
+"%JDK%\bin\jpackage.exe" ^
+--name %MODULE_NAME% ^
+--input "%BUILD_DIR%" ^
+--main-jar %MODULE_NAME%.jar ^
 --main-class app.Main ^
 --type msi ^
---dest dist ^
+--dest "%DIST_DIR%" ^
 --app-version %VERSION% ^
---java-options "--module-path D:\javafx\openjfx-25.0.1_windows-x64_bin-sdk\javafx-sdk-25.0.1\lib --add-modules javafx.controls,javafx.fxml"
+--runtime-image "%RUNTIME_DIR%"
+
+echo Done!
+pause
