@@ -39,6 +39,3 @@ REM Création du MSI autonome
 --dest "%DIST_DIR%" ^
 --app-version %VERSION% ^
 --runtime-image "%RUNTIME_DIR%"
-
-echo Done!
-pause

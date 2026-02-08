@@ -9,6 +9,7 @@ import game.BattleManager;
 import game.BattleState;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,6 +26,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
 import ui.AnimatedSprite;
@@ -35,7 +38,7 @@ public class BattleScene {
 	private final Scene scene;
 	private final BattleManager battleManager;
 
-    Label ennemyName = new Label();
+    Text ennemyName = new Text();
     HBox ennemyStatsPane = new HBox();
     BorderPane ennemyStatsAttackPane = new BorderPane();
     BorderPane ennemyStatsDefensePane = new BorderPane();
@@ -75,7 +78,7 @@ public class BattleScene {
     ImageView allyStatsDefenseImage = new ImageView();
     ImageView allyStatsAccuEvaImage = new ImageView();
     ImageView allyStatsCriticalImage = new ImageView();
-    Label allyName = new Label();
+    Text allyName = new Text();
      
 	Pane actionPane = new Pane();
     VBox firstChoicePane = new VBox();
@@ -83,12 +86,19 @@ public class BattleScene {
     VBox personaSpellSelectionPane = new VBox();
 
 	Label messageLabel = new Label();
+	
+	Color healthColor = new Color(1.0 / 255, 221.0 / 255, 183.0 / 255, 1.0);
+	Color APColor = new Color(235.0 / 255, 137.0 / 255, 217.0 / 255, 1.0 );
     
     public Scene getScene() {
         return scene;
     }
 
     boolean debug = false;
+    
+    private String buttonStyle() {
+    	return "-fx-background-color: black; -fx-text-fill: white;";
+    }
     
 	private String redBorderStyle() {
 		return debug?"-fx-border-color: red; -fx-border-width: 2; -fx-border-style: solid;":"";
@@ -136,13 +146,19 @@ public class BattleScene {
 		VBox leftPane = new VBox();
 	    leftPane.prefWidthProperty().bind(globalPane.widthProperty().multiply(0.45));
 	    leftPane.setStyle(redBorderStyle());
+	    leftPane.setAlignment(Pos.CENTER);
 	    
-		ennemyName.setAlignment(Pos.CENTER);
-		ennemyName.prefWidthProperty().bind(leftPane.widthProperty());
-		ennemyName.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.05));
-		ennemyName.widthProperty().addListener((_, _, newW) -> {
-		    ennemyName.setFont(Font.font(newW.doubleValue() * 0.03));
-		});
+		double fontSize = .04;
+		ennemyName.setFill(Color.WHITE);
+		ennemyName.setStroke(Color.BLACK);
+		ennemyName.setStrokeWidth(2);
+		ennemyName.setTextAlignment(TextAlignment.CENTER);
+		ChangeListener<Number> resizeListener = (_, _, newVal) -> {
+			ennemyName.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newVal.doubleValue() * fontSize));
+			allyName.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newVal.doubleValue() * fontSize));
+        };
+        leftPane.widthProperty().addListener(resizeListener);
+        leftPane.heightProperty().addListener(resizeListener);
 
 		setEnnemyStatsPane(leftPane);
 		ennemyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
@@ -157,14 +173,11 @@ public class BattleScene {
 		setAllyStatsPane(leftPane);
 		allyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
 		
-		allyName.setAlignment(Pos.CENTER);
-		allyName.prefWidthProperty().bind(leftPane.widthProperty());
-		allyName.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.05));
-		allyName.widthProperty().addListener((_, _, newW) -> {
-			allyName.setFont(Font.font(newW.doubleValue() * 0.03));
-		});
+		allyName.setFill(Color.WHITE);
+		allyName.setStroke(Color.BLACK);
+		allyName.setStrokeWidth(2);
+		allyName.setTextAlignment(TextAlignment.CENTER);
 
-	    
 	    leftPane.getChildren().addAll(ennemyName, ennemyStatsPane, ennemyResPane, actionPane, allyStatsPane, allyName);
 		return leftPane;
 	}
@@ -175,38 +188,41 @@ public class BattleScene {
 		ennemyStatsPane.setVisible(false);
 		int marginRight = 40;
 	    
-	    Label ennemyStatsAttackLabel = getEnnemyStatsLabel("Atk");
+		Text ennemyStatsAttackLabel = getEnnemyStatsText("ATK");
 	    
 	    ennemyStatsAttackPane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
 	    HBox.setMargin(ennemyStatsAttackPane, new Insets(0, marginRight, 0, 0));
 	    
-	    Label ennemyStatsDefenseLabel = getEnnemyStatsLabel("Def");
+	    Text ennemyStatsDefenseLabel = getEnnemyStatsText("DEF");
 
 	    ennemyStatsDefensePane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
 	    HBox.setMargin(ennemyStatsDefensePane, new Insets(0, marginRight, 0, 0));
 	    
-	    Label ennemyStatsAccuEvaLabel = getEnnemyStatsLabel("Prec/Esq");
+	    Text ennemyStatsAccuEvaLabel = getEnnemyStatsText("PREC/ESQ");
 
 	    ennemyStatsAccuEvaPane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
 	    HBox.setMargin(ennemyStatsAccuEvaPane, new Insets(0, marginRight, 0, 0));
 	    
-	    Label ennemyStatsCriticalLabel = getEnnemyStatsLabel("Crit");
+	    Text ennemyStatsCriticalLabel = getEnnemyStatsText("CRIT");
 
 	    ennemyStatsCriticalPane.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
 	    
 	    ennemyStatsPane.getChildren().addAll(ennemyStatsAttackLabel, ennemyStatsAttackPane, ennemyStatsDefenseLabel, ennemyStatsDefensePane, ennemyStatsAccuEvaLabel, ennemyStatsAccuEvaPane, ennemyStatsCriticalLabel, ennemyStatsCriticalPane);
 	}
 
-	private Label getEnnemyStatsLabel(String text) {
-		Label ennemyStatsLabel = new Label();
-		double fontSize = .26;
-	    ennemyStatsLabel.setText(text);
-	    ennemyStatsLabel.setAlignment(Pos.CENTER);
-	    ennemyStatsLabel.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.125));
-	    ennemyStatsLabel.widthProperty().addListener((_, _, newW) -> {
-	    	ennemyStatsLabel.setFont(Font.font(newW.doubleValue() * fontSize));
-		});
-		return ennemyStatsLabel;
+	private Text getEnnemyStatsText(String text) {
+		double fontSize = .32;
+		Text ennemyStatsText = new Text(text);
+		ennemyStatsText.setFill(Color.WHITE);
+		ennemyStatsText.setStroke(Color.BLACK);
+		ennemyStatsText.setStrokeWidth(2);
+		ennemyStatsText.setTextAlignment(TextAlignment.CENTER);
+		ChangeListener<Number> resizeListener = (_, _, newVal) -> {
+            ennemyStatsText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newVal.doubleValue() * fontSize));
+        };
+        ennemyStatsPane.widthProperty().addListener(resizeListener);
+        ennemyStatsPane.heightProperty().addListener(resizeListener);
+		return ennemyStatsText;
 	}
 
 	private void setEnnemyResPane(VBox leftPane) {
@@ -256,13 +272,13 @@ public class BattleScene {
 		attackPane.setStyle(redBorderStyle());
 		attackPane.prefWidthProperty().bind(attackPersonaPane.widthProperty().multiply(.5));
 		attackPane.setAlignment(Pos.CENTER);
-		Button attackButton = new Button("Attaquer");
+		Button attackButton = new Button("ATTAQUER");
 		attackButton.setFocusTraversable(false);
 		attackButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
-		attackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		attackButton.setStyle(buttonStyle());
 		attackButton.setOnAction(_ -> battleManager.firstChoiceAttack());
 		attackPane.widthProperty().addListener((_, _, newW) -> {
-			attackButton.setFont(Font.font(newW.doubleValue() * .1));
+			attackButton.setFont(Font.font("Arial", FontWeight.BOLD, newW.doubleValue() * .1));
 		});
 		attackPane.getChildren().addAll(attackButton);
 
@@ -270,13 +286,13 @@ public class BattleScene {
 		personaPane.setStyle(redBorderStyle());
 		personaPane.prefWidthProperty().bind(attackPersonaPane.widthProperty().multiply(.5));
 		personaPane.setAlignment(Pos.CENTER);
-		Button personaButton = new Button("Persona");
+		Button personaButton = new Button("PERSONA");
 		personaButton.setFocusTraversable(false);
 		personaButton.prefWidthProperty().bind(personaPane.widthProperty().multiply(.9));
-		personaButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		personaButton.setStyle(buttonStyle());
 		personaButton.setOnAction(_ -> battleManager.firstChoicePersona());
 		personaPane.widthProperty().addListener((_, _, newW) -> {
-			personaButton.setFont(Font.font(newW.doubleValue() * .1));
+			personaButton.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newW.doubleValue() * .1));
 		});
 		personaPane.getChildren().addAll(personaButton);
 
@@ -286,13 +302,13 @@ public class BattleScene {
 		parryPane.setStyle(redBorderStyle());
 		parryPane.prefHeightProperty().bind(firstChoicePane.heightProperty().multiply(.25));
 		parryPane.setAlignment(Pos.CENTER);
-		Button parryButton = new Button("Parer");
+		Button parryButton = new Button("PARER");
 		parryButton.setFocusTraversable(false);
 		parryButton.prefWidthProperty().bind(attackPane.widthProperty().multiply(.9));
-		parryButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		parryButton.setStyle(buttonStyle());
 		parryButton.setOnAction(_ -> battleManager.firstChoiceParry());
 		parryPane.widthProperty().addListener((_, _, newW) -> {
-			parryButton.setFont(Font.font(newW.doubleValue() * .05));
+			parryButton.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newW.doubleValue() * .05));
 		});
 		parryPane.getChildren().addAll(parryButton);
 
@@ -308,13 +324,13 @@ public class BattleScene {
 		attackSelectionPane.prefHeightProperty().bind(actionPane.heightProperty());
 		attackSelectionPane.setStyle(purpleBorderStyle());
 		
-		Button cancelAttackButton = new Button("Retour");
+		Button cancelAttackButton = new Button("RETOUR");
 		cancelAttackButton.setFocusTraversable(false);
 		cancelAttackButton.prefWidthProperty().bind(attackSelectionPane.widthProperty().multiply(.4));
-		cancelAttackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		cancelAttackButton.setStyle(buttonStyle());
 		cancelAttackButton.setOnAction(_ -> battleManager.cancelChoice());
 		attackSelectionPane.widthProperty().addListener((_, _, newW) -> {
-			cancelAttackButton.setFont(Font.font(newW.doubleValue() * .05));
+			cancelAttackButton.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newW.doubleValue() * .05));
 		});
 		
 		attackSelectionPane.setCenter(cancelAttackButton);
@@ -333,14 +349,14 @@ public class BattleScene {
 			personaSpellSelectionPane.getChildren().add(spellPane);
 		}
 		
-		Button cancelAttackButton = new Button("Retour");
+		Button cancelAttackButton = new Button("RETOUR");
 		cancelAttackButton.setFocusTraversable(false);
 		cancelAttackButton.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty().multiply(.4));
 		cancelAttackButton.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.18));
-		cancelAttackButton.setStyle("-fx-background-radius: 100; -fx-border-radius: 100;");
+		cancelAttackButton.setStyle(buttonStyle());
 		cancelAttackButton.setOnAction(_ -> battleManager.cancelChoice());
 		attackSelectionPane.widthProperty().addListener((_, _, newW) -> {
-			cancelAttackButton.setFont(Font.font(newW.doubleValue() * .05));
+			cancelAttackButton.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newW.doubleValue() * .05));
 		});
 
 		personaSpellSelectionPane.getChildren().add(cancelAttackButton);
@@ -353,8 +369,6 @@ public class BattleScene {
 		spellPane.setStyle(greenBorderStyle());
 		spellPane.setAlignment(Pos.CENTER);
 		
-		
-
 		if (spell != null) {
 			spellPane.setOnMouseClicked(event -> {
 			    if (event.getButton() == MouseButton.PRIMARY) {
@@ -425,38 +439,41 @@ public class BattleScene {
 		allyStatsPane.setVisible(false);
 		int marginRight = 40;
 	    
-	    Label allyStatsAttackLabel = getAllyStatsLabel("Atk");
+	    Text allyStatsAttackLabel = getAllyStatsText("ATK");
 	    
 	    allyStatsAttackPane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
 	    HBox.setMargin(allyStatsAttackPane, new Insets(0, marginRight, 0, 0));
 	    
-	    Label allyStatsDefenseLabel = getAllyStatsLabel("Def");
+	    Text allyStatsDefenseLabel = getAllyStatsText("DEF");
 
 	    allyStatsDefensePane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
 	    HBox.setMargin(allyStatsDefensePane, new Insets(0, marginRight, 0, 0));
 	    
-	    Label allyStatsAccuEvaLabel = getAllyStatsLabel("Prec/Esq");
+	    Text allyStatsAccuEvaLabel = getAllyStatsText("PREC/ESQ");
 
 	    allyStatsAccuEvaPane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
 	    HBox.setMargin(allyStatsAccuEvaPane, new Insets(0, marginRight, 0, 0));
 	    
-	    Label allyStatsCriticalLabel = getAllyStatsLabel("Crit");
+	    Text allyStatsCriticalLabel = getAllyStatsText("CRIT");
 
 	    allyStatsCriticalPane.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
 	    
 	    allyStatsPane.getChildren().addAll(allyStatsAttackLabel, allyStatsAttackPane, allyStatsDefenseLabel, allyStatsDefensePane, allyStatsAccuEvaLabel, allyStatsAccuEvaPane, allyStatsCriticalLabel, allyStatsCriticalPane);
 	}
 
-	private Label getAllyStatsLabel(String text) {
-		Label allyStatsLabel = new Label();
-		double fontSize = .26;
-		allyStatsLabel.setText(text);
-		allyStatsLabel.setAlignment(Pos.CENTER);
-		allyStatsLabel.prefWidthProperty().bind(allyStatsPane.widthProperty().multiply(.125));
-		allyStatsLabel.widthProperty().addListener((_, _, newW) -> {
-			allyStatsLabel.setFont(Font.font(newW.doubleValue() * fontSize));
-		});
-		return allyStatsLabel;
+	private Text getAllyStatsText(String text) {
+		double fontSize = .32;
+		Text allyStatsText = new Text(text);
+		allyStatsText.setFill(Color.WHITE);
+		allyStatsText.setStroke(Color.BLACK);
+		allyStatsText.setStrokeWidth(2);
+		allyStatsText.setTextAlignment(TextAlignment.CENTER);
+		ChangeListener<Number> resizeListener = (_, _, newVal) -> {
+            allyStatsText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newVal.doubleValue() * fontSize));
+        };
+        allyStatsPane.widthProperty().addListener(resizeListener);
+        allyStatsPane.heightProperty().addListener(resizeListener);
+		return allyStatsText;
 	}
 	
 	private VBox getRightPane(HBox globalPane) {
@@ -545,13 +562,14 @@ public class BattleScene {
 		Rectangle healthBar = new Rectangle();
 		healthBar.widthProperty().bind(healthBarPane.widthProperty());
 		healthBar.heightProperty().bind(healthBarPane.heightProperty());
-		healthBar.setFill(Color.TRANSPARENT);
-		healthBar.setStroke(Color.RED);
+		healthBar.setStroke(Color.BLACK);
 		healthBar.setStrokeWidth(2);
 		Rectangle currentHealthBar = new Rectangle();
-		currentHealthBar.widthProperty().bind(battleManager.getICharacter(ennemyIndex).currentHPProperty().multiply(ennemyPane.widthProperty().divide(battleManager.getICharacter(ennemyIndex).getMaxHP())));
-		currentHealthBar.heightProperty().bind(healthBarPane.heightProperty()); 
-		currentHealthBar.setFill(Color.RED);
+		currentHealthBar.widthProperty().bind(battleManager.getICharacter(ennemyIndex).currentHPProperty().multiply(ennemyPane.widthProperty().divide(battleManager.getICharacter(ennemyIndex).getMaxHP())).subtract(4));
+		currentHealthBar.heightProperty().bind(healthBarPane.heightProperty().subtract(4)); 
+		currentHealthBar.setFill(healthColor);
+		currentHealthBar.setLayoutX(2);
+		currentHealthBar.setLayoutY(2);
 		healthBarPane.getChildren().addAll(healthBar, currentHealthBar);
 		
 		Region enemyPaneSpacer2 = new Region();
@@ -647,7 +665,6 @@ public class BattleScene {
 		VBox allyPane = new VBox();
 		allyPane.prefWidthProperty().bind(alliesPane.widthProperty().multiply(0.3));
 		allyPane.setStyle(redBorderStyle());
-//		allyPane.visibleProperty().bind(battleManager.getICharacter(allyIndex).isAliveProperty());
 		allyPane.styleProperty().bind(
 		    Bindings.when(battleManager.getICharacter(allyIndex).isPlayingProperty())
 		        .then(blackBorderStyle())
@@ -716,24 +733,26 @@ public class BattleScene {
 		Rectangle healthBar = new Rectangle();
 		healthBar.widthProperty().bind(healthBarPane.widthProperty());
 		healthBar.heightProperty().bind(healthBarPane.heightProperty());
-		healthBar.setFill(Color.TRANSPARENT);
-		healthBar.setStroke(Color.RED);
+		healthBar.setStroke(Color.BLACK);
 		healthBar.setStrokeWidth(2);
 		Rectangle currentHealthBar = new Rectangle();
-		currentHealthBar.widthProperty().bind(battleManager.getICharacter(allyIndex).currentHPProperty().multiply(healthBarBox.widthProperty().multiply(.8).divide(battleManager.getICharacter(allyIndex).getMaxHP())));
-		currentHealthBar.heightProperty().bind(healthBarPane.heightProperty()); 
-		currentHealthBar.setFill(Color.RED);
+		currentHealthBar.widthProperty().bind(battleManager.getICharacter(allyIndex).currentHPProperty().multiply(healthBarBox.widthProperty().multiply(.8).divide(battleManager.getICharacter(allyIndex).getMaxHP())).subtract(4));
+		currentHealthBar.heightProperty().bind(healthBarPane.heightProperty().subtract(4)); 
+		currentHealthBar.setFill(healthColor);
+		currentHealthBar.setLayoutX(2);
+		currentHealthBar.setLayoutY(2);
 		healthBarPane.getChildren().addAll(healthBar, currentHealthBar);
 		
 		Label healthPoints = new Label();
 		healthPoints.textProperty().bind(battleManager.getICharacter(allyIndex).currentHPProperty().asString());
 		healthPoints.setAlignment(Pos.CENTER);
-		healthPoints.setTextFill(Color.RED);
+		healthPoints.setTextFill(healthColor);
 		healthPoints.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.2));
 		healthPoints.widthProperty().addListener((_, _, newW) -> {
 		    double fontSize = Math.max(10, newW.doubleValue() * 0.5);
 		    healthPoints.setFont(Font.font(fontSize));
 		});
+		
 		healthBarBox.getChildren().addAll(healthBarPane, healthPoints);
 
 		Region allyPaneSpacer2 = new Region();
@@ -746,19 +765,21 @@ public class BattleScene {
 		Rectangle APBar = new Rectangle();
 		APBar.widthProperty().bind(APBarPane.widthProperty());
 		APBar.heightProperty().bind(APBarPane.heightProperty());
-		APBar.setFill(Color.TRANSPARENT);
-		APBar.setStroke(Color.BLUE);
+		APBar.setStroke(Color.BLACK);
+		APBar.setStrokeWidth(2);
 		APBar.setStrokeWidth(2);
 		Rectangle currentAPBar = new Rectangle();
-		currentAPBar.widthProperty().bind(battleManager.getICharacter(allyIndex).currentAPProperty().multiply(APBarBox.widthProperty().multiply(.8).divide(battleManager.getICharacter(allyIndex).getMaxAP())));
-		currentAPBar.heightProperty().bind(APBarPane.heightProperty()); 
-		currentAPBar.setFill(Color.BLUE);
+		currentAPBar.widthProperty().bind(battleManager.getICharacter(allyIndex).currentAPProperty().multiply(APBarBox.widthProperty().multiply(.8).divide(battleManager.getICharacter(allyIndex).getMaxAP())).subtract(4));
+		currentAPBar.heightProperty().bind(APBarPane.heightProperty().subtract(4)); 
+		currentAPBar.setFill(APColor);
+		currentAPBar.setLayoutX(2);
+		currentAPBar.setLayoutY(2);
 		APBarPane.getChildren().addAll(APBar, currentAPBar);
 		
 		Label APPoints = new Label();
 		APPoints.textProperty().bind(battleManager.getICharacter(allyIndex).currentAPProperty().asString());
 		APPoints.setAlignment(Pos.CENTER);
-		APPoints.setTextFill(Color.BLUE);
+		APPoints.setTextFill(APColor);
 		APPoints.prefWidthProperty().bind(APBarBox.widthProperty().multiply(.2));
 		APPoints.widthProperty().addListener((_, _, newW) -> {
 		    double fontSize = Math.max(10, newW.doubleValue() * 0.5);
