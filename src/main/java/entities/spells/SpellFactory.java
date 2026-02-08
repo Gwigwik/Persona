@@ -10,6 +10,7 @@ public class SpellFactory {
 		spells = Arrays.asList(
         		Spell.AGIDYNE,
         		Spell.MABUFUDYNE,
+        		Spell.MAEIGAON,
         		Spell.RECARM,
         		Spell.SAMARECARM);
 		return spells;

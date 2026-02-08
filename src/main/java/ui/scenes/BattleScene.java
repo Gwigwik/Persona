@@ -220,7 +220,6 @@ public class BattleScene {
 		ChangeListener<Number> resizeListener = (_, _, newVal) -> {
             ennemyStatsText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newVal.doubleValue() * fontSize));
         };
-        ennemyStatsPane.widthProperty().addListener(resizeListener);
         ennemyStatsPane.heightProperty().addListener(resizeListener);
 		return ennemyStatsText;
 	}
@@ -409,7 +408,15 @@ public class BattleScene {
 			spellElementPane.prefHeightProperty().bind(spellPane.heightProperty());
 			ImageView spellElementImage = new ImageView();
 			spellElementImage = ui.IconProvider.getCharacterElementIcon(spell.getElement(), 50);
-			spellElementPane.setCenter(spellElementImage);
+			Label spellCost = new Label();
+			spellCost.setTextFill(APColor);
+			spellCost.setText("" + spell.getAPCost());
+			spellCost.setAlignment(Pos.BOTTOM_CENTER);
+			spellCost.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.3));
+			spellCost.widthProperty().addListener((_, _, newW) -> {
+				spellCost.setFont(Font.font(newW.doubleValue() * .1));
+			});
+			spellElementPane.setTop(new StackPane(spellElementImage, spellCost));
 			
 			Label spellName = new Label();
 			spellName.setText(spell.getName());
@@ -419,15 +426,8 @@ public class BattleScene {
 				spellName.setFont(Font.font(newW.doubleValue() * .1));
 			});
 			
-			Label spellCost = new Label();
-			spellCost.setText("" + spell.getAPCost());
-			spellCost.setAlignment(Pos.CENTER);
-			spellCost.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.3));
-			spellCost.widthProperty().addListener((_, _, newW) -> {
-				spellCost.setFont(Font.font(newW.doubleValue() * .15));
-			});
 			
-			spellPane.getChildren().addAll(spellElementPane,spellName, spellCost);
+			spellPane.getChildren().addAll(spellElementPane,spellName);
 		}
 		
 		return spellPane;
@@ -471,7 +471,6 @@ public class BattleScene {
 		ChangeListener<Number> resizeListener = (_, _, newVal) -> {
             allyStatsText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newVal.doubleValue() * fontSize));
         };
-        allyStatsPane.widthProperty().addListener(resizeListener);
         allyStatsPane.heightProperty().addListener(resizeListener);
 		return allyStatsText;
 	}
@@ -530,9 +529,9 @@ public class BattleScene {
 		VBox ennemyPane = new VBox();
 		ennemyPane.prefWidthProperty().bind(enemiesPane.widthProperty().multiply(0.3));
 		ennemyPane.setStyle(redBorderStyle());
-		ennemyPane.visibleProperty().bind(battleManager.getICharacter(ennemyIndex).isAliveProperty());
+		ennemyPane.visibleProperty().bind(ennemy.isAliveProperty());
 		ennemyPane.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(ennemyIndex).isPlayingProperty())
+		    Bindings.when(ennemy.isPlayingProperty())
 		        .then(blackBorderStyle())
 		        .otherwise("")
 		);
@@ -565,7 +564,7 @@ public class BattleScene {
 		healthBar.setStroke(Color.BLACK);
 		healthBar.setStrokeWidth(2);
 		Rectangle currentHealthBar = new Rectangle();
-		currentHealthBar.widthProperty().bind(battleManager.getICharacter(ennemyIndex).currentHPProperty().multiply(ennemyPane.widthProperty().divide(battleManager.getICharacter(ennemyIndex).getMaxHP())).subtract(4));
+		currentHealthBar.widthProperty().bind(ennemy.currentHPProperty().multiply(ennemyPane.widthProperty().divide(ennemy.getMaxHP())).subtract(4));
 		currentHealthBar.heightProperty().bind(healthBarPane.heightProperty().subtract(4)); 
 		currentHealthBar.setFill(healthColor);
 		currentHealthBar.setLayoutX(2);
@@ -579,7 +578,7 @@ public class BattleScene {
 		ennemyIconPane.prefWidthProperty().bind(ennemyPane.widthProperty());
 		ennemyIconPane.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.7));
 		ennemyIconPane.setStyle(greenBorderStyle());
-		AnimatedSprite ennemySprite = ui.IconProvider.getAnimatedCharacterIcon(battleManager.getICharacter(ennemyIndex), 2, 150, 150, 150, 500);
+		AnimatedSprite ennemySprite = ui.IconProvider.getAnimatedCharacterIcon(ennemy, 2, 150, 150, 150, 500);
 		ImageView effectImage = new ImageView();
 		effectImage.setFitWidth(75);
 		effectImage.setFitHeight(75);
@@ -666,7 +665,7 @@ public class BattleScene {
 		allyPane.prefWidthProperty().bind(alliesPane.widthProperty().multiply(0.3));
 		allyPane.setStyle(redBorderStyle());
 		allyPane.styleProperty().bind(
-		    Bindings.when(battleManager.getICharacter(allyIndex).isPlayingProperty())
+		    Bindings.when(ally.isPlayingProperty())
 		        .then(blackBorderStyle())
 		        .otherwise("")
 		);
@@ -690,7 +689,7 @@ public class BattleScene {
 		allyIconPane.prefHeightProperty().bind(allyPane.heightProperty().multiply(.7));
 		allyIconPane.setStyle(greenBorderStyle());
 		
-		AnimatedSprite allySprite = ui.IconProvider.getAnimatedCharacterIcon(battleManager.getICharacter(allyIndex), 2, 150, 150, 150, 500);
+		AnimatedSprite allySprite = ui.IconProvider.getAnimatedCharacterIcon(ally, 2, 150, 150, 150, 500);
 		ImageView effectImage = new ImageView();
 		effectImage.setFitWidth(50);
 		effectImage.setFitHeight(50);
@@ -736,7 +735,7 @@ public class BattleScene {
 		healthBar.setStroke(Color.BLACK);
 		healthBar.setStrokeWidth(2);
 		Rectangle currentHealthBar = new Rectangle();
-		currentHealthBar.widthProperty().bind(battleManager.getICharacter(allyIndex).currentHPProperty().multiply(healthBarBox.widthProperty().multiply(.8).divide(battleManager.getICharacter(allyIndex).getMaxHP())).subtract(4));
+		currentHealthBar.widthProperty().bind(ally.currentHPProperty().multiply(healthBarBox.widthProperty().multiply(.8).divide(ally.getMaxHP())).subtract(4));
 		currentHealthBar.heightProperty().bind(healthBarPane.heightProperty().subtract(4)); 
 		currentHealthBar.setFill(healthColor);
 		currentHealthBar.setLayoutX(2);
@@ -744,7 +743,7 @@ public class BattleScene {
 		healthBarPane.getChildren().addAll(healthBar, currentHealthBar);
 		
 		Label healthPoints = new Label();
-		healthPoints.textProperty().bind(battleManager.getICharacter(allyIndex).currentHPProperty().asString());
+		healthPoints.textProperty().bind(ally.currentHPProperty().asString());
 		healthPoints.setAlignment(Pos.CENTER);
 		healthPoints.setTextFill(healthColor);
 		healthPoints.prefWidthProperty().bind(healthBarBox.widthProperty().multiply(.2));
@@ -769,7 +768,7 @@ public class BattleScene {
 		APBar.setStrokeWidth(2);
 		APBar.setStrokeWidth(2);
 		Rectangle currentAPBar = new Rectangle();
-		currentAPBar.widthProperty().bind(battleManager.getICharacter(allyIndex).currentAPProperty().multiply(APBarBox.widthProperty().multiply(.8).divide(battleManager.getICharacter(allyIndex).getMaxAP())).subtract(4));
+		currentAPBar.widthProperty().bind(ally.currentAPProperty().multiply(APBarBox.widthProperty().multiply(.8).divide(ally.getMaxAP())).subtract(4));
 		currentAPBar.heightProperty().bind(APBarPane.heightProperty().subtract(4)); 
 		currentAPBar.setFill(APColor);
 		currentAPBar.setLayoutX(2);
@@ -777,7 +776,7 @@ public class BattleScene {
 		APBarPane.getChildren().addAll(APBar, currentAPBar);
 		
 		Label APPoints = new Label();
-		APPoints.textProperty().bind(battleManager.getICharacter(allyIndex).currentAPProperty().asString());
+		APPoints.textProperty().bind(ally.currentAPProperty().asString());
 		APPoints.setAlignment(Pos.CENTER);
 		APPoints.setTextFill(APColor);
 		APPoints.prefWidthProperty().bind(APBarBox.widthProperty().multiply(.2));
