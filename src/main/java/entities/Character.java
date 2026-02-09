@@ -40,7 +40,6 @@ public class Character {
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
-//		this.currentHP.set(1);
 		this.isAlive.set(isAlive);
 		this.maxAP = maxAP;
 		this.currentAP.set(maxAP);

@@ -115,6 +115,10 @@ public class BattleScene {
 	private String blackBorderStyle() {
 		return "-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;";
 	}
+
+	private String whiteBorderStyle() {
+		return "-fx-border-color: white; -fx-border-width: 2; -fx-border-style: solid;";
+	}
 	
     public BattleScene(BattleManager battleManagerParam) {
     	this.battleManager = battleManagerParam;
@@ -345,13 +349,14 @@ public class BattleScene {
 		for (int i = 0; i < 5; i++) {
 			Spell spell = battleManager.getCurrentCharacter().getISpell(i);
 			HBox spellPane = getISpellPane(spell, i);
+			VBox.setMargin(spellPane, new Insets(0, 0, 10, 0));
 			personaSpellSelectionPane.getChildren().add(spellPane);
 		}
 		
 		Button cancelAttackButton = new Button("RETOUR");
 		cancelAttackButton.setFocusTraversable(false);
 		cancelAttackButton.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty().multiply(.4));
-		cancelAttackButton.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.18));
+		cancelAttackButton.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.1));
 		cancelAttackButton.setStyle(buttonStyle());
 		cancelAttackButton.setOnAction(_ -> battleManager.cancelChoice());
 		attackSelectionPane.widthProperty().addListener((_, _, newW) -> {
@@ -364,8 +369,8 @@ public class BattleScene {
 	private HBox getISpellPane(Spell spell, int i) {
 		HBox spellPane = new HBox();
 		spellPane.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty());
-		spellPane.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.2));
-		spellPane.setStyle(greenBorderStyle());
+		spellPane.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.1));
+		spellPane.setStyle("-fx-background-color: black;");
 		spellPane.setAlignment(Pos.CENTER);
 		
 		if (spell != null) {
@@ -376,10 +381,10 @@ public class BattleScene {
 			});
 			spellPane.hoverProperty().addListener((_, _, isHover) -> {
 		    	if (isHover) {
-					spellPane.setStyle(blackBorderStyle());
+					spellPane.setStyle(whiteBorderStyle() + "-fx-background-color: black;");
 		    	}
 		    	else {
-		    		spellPane.setStyle(greenBorderStyle());
+		    		spellPane.setStyle(greenBorderStyle() + "-fx-background-color: black;");
 		    	}
 		    });
 			
@@ -387,6 +392,7 @@ public class BattleScene {
 			descriptionPane.setStyle("-fx-background-color: white;");
 			Label descriptionLabel = new Label(" " + spell.getDescription() + " ");
 			descriptionLabel.setFont(Font.font(16));
+			descriptionLabel.setTextFill(Color.BLACK);
 			descriptionPane.setCenter(descriptionLabel);
 			
 			Popup spellDescriptionPopup = new Popup();
@@ -403,31 +409,33 @@ public class BattleScene {
 			    spellDescriptionPopup.hide();
 			});
 
-			BorderPane spellElementPane = new BorderPane();
-			spellElementPane.prefWidthProperty().bind(spellPane.widthProperty().multiply(.3));
+			Pane spellElementPane = new Pane();
+			spellElementPane.prefWidthProperty().bind(spellPane.widthProperty().multiply(.1));
 			spellElementPane.prefHeightProperty().bind(spellPane.heightProperty());
 			ImageView spellElementImage = new ImageView();
-			spellElementImage = ui.IconProvider.getCharacterElementIcon(spell.getElement(), 50);
+			spellElementImage = ui.IconProvider.getCharacterElementIcon(spell.getElement(), 100);
+			
+			spellElementPane.getChildren().addAll(spellElementImage);
+			
+			Label spellName = new Label();
+			spellName.setTextFill(Color.WHITE);
+			spellName.setText(spell.getName());
+			spellName.setAlignment(Pos.CENTER);
+			spellName.prefWidthProperty().bind(spellPane.widthProperty().multiply(.8));
+			spellName.widthProperty().addListener((_, _, newW) -> {
+				spellName.setFont(Font.font(newW.doubleValue() * .07));
+			});
+			
 			Label spellCost = new Label();
 			spellCost.setTextFill(APColor);
 			spellCost.setText("" + spell.getAPCost());
-			spellCost.setAlignment(Pos.BOTTOM_CENTER);
-			spellCost.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.3));
+			spellCost.setAlignment(Pos.CENTER);
+			spellCost.prefWidthProperty().bind(spellPane.widthProperty().multiply(.1));
 			spellCost.widthProperty().addListener((_, _, newW) -> {
-				spellCost.setFont(Font.font(newW.doubleValue() * .1));
-			});
-			spellElementPane.setTop(new StackPane(spellElementImage, spellCost));
-			
-			Label spellName = new Label();
-			spellName.setText(spell.getName());
-			spellName.setAlignment(Pos.CENTER);
-			spellName.prefWidthProperty().bind(ennemyStatsPane.widthProperty().multiply(.4));
-			spellName.widthProperty().addListener((_, _, newW) -> {
-				spellName.setFont(Font.font(newW.doubleValue() * .1));
+				spellCost.setFont(Font.font(newW.doubleValue() * .4));
 			});
 			
-			
-			spellPane.getChildren().addAll(spellElementPane,spellName);
+			spellPane.getChildren().addAll(spellElementPane, spellName, spellCost);
 		}
 		
 		return spellPane;
@@ -482,18 +490,22 @@ public class BattleScene {
 		
 		HBox enemiesPane = getEnemiesPane(rightPane);
 		
-		BorderPane messagePane = new BorderPane();
-		messagePane.prefHeightProperty().bind(rightPane.heightProperty().multiply(0.3));
+		StackPane messagePane = new StackPane();
+		messagePane.prefHeightProperty().bind(rightPane.heightProperty().multiply(.3));
+		messagePane.visibleProperty().bind(
+		    messageLabel.textProperty().isNotEmpty()
+		);
 		messageLabel.setAlignment(Pos.CENTER);
+		messageLabel.setTextFill(Color.WHITE);
 		messageLabel.setTextAlignment(TextAlignment.CENTER);
-
 		messageLabel.setWrapText(true);
+		messageLabel.setStyle("-fx-background-color: black;");
+		messageLabel.setPadding(new Insets(5, 10, 5, 10));
 		messageLabel.textProperty().bind(battleManager.getMessage());
-		messageLabel.prefWidthProperty().bind(messagePane.widthProperty());
-		messageLabel.widthProperty().addListener((_, _, newW) -> {
+		messagePane.widthProperty().addListener((_, _, newW) -> {
 			messageLabel.setFont(Font.font(newW.doubleValue() * 0.05));
 		});
-		messagePane.setCenter(messageLabel);
+		messagePane.getChildren().add(messageLabel);
 	
 		HBox alliesPane = getAlliesPane(rightPane);
 		
