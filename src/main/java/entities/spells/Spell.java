@@ -39,8 +39,24 @@ public enum Spell {
 	MEDIARAMA("Mediarama", SpellElement.HEAL, 12, "Rend la moitié de sa vie à tous les alliés", true, true),
 	MEDIARAHAN("Mediarahan", SpellElement.HEAL, 30, "Rend toute sa vie à tous les alliés", true, true),
 	RECARM("Recarm", SpellElement.HEAL, 8, "Réanime un allié avec la moitié de sa vie", true, false),
-	SAMARECARM("Samarecarm", SpellElement.HEAL, 20, "Réanime un allié avec toute sa vie", true, false)
+	SAMARECARM("Samarecarm", SpellElement.HEAL, 20, "Réanime un allié avec toute sa vie", true, false),
 	//Buffs/Debuffs
+	TARUKAJA("Tarukaha", SpellElement.STAT, 8, "Augmente l'attaque d'un allié pour 3 tours", true, false),
+	MATARUKAJA("Matarukaja", SpellElement.STAT, 24, "Augmente l'attaque de tous les alliés pour 3 tours", true, true),
+	TARUNDA("Tarunda", SpellElement.STAT, 8, "Baisse l'attaque d'un ennemi pour 3 tours", false, false),
+	MATARUNDA("Matarunda", SpellElement.STAT, 24, "Baisse l'attaque de tous les ennemis pour 3 tours", false, true),
+	RAKUKAJA("Rakukaja", SpellElement.STAT, 8, "Augmente la défense d'un allié pour 3 tours", true, false),
+	MARAKUKAJA("Marakukaja", SpellElement.STAT, 24, "Augmente la défense de tous les alliés pour 3 tours", true, true),
+	RAKUNDA("Rakunda", SpellElement.STAT, 8, "Baisse la défense d'un ennemi pour 3 tours", false, false),
+	MARAKUNDA("Marakunda", SpellElement.STAT, 24, "Baisse la défense de tous les ennemis pour 3 tours", false , true),
+	SUKUKAJA("Sukukaja", SpellElement.STAT, 8, "Augmente l'agilité d'un allié pour 3 tours", true, false),
+	MASUKUKAJA("Masukukaja", SpellElement.STAT, 24, "Augmente l'agilité de tous les alliés pour 3 tours", true, true),
+	SUKUNDA("Sukunda", SpellElement.STAT, 8, "Baisse l'agilité d'un ennemi pour 3 tours", false, false),
+	MASUKUNDA("Masukunda", SpellElement.STAT, 24, "Baisse l'agilité de tous les ennemis pour 3 tours", false, true),
+	REBELLION("Rebellion", SpellElement.STAT, 8, "Augmente les chances de critique d'un allié pour 3 tours", true, false),
+	REVOLUTION("Revolution", SpellElement.STAT, 24, "Augmente les chances de critique de tous les alliés pour 3 tours", true, true),
+	HEATRISER("Heat Riser", SpellElement.STAT, 30, "Augmente l'attaque, la défense et l'agilité d'un allié pour 3 tours", true, false),
+	DEBILITATE("Debilitate", SpellElement.STAT, 30, "Baisse l'attaque, la défense et l'agilité d'un ennemi pour 3 tours", false, false),
 	;
 	private final String name;
 	private final SpellElement element;
@@ -74,7 +90,9 @@ public enum Spell {
 		receivers.forEach((receiver) -> {
 			switch (this) {
 				//Attaque
-				case PHYSIQUE, PISTOLET, AGIDYNE, BUFUDYNE, ZIODYNE, GARUDYNE, PSIODYNE, FREIDYNE, KOUGAON, EIGAON,
+				case PHYSIQUE, PISTOLET:
+					sender.setCurrentAP(sender.getCurrentAP() + sender.getMaxAP()/20);
+				case AGIDYNE, BUFUDYNE, ZIODYNE, GARUDYNE, PSIODYNE, FREIDYNE, KOUGAON, EIGAON,
 				MARAGIDYNE, MABUFUDYNE, MARIODYNE, MAGARUDYNE, MAPSIODYNE, MAFREIDYNE, MAKOUGAON, MAEIGAON:
 					switch (receiver.getResistanceForElement(this.getElement())) {
 						case NEUTRAL:
@@ -104,26 +122,44 @@ public enum Spell {
 					break;
 				//Heal
 				case DIARAMA, MEDIARAMA:
-					if (receiver.isAlive())
-						receiver.setCurrentHP(receiver.getCurrentHP() + receiver.getMaxHP()/2);
+					receiver.setCurrentHP(receiver.getCurrentHP() + receiver.getMaxHP()/2);
 					break;
 				case DIARAHAN, MEDIARAHAN:
-					if (receiver.isAlive())
-						receiver.setCurrentHP(receiver.getMaxHP());
+					receiver.setCurrentHP(receiver.getMaxHP());
 					break;
 				case RECARM:
-					if (!receiver.isAlive()) {
-						receiver.setIsAlive(true);
-						receiver.setCurrentHP(receiver.getMaxHP()/2);
-					}
+					receiver.setIsAlive(true);
+					receiver.setCurrentHP(receiver.getMaxHP()/2);
 					break;
 				case SAMARECARM:
-					if (!receiver.isAlive()) {
-						receiver.setIsAlive(true);
-						receiver.setCurrentHP(receiver.getMaxHP());
-					}
+					receiver.setIsAlive(true);
+					receiver.setCurrentHP(receiver.getMaxHP());
 					break;
 				//Buff/Debuff
+				case TARUKAJA, MATARUKAJA:
+					receiver.upgradeStat(Stat.ATTACK);
+					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+					break;
+				case TARUNDA, MATARUNDA:
+					receiver.decreaseStat(Stat.ATTACK);
+					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+					break;
+				case RAKUKAJA, MARAKUKAJA:
+					receiver.upgradeStat(Stat.DEFENSE);
+					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+					break;
+				case RAKUNDA, MARAKUNDA:
+					receiver.decreaseStat(Stat.DEFENSE);
+					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+					break;
+				case SUKUKAJA, MASUKUKAJA:
+					receiver.upgradeStat(Stat.AGILITY);
+					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					break;
+				case SUKUNDA, MASUKUNDA:
+					receiver.decreaseStat(Stat.AGILITY);
+					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					break;
 				default:
 		            System.out.println("Spell not implemented");
 			}
@@ -215,7 +251,7 @@ public enum Spell {
 	}
 
 	private boolean successHitting(Character sender, Character receiver) {
-		return Math.random() < .95 + sender.getValueForStat(Stat.ACCURACY) + receiver.getValueForStat(Stat.EVASION);
+		return Math.random() < .95 + sender.getValueForStat(Stat.AGILITY) - receiver.getValueForStat(Stat.AGILITY);
 	}
 	
 	private boolean successCrit(Character sender) {

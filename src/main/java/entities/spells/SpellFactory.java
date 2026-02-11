@@ -8,11 +8,11 @@ public class SpellFactory {
 	public static List<Spell> characterSpells() {
 		List<Spell> spells;
 		spells = Arrays.asList(
-        		Spell.AGIDYNE,
-        		Spell.MABUFUDYNE,
-        		Spell.MAEIGAON,
-        		Spell.RECARM,
-        		Spell.SAMARECARM);
+        		Spell.TARUKAJA,
+        		Spell.MATARUKAJA,
+        		Spell.TARUNDA,
+        		Spell.MATARUNDA,
+        		Spell.RAKUKAJA);
 		return spells;
 	}
 }

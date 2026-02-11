@@ -2,9 +2,11 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import entities.Character;
 import entities.spells.Spell;
+import entities.stats.Stat;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
@@ -39,11 +41,15 @@ public class BattleManager {
     }
     
     private void nextTurn() {
-		state.set(BattleState.FIRSTCHOICE);
 		charactersInBattle.get(playingIndex).setIsPlaying(false);
     	playingIndex = (playingIndex + 1)%charactersInBattle.size();
 		charactersInBattle.get(playingIndex).setIsPlaying(true);
-		charactersInBattle.get(playingIndex).removeOneTurnFromStats();
+		List<Stat> statsToDefault = charactersInBattle.get(playingIndex).removeOneTurnFromStats();
+		String statsToPrint = statsToDefault.stream()
+			    .map(stat -> stat.getName())
+			    .collect(Collectors.joining(", "));
+		if (statsToDefault.size() > 0)
+			showMessage("Effets sur " + statsToPrint + " terminés !", 2, BattleState.FIRSTCHOICE);
 		if (charactersInBattle.get(playingIndex).isAlive()) {
 			if (isAlly(playingIndex))
 				allyTurn();
@@ -71,12 +77,13 @@ public class BattleManager {
 		return message;
 	}
 	
-	public void showMessage(String text, int duration) {
+	public void showMessage(String text, double duration, BattleState nextState) {
+		state.set(BattleState.MESSAGEDISPLAYING);
         message.set(text);
         if (messageTimeline != null)
         	messageTimeline.stop();
         messageTimeline = new Timeline(
-            new KeyFrame(Duration.seconds(duration), _ -> message.set(""))
+            new KeyFrame(Duration.seconds(duration), _ -> { message.set(""); state.set(nextState); })
         );
         messageTimeline.setCycleCount(1);
         messageTimeline.play();
@@ -109,7 +116,7 @@ public class BattleManager {
 	
 	public void spellPersonaClicked(Spell spell) {
 		if (spell.getAPCost() > charactersInBattle.get(playingIndex).getCurrentAP()) {
-			showMessage("AP insuffisants !", 2);
+			showMessage("AP insuffisants !", 2, BattleState.PERSONASPELLSELECTION);
 		} else {
 			spellSelected = spell;
 			state.set(BattleState.PERSONAATTACKSELECTION);
@@ -117,34 +124,39 @@ public class BattleManager {
 	}
 	
 	public void characterClicked(int index) {
+		Character playingCharacter = charactersInBattle.get(playingIndex);
 		switch (state.get()) {
 			case ATTACKSELECTION:
-//				if (isAlly(index)) TODO a remettre quand les tests sont finis 
+//				if (isAlly(index)) TODO a remettre quand les tests sont finis et ajouter les check de en vie ou non pour resurrect (et inverse pour le reste)
 //					return;
-				switch (charactersInBattle.get(playingIndex).getAttackType()) {
+				switch (playingCharacter.getAttackType()) {
 					case PHYSICAL:
-						Spell.PHYSIQUE.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+						Spell.PHYSIQUE.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(index))));
 						break;
 					case GUN:
-						Spell.PISTOLET.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+						Spell.PISTOLET.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(index))));
 						break;
 					default:
 				}
+				showMessage(playingCharacter.getName() + " récupère des PA", 1.5, BattleState.FIRSTCHOICE);
 				nextTurn();
 				break;
 			case PERSONAATTACKSELECTION:
 				if (spellSelected.isGlobal()) {
 					if (spellSelected.targetAllies() && isAlly(index)) {
-						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(0), charactersInBattle.get(2), charactersInBattle.get(4))));
+						spellSelected.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(0), charactersInBattle.get(2), charactersInBattle.get(4))));
+						state.set(BattleState.FIRSTCHOICE);
 						nextTurn();
 					}
 					if (!spellSelected.targetAllies() && !isAlly(index)) {
-						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(1), charactersInBattle.get(3), charactersInBattle.get(5))));
+						spellSelected.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(1), charactersInBattle.get(3), charactersInBattle.get(5))));
+						state.set(BattleState.FIRSTCHOICE);
 						nextTurn();
 					}
 				} else {
 					if ((spellSelected.targetAllies() && isAlly(index)) || (!spellSelected.targetAllies() && !isAlly(index))) {
-						spellSelected.spellEffect(charactersInBattle.get(playingIndex), new ArrayList<>(List.of(charactersInBattle.get(index))));
+						spellSelected.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(index))));
+						state.set(BattleState.FIRSTCHOICE);
 						nextTurn();
 					}
 				}

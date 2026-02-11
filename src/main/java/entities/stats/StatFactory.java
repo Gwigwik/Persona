@@ -13,8 +13,7 @@ public class StatFactory {
         map = getStats(Arrays.asList(
         		Stat.ATTACK.getDefaultValue(),
         		Stat.DEFENSE.getDefaultValue(),
-        		Stat.ACCURACY.getDefaultValue(),
-        		Stat.EVASION.getDefaultValue(),
+        		Stat.AGILITY.getDefaultValue(),
         		Stat.CRITICAL.getDefaultValue())
         );
         return map;
@@ -25,9 +24,8 @@ public class StatFactory {
 
         statsMap.put(Stat.ATTACK, stats.get(0)); 
         statsMap.put(Stat.DEFENSE, stats.get(1)); 
-        statsMap.put(Stat.ACCURACY, stats.get(2)); 
-        statsMap.put(Stat.EVASION, stats.get(3)); 
-        statsMap.put(Stat.CRITICAL, stats.get(4)); 
+        statsMap.put(Stat.AGILITY, stats.get(2)); 
+        statsMap.put(Stat.CRITICAL, stats.get(3)); 
         
     	return statsMap;
     }

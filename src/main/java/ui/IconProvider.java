@@ -23,6 +23,14 @@ public class IconProvider {
         view.setFitHeight(size);
         return view;
     }
+
+    public static ImageView getCharacterElementSpellIcon(SpellElement element, int size) {
+        Image image = ResourceLoader.loadImage("/images/elements/icons/" + element.getFileName() + "_spell.png");
+        ImageView view = new ImageView(image);
+        view.setFitWidth(size);
+        view.setFitHeight(size);
+        return view;
+    }
     
     public static ImageView getCharacterResIcon(Resistance resistance, int size) {
       Image image = ResourceLoader.loadImage("/images/elements/values/" + resistance.getFileName() + ".png");

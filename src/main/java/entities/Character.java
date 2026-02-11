@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,7 @@ public class Character {
 		this.remainingTurnsStats = new EnumMap<>(Stat.class);
 		remainingTurnsStats.put(Stat.ATTACK, 0);
 		remainingTurnsStats.put(Stat.DEFENSE, 0);
-		remainingTurnsStats.put(Stat.ACCURACY, 0);
-		remainingTurnsStats.put(Stat.EVASION, 0);
+		remainingTurnsStats.put(Stat.AGILITY, 0);
 		remainingTurnsStats.put(Stat.CRITICAL, 0);
 		isStun.set(false);
 		this.imagePath = imagePath;
@@ -171,6 +171,22 @@ public class Character {
 		}
 	}
 	
+	public void upgradeStat(Stat stat) {
+		if (stats.get(stat) >= stat.getDefaultValue()) {
+			stats.put(stat, stat.getUpgradedValue());
+		} else {
+			stats.put(stat, stat.getDefaultValue());
+		}
+	}
+
+	public void decreaseStat(Stat stat) {
+		if (stats.get(stat) <= stat.getDefaultValue()) {
+			stats.put(stat, stat.getDecreasedValue());
+		} else {
+			stats.put(stat, stat.getDefaultValue());
+		}
+	}
+	
 	public int getRemainingTurnsStat(Stat stat) {
 		return remainingTurnsStats.get(stat);
 	}
@@ -179,12 +195,17 @@ public class Character {
 		remainingTurnsStats.put(stat, turns);
 	}
 	
-	public void removeOneTurnFromStats() {
-		remainingTurnsStats.replaceAll((_, turns) -> turns>0 ? turns-1 : 0);
+	public List<Stat> removeOneTurnFromStats() {
+		List<Stat> statsToDefault = new ArrayList<>();
+		remainingTurnsStats.replaceAll((_, turn) -> turn-1);
 		remainingTurnsStats.forEach((stat, turn) -> {
-			if (turn == 0)
+			if (turn == 0) {
 				stats.put(stat, stat.getDefaultValue());
+				statsToDefault.add(stat);
+			}
 		});
+		remainingTurnsStats.replaceAll((_, turns) -> turns>0 ? turns : 0);
+		return statsToDefault;
 	}
 	
 	public BooleanProperty getIsStun() {

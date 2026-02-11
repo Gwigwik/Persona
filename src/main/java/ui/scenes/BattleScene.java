@@ -409,19 +409,20 @@ public class BattleScene {
 			    spellDescriptionPopup.hide();
 			});
 
-			Pane spellElementPane = new Pane();
-			spellElementPane.prefWidthProperty().bind(spellPane.widthProperty().multiply(.1));
+			VBox spellElementPane = new VBox();
+			spellElementPane.prefWidthProperty().bind(spellPane.widthProperty().multiply(.2));
 			spellElementPane.prefHeightProperty().bind(spellPane.heightProperty());
+			spellElementPane.setAlignment(Pos.CENTER);
 			ImageView spellElementImage = new ImageView();
-			spellElementImage = ui.IconProvider.getCharacterElementIcon(spell.getElement(), 100);
-			
+			spellElementImage = ui.IconProvider.getCharacterElementSpellIcon(spell.getElement(), 100);
+			spellElementImage.setPreserveRatio(true);
 			spellElementPane.getChildren().addAll(spellElementImage);
 			
 			Label spellName = new Label();
 			spellName.setTextFill(Color.WHITE);
 			spellName.setText(spell.getName());
 			spellName.setAlignment(Pos.CENTER);
-			spellName.prefWidthProperty().bind(spellPane.widthProperty().multiply(.8));
+			spellName.prefWidthProperty().bind(spellPane.widthProperty().multiply(.6));
 			spellName.widthProperty().addListener((_, _, newW) -> {
 				spellName.setFont(Font.font(newW.doubleValue() * .07));
 			});
@@ -430,9 +431,9 @@ public class BattleScene {
 			spellCost.setTextFill(APColor);
 			spellCost.setText("" + spell.getAPCost());
 			spellCost.setAlignment(Pos.CENTER);
-			spellCost.prefWidthProperty().bind(spellPane.widthProperty().multiply(.1));
+			spellCost.prefWidthProperty().bind(spellPane.widthProperty().multiply(.2));
 			spellCost.widthProperty().addListener((_, _, newW) -> {
-				spellCost.setFont(Font.font(newW.doubleValue() * .4));
+				spellCost.setFont(Font.font(newW.doubleValue() * .2));
 			});
 			
 			spellPane.getChildren().addAll(spellElementPane, spellName, spellCost);
@@ -619,7 +620,7 @@ public class BattleScene {
 		ennemyStatsAttackPane.setCenter(ennemyStatsAttackImage);
 		ennemyStatsDefenseImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.DEFENSE), 50);
 		ennemyStatsDefensePane.setCenter(ennemyStatsDefenseImage);
-		ennemyStatsAccuEvaImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.ACCURACY), 50);
+		ennemyStatsAccuEvaImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.AGILITY), 50);
 		ennemyStatsAccuEvaPane.setCenter(ennemyStatsAccuEvaImage);
 		ennemyStatsCriticalImage = ui.IconProvider.getCharacterStatStatusIcon(ennemy.getStatStatus(Stat.CRITICAL), 50);
 		ennemyStatsCriticalPane.setCenter(ennemyStatsCriticalImage);
@@ -808,7 +809,7 @@ public class BattleScene {
 		allyStatsAttackPane.setCenter(allyStatsAttackImage);
 		allyStatsDefenseImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.DEFENSE), 50);
 		allyStatsDefensePane.setCenter(allyStatsDefenseImage);
-		allyStatsAccuEvaImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.ACCURACY), 50);
+		allyStatsAccuEvaImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.AGILITY), 50);
 		allyStatsAccuEvaPane.setCenter(allyStatsAccuEvaImage);
 		allyStatsCriticalImage = ui.IconProvider.getCharacterStatStatusIcon(ally.getStatStatus(Stat.CRITICAL), 50);
 		allyStatsCriticalPane.setCenter(allyStatsCriticalImage);
