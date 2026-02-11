@@ -75,6 +75,9 @@ public class Character {
 			if (currentHP <= 0) {
 				this.currentHP.set(0);
 				this.isAlive.set(false);
+				stats.replaceAll(((stat, _) -> stat.getDefaultValue()));
+				remainingTurnsStats.replaceAll((_, _) -> 0);
+				isStun.set(false);
 			} else {
 				this.currentHP.set(Math.min(currentHP, maxHP));
 			}
@@ -192,7 +195,8 @@ public class Character {
 	}
 	
 	public void setRemainingTurnsStat(Stat stat, int turns) {
-		remainingTurnsStats.put(stat, turns);
+		if (stats.get(stat) != stat.getDefaultValue())
+			remainingTurnsStats.put(stat, turns);
 	}
 	
 	public List<Stat> removeOneTurnFromStats() {
@@ -208,12 +212,16 @@ public class Character {
 		return statsToDefault;
 	}
 	
-	public BooleanProperty getIsStun() {
+	public boolean getIsStun() {
+		return isStun.get();
+	}
+	
+	public BooleanProperty isStunProperty() {
 		return isStun;
 	}
 
 	public void setIsStun(boolean isStun) {
-		this.isStun.set(isStun);;
+		this.isStun.set(isStun);
 	}
 
 	public Resistance getDiscoveredResistance(SpellElement element) {

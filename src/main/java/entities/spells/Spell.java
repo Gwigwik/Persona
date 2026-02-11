@@ -4,6 +4,7 @@ import java.util.List;
 import entities.Character;
 import entities.resistances.Resistance;
 import entities.stats.Stat;
+import game.BattleManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -160,6 +161,26 @@ public enum Spell {
 					receiver.decreaseStat(Stat.AGILITY);
 					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
 					break;
+				case REBELLION, REVOLUTION:
+					receiver.upgradeStat(Stat.CRITICAL);
+					receiver.setRemainingTurnsStat(Stat.CRITICAL, 4);
+					break;
+				case HEATRISER:
+					receiver.upgradeStat(Stat.ATTACK);
+					receiver.upgradeStat(Stat.DEFENSE);
+					receiver.upgradeStat(Stat.AGILITY);
+					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					break;
+				case DEBILITATE:
+					receiver.decreaseStat(Stat.ATTACK);
+					receiver.decreaseStat(Stat.DEFENSE);
+					receiver.decreaseStat(Stat.AGILITY);
+					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					break;
 				default:
 		            System.out.println("Spell not implemented");
 			}
@@ -182,12 +203,17 @@ public enum Spell {
 		if (successHitting(sender, receiver)) {
 			if (successCrit(sender)) {
 				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
-				receiver.setIsStun(true);
+				if (!receiver.isParrying()) {
+					if (!receiver.getIsStun())
+						BattleManager.setPlayAgain();
+					receiver.setIsStun(true);
+				}
 				showAttackEffect(receiver, Resistance.WEAK);
 			} else {				
 				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
 				showAttackEffect(receiver, Resistance.NEUTRAL);
 			}
+			receiver.setIsParrying(false);
 		} else {
 			showAttackEffect(receiver, Resistance.UNKNOWN);
 		}
@@ -197,16 +223,22 @@ public enum Spell {
 		if (successHitting(sender, receiver)) {			
 			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(12.5*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
 			showAttackEffect(receiver, Resistance.STRONG);
+			receiver.setIsParrying(false);
 		} else {
 			showAttackEffect(receiver, Resistance.UNKNOWN);
 		}
 	}
 
 	private void weakDamage(Character sender, Character receiver) {
-		if (successHitting(sender, receiver)) {				
+		if (successHitting(sender, receiver)) {
 			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+			if (!receiver.isParrying()) {
+				if (!receiver.getIsStun())
+					BattleManager.setPlayAgain();
+				receiver.setIsStun(true);
+			}
 			showAttackEffect(receiver, Resistance.WEAK);
-			receiver.setIsStun(true);
+			receiver.setIsParrying(false);
 		} else {
 			showAttackEffect(receiver, Resistance.UNKNOWN);
 		}
@@ -251,7 +283,7 @@ public enum Spell {
 	}
 
 	private boolean successHitting(Character sender, Character receiver) {
-		return Math.random() < .95 + sender.getValueForStat(Stat.AGILITY) - receiver.getValueForStat(Stat.AGILITY);
+		return !receiver.isParrying() && Math.random() < .95 + sender.getValueForStat(Stat.AGILITY) - receiver.getValueForStat(Stat.AGILITY);
 	}
 	
 	private boolean successCrit(Character sender) {

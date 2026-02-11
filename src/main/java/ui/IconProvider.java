@@ -55,4 +55,12 @@ public class IconProvider {
         sprite.getView().setFitHeight(size);
         return sprite;
     }
+    
+    public static AnimatedSprite getAnimatedIsStunIcon(int frameCount, int frameWidth, int frameHeight, int size, int duration) {
+        Image spriteSheet = ResourceLoader.loadImage("/images/isStun.png");
+        AnimatedSprite sprite = new AnimatedSprite(spriteSheet, frameCount, frameWidth, frameHeight, duration);
+        sprite.getView().setFitWidth(size);
+        sprite.getView().setFitHeight(size);
+        return sprite;
+    }
 }

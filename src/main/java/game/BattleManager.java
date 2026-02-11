@@ -22,6 +22,8 @@ public class BattleManager {
 	private final ObjectProperty<BattleState> state = new SimpleObjectProperty<>(BattleState.FIRSTCHOICE);
 	private StringProperty message = new SimpleStringProperty("");
     private Timeline messageTimeline;
+    
+    private static boolean playAgain = false;
 
     public BattleManager(List<Character> charactersInBattle) {
         this.charactersInBattle = charactersInBattle;
@@ -41,15 +43,20 @@ public class BattleManager {
     }
     
     private void nextTurn() {
-		charactersInBattle.get(playingIndex).setIsPlaying(false);
-    	playingIndex = (playingIndex + 1)%charactersInBattle.size();
-		charactersInBattle.get(playingIndex).setIsPlaying(true);
-		List<Stat> statsToDefault = charactersInBattle.get(playingIndex).removeOneTurnFromStats();
-		String statsToPrint = statsToDefault.stream()
-			    .map(stat -> stat.getName())
-			    .collect(Collectors.joining(", "));
-		if (statsToDefault.size() > 0)
-			showMessage("Effets sur " + statsToPrint + " terminés !", 2, BattleState.FIRSTCHOICE);
+    	if (!playAgain) {
+    		charactersInBattle.get(playingIndex).setIsPlaying(false);    		
+    		playingIndex = (playingIndex + 1)%charactersInBattle.size();
+    		charactersInBattle.get(playingIndex).setIsPlaying(true);
+    		charactersInBattle.get(playingIndex).setIsStun(false);
+    		charactersInBattle.get(playingIndex).setIsParrying(false);
+    		List<Stat> statsToDefault = charactersInBattle.get(playingIndex).removeOneTurnFromStats();
+    		String statsToPrint = statsToDefault.stream()
+    				.map(stat -> stat.getName())
+    				.collect(Collectors.joining(", "));
+    		if (statsToDefault.size() > 0)
+    			showMessage("Altération" + (statsToDefault.size() > 1?"s":"") + " sur " + statsToPrint + " de " + charactersInBattle.get(playingIndex).getName() + " terminée" + (statsToDefault.size() > 1?"s":"") + " !", 3, BattleState.FIRSTCHOICE);
+    	}
+    	playAgain = false;
 		if (charactersInBattle.get(playingIndex).isAlive()) {
 			if (isAlly(playingIndex))
 				allyTurn();
@@ -61,18 +68,18 @@ public class BattleManager {
     }
     
     private void allyTurn() {
-		charactersInBattle.get(playingIndex).setIsParrying(false);
     }
     
     private void ennemyTurn() {
-		charactersInBattle.get(playingIndex).setIsParrying(false);
 		nextTurn();
     }
     
     public ObjectProperty<BattleState> getState() {
 		return state;
 	}
-
+    
+    public static void setPlayAgain() { playAgain = true; }
+    
 	public StringProperty getMessage() {
 		return message;
 	}

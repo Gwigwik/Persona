@@ -370,7 +370,6 @@ public class BattleScene {
 		HBox spellPane = new HBox();
 		spellPane.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty());
 		spellPane.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.1));
-		spellPane.setStyle("-fx-background-color: black;");
 		spellPane.setAlignment(Pos.CENTER);
 		
 		if (spell != null) {
@@ -387,6 +386,7 @@ public class BattleScene {
 		    		spellPane.setStyle(greenBorderStyle() + "-fx-background-color: black;");
 		    	}
 		    });
+			spellPane.setStyle("-fx-background-color: black;");
 			
 			BorderPane descriptionPane = new BorderPane();
 			descriptionPane.setStyle("-fx-background-color: white;");
@@ -503,6 +503,7 @@ public class BattleScene {
 		messageLabel.setStyle("-fx-background-color: black;");
 		messageLabel.setPadding(new Insets(5, 10, 5, 10));
 		messageLabel.textProperty().bind(battleManager.getMessage());
+		messageLabel.maxWidthProperty().bind(rightPane.widthProperty().multiply(.8));
 		messagePane.widthProperty().addListener((_, _, newW) -> {
 			messageLabel.setFont(Font.font(newW.doubleValue() * 0.05));
 		});
@@ -592,6 +593,8 @@ public class BattleScene {
 		ennemyIconPane.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.7));
 		ennemyIconPane.setStyle(greenBorderStyle());
 		AnimatedSprite ennemySprite = ui.IconProvider.getAnimatedCharacterIcon(ennemy, 2, 150, 150, 150, 500);
+		AnimatedSprite isStunSprite = ui.IconProvider.getAnimatedIsStunIcon(4, 150, 150, 150, 400);
+		isStunSprite.visibleProperty().bind(ennemy.isStunProperty());
 		ImageView effectImage = new ImageView();
 		effectImage.setFitWidth(75);
 		effectImage.setFitHeight(75);
@@ -607,8 +610,9 @@ public class BattleScene {
             	}
             }
         });
-		ennemyIconPane.setCenter(new StackPane(ennemySprite.getView(), effectImage));
+		ennemyIconPane.setCenter(new StackPane(ennemySprite.getView(), isStunSprite.getView(), effectImage));
 		ennemySprite.play();
+		isStunSprite.play();
 		
 		ennemyPane.getChildren().addAll(enemyPaneSpacer1, healthBarPane, enemyPaneSpacer2, ennemyIconPane);
 		return ennemyPane;
@@ -701,8 +705,9 @@ public class BattleScene {
 		allyIconPane.prefWidthProperty().bind(allyPane.widthProperty());
 		allyIconPane.prefHeightProperty().bind(allyPane.heightProperty().multiply(.7));
 		allyIconPane.setStyle(greenBorderStyle());
-		
 		AnimatedSprite allySprite = ui.IconProvider.getAnimatedCharacterIcon(ally, 2, 150, 150, 150, 500);
+		AnimatedSprite isStunSprite = ui.IconProvider.getAnimatedIsStunIcon(4, 150, 150, 150, 400);
+		isStunSprite.visibleProperty().bind(ally.isStunProperty());
 		ImageView effectImage = new ImageView();
 		effectImage.setFitWidth(50);
 		effectImage.setFitHeight(50);
@@ -720,9 +725,10 @@ public class BattleScene {
             	}
             }
         });
-		StackPane spriteStack = new StackPane(allySprite.getView(), effectImage);
+		StackPane spriteStack = new StackPane(allySprite.getView(), isStunSprite.getView(), effectImage);
 		allyIconPane.setCenter(spriteStack);
 		allySprite.play();
+		isStunSprite.play();
 		
 		ally.isAliveProperty().addListener(
 	            (_, _, isAlive) -> {

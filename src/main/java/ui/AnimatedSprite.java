@@ -2,6 +2,7 @@ package ui;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -57,5 +58,9 @@ public class AnimatedSprite {
 
     public ImageView getView() {
         return view;
+    }
+    
+    public BooleanProperty visibleProperty() {
+        return view.visibleProperty();
     }
 }
