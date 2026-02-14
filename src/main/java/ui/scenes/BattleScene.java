@@ -593,7 +593,7 @@ public class BattleScene {
 		ennemyIconPane.prefHeightProperty().bind(ennemyPane.heightProperty().multiply(.7));
 		ennemyIconPane.setStyle(greenBorderStyle());
 		AnimatedSprite ennemySprite = ui.IconProvider.getAnimatedCharacterIcon(ennemy, 2, 150, 150, 150, 500);
-		AnimatedSprite isStunSprite = ui.IconProvider.getAnimatedIsStunIcon(4, 150, 150, 150, 400);
+		AnimatedSprite isStunSprite = ui.IconProvider.getAnimatedCommonIcon("isStun", 4, 150, 150, 150, 400);
 		isStunSprite.visibleProperty().bind(ennemy.isStunProperty());
 		ImageView effectImage = new ImageView();
 		effectImage.setFitWidth(75);
@@ -706,8 +706,8 @@ public class BattleScene {
 		allyIconPane.prefHeightProperty().bind(allyPane.heightProperty().multiply(.7));
 		allyIconPane.setStyle(greenBorderStyle());
 		AnimatedSprite allySprite = ui.IconProvider.getAnimatedCharacterIcon(ally, 2, 150, 150, 150, 500);
-		AnimatedSprite isStunSprite = ui.IconProvider.getAnimatedIsStunIcon(4, 150, 150, 150, 400);
-		isStunSprite.visibleProperty().bind(ally.isStunProperty());
+		AnimatedSprite isStunSprite = ui.IconProvider.getAnimatedCommonIcon("isStun", 4, 150, 150, 150, 400);
+		isStunSprite.visibleProperty().bind(ally.isStunProperty().and(ally.isAliveProperty()));
 		ImageView effectImage = new ImageView();
 		effectImage.setFitWidth(50);
 		effectImage.setFitHeight(50);
@@ -725,11 +725,14 @@ public class BattleScene {
             	}
             }
         });
-		StackPane spriteStack = new StackPane(allySprite.getView(), isStunSprite.getView(), effectImage);
+		ImageView isDeadImage = ui.IconProvider.getCommonIcon("isDead",	150);
+		isDeadImage.visibleProperty().bind(ally.isAliveProperty().not());
+		ImageView isParryingImage = ui.IconProvider.getCommonIcon("isParrying",	150);
+		isParryingImage.visibleProperty().bind(ally.isParryingProperty());
+		StackPane spriteStack = new StackPane(allySprite.getView(), isStunSprite.getView(), isParryingImage, isDeadImage);
 		allyIconPane.setCenter(spriteStack);
 		allySprite.play();
 		isStunSprite.play();
-		
 		ally.isAliveProperty().addListener(
 	            (_, _, isAlive) -> {
 	                if (isAlive) {

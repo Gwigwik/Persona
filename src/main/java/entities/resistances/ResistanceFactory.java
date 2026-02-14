@@ -14,7 +14,7 @@ public class ResistanceFactory {
         
         map = getResistances(Arrays.asList(
         		Resistance.NEUTRAL,
-        		Resistance.ABSORB,
+        		Resistance.NEUTRAL,
         		Resistance.WEAK,
         		Resistance.WEAK,
         		Resistance.STRONG,

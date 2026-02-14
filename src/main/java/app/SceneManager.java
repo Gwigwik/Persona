@@ -28,8 +28,4 @@ public class SceneManager {
             System.err.println("Scene '" + type + "' not found");
         }
     }
-
-    public Scene getCurrentScene() {
-        return stage.getScene();
-    }
 }

@@ -40,7 +40,7 @@ public enum Spell {
 	MEDIARAMA("Mediarama", SpellElement.HEAL, 12, "Rend la moitié de sa vie à tous les alliés", true, true),
 	MEDIARAHAN("Mediarahan", SpellElement.HEAL, 30, "Rend toute sa vie à tous les alliés", true, true),
 	RECARM("Recarm", SpellElement.HEAL, 8, "Réanime un allié avec la moitié de sa vie", true, false),
-	SAMARECARM("Samarecarm", SpellElement.HEAL, 20, "Réanime un allié avec toute sa vie", true, false),
+	SAMARECARM("Samarecarm", SpellElement.HEAL, 20, "Réanime un allié avec toute sa vie", true, true),
 	//Buffs/Debuffs
 	TARUKAJA("Tarukaha", SpellElement.STAT, 8, "Augmente l'attaque d'un allié pour 3 tours", true, false),
 	MATARUKAJA("Matarukaja", SpellElement.STAT, 24, "Augmente l'attaque de tous les alliés pour 3 tours", true, true),
@@ -129,12 +129,16 @@ public enum Spell {
 					receiver.setCurrentHP(receiver.getMaxHP());
 					break;
 				case RECARM:
-					receiver.setIsAlive(true);
-					receiver.setCurrentHP(receiver.getMaxHP()/2);
+					if (!receiver.isAlive()) {
+						receiver.setIsAlive(true);
+						receiver.setCurrentHP(receiver.getMaxHP()/2);
+					}
 					break;
 				case SAMARECARM:
-					receiver.setIsAlive(true);
-					receiver.setCurrentHP(receiver.getMaxHP());
+					if (!receiver.isAlive()) {
+						receiver.setIsAlive(true);
+						receiver.setCurrentHP(receiver.getMaxHP());
+					}
 					break;
 				//Buff/Debuff
 				case TARUKAJA, MATARUKAJA:
@@ -201,8 +205,8 @@ public enum Spell {
 	
 	private void neutralDamage(Character sender, Character receiver) {
 		if (successHitting(sender, receiver)) {
-			if (successCrit(sender)) {
-				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+			if (successCrit(sender, receiver)) {
+				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE))/(receiver.isParrying()?2:1)));
 				if (!receiver.isParrying()) {
 					if (!receiver.getIsStun())
 						BattleManager.setPlayAgain();
@@ -210,7 +214,7 @@ public enum Spell {
 				}
 				showAttackEffect(receiver, Resistance.WEAK);
 			} else {				
-				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+				receiver.setCurrentHP((int) (receiver.getCurrentHP()-(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE))/(receiver.isParrying()?2:1)));
 				showAttackEffect(receiver, Resistance.NEUTRAL);
 			}
 			receiver.setIsParrying(false);
@@ -221,7 +225,7 @@ public enum Spell {
 
 	private void strongDamage(Character sender, Character receiver) {
 		if (successHitting(sender, receiver)) {			
-			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(12.5*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(12.5*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE))/(receiver.isParrying()?2:1)));
 			showAttackEffect(receiver, Resistance.STRONG);
 			receiver.setIsParrying(false);
 		} else {
@@ -231,7 +235,7 @@ public enum Spell {
 
 	private void weakDamage(Character sender, Character receiver) {
 		if (successHitting(sender, receiver)) {
-			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+			receiver.setCurrentHP((int) (receiver.getCurrentHP()-(50*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE))/(receiver.isParrying()?2:1)));
 			if (!receiver.isParrying()) {
 				if (!receiver.getIsStun())
 					BattleManager.setPlayAgain();
@@ -249,7 +253,7 @@ public enum Spell {
 	}
 
 	private void absorbDamage(Character sender, Character receiver) {
-		receiver.setCurrentHP((int) (receiver.getCurrentHP()+(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE)))/(receiver.isParrying()?2:1));
+		receiver.setCurrentHP((int) (receiver.getCurrentHP()+(25*sender.getValueForStat(Stat.ATTACK)/receiver.getValueForStat(Stat.DEFENSE))));
 		showAttackEffect(receiver, Resistance.ABSORB);
 	}
 
@@ -283,11 +287,11 @@ public enum Spell {
 	}
 
 	private boolean successHitting(Character sender, Character receiver) {
-		return !receiver.isParrying() && Math.random() < .95 + sender.getValueForStat(Stat.AGILITY) - receiver.getValueForStat(Stat.AGILITY);
+		return Math.random() < .95 + sender.getValueForStat(Stat.AGILITY) - receiver.getValueForStat(Stat.AGILITY);
 	}
 	
-	private boolean successCrit(Character sender) {
-		return Math.random() < sender.getValueForStat(Stat.CRITICAL);
+	private boolean successCrit(Character sender, Character receiver) {
+		return !receiver.isParrying() && Math.random() < sender.getValueForStat(Stat.CRITICAL);
 	}
 	
 }

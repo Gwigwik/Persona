@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import app.SceneManager;
+import app.SceneType;
 import entities.Character;
 import entities.spells.Spell;
 import entities.stats.Stat;
@@ -22,11 +24,13 @@ public class BattleManager {
 	private final ObjectProperty<BattleState> state = new SimpleObjectProperty<>(BattleState.FIRSTCHOICE);
 	private StringProperty message = new SimpleStringProperty("");
     private Timeline messageTimeline;
+    private SceneManager sceneManager;
     
     private static boolean playAgain = false;
 
-    public BattleManager(List<Character> charactersInBattle) {
+    public BattleManager(List<Character> charactersInBattle, SceneManager sceneManager) {
         this.charactersInBattle = charactersInBattle;
+        this.sceneManager = sceneManager;
         charactersInBattle.get(playingIndex).setIsPlaying(true);
     }
 
@@ -43,28 +47,33 @@ public class BattleManager {
     }
     
     private void nextTurn() {
-    	if (!playAgain) {
-    		charactersInBattle.get(playingIndex).setIsPlaying(false);    		
-    		playingIndex = (playingIndex + 1)%charactersInBattle.size();
-    		charactersInBattle.get(playingIndex).setIsPlaying(true);
-    		charactersInBattle.get(playingIndex).setIsStun(false);
-    		charactersInBattle.get(playingIndex).setIsParrying(false);
-    		List<Stat> statsToDefault = charactersInBattle.get(playingIndex).removeOneTurnFromStats();
-    		String statsToPrint = statsToDefault.stream()
-    				.map(stat -> stat.getName())
-    				.collect(Collectors.joining(", "));
-    		if (statsToDefault.size() > 0)
-    			showMessage("Altération" + (statsToDefault.size() > 1?"s":"") + " sur " + statsToPrint + " de " + charactersInBattle.get(playingIndex).getName() + " terminée" + (statsToDefault.size() > 1?"s":"") + " !", 3, BattleState.FIRSTCHOICE);
+    	if (!anyAllyAlive()) {
+    		showMessage("Perdu !", 2, BattleState.PLAYERLOST);
+    		sceneManager.switchTo(SceneType.MENU);
+    	} else {
+	    	if (!playAgain) {
+	    		charactersInBattle.get(playingIndex).setIsPlaying(false);    		
+	    		playingIndex = (playingIndex + 1)%charactersInBattle.size();
+	    		charactersInBattle.get(playingIndex).setIsPlaying(true);
+	    		charactersInBattle.get(playingIndex).setIsStun(false);
+	    		charactersInBattle.get(playingIndex).setIsParrying(false);
+	    		List<Stat> statsToDefault = charactersInBattle.get(playingIndex).removeOneTurnFromStats();
+	    		String statsToPrint = statsToDefault.stream()
+	    				.map(stat -> stat.getName())
+	    				.collect(Collectors.joining(", "));
+	    		if (statsToDefault.size() > 0)
+	    			showMessage("Altération" + (statsToDefault.size() > 1?"s":"") + " sur " + statsToPrint + " de " + charactersInBattle.get(playingIndex).getName() + " terminée" + (statsToDefault.size() > 1?"s":"") + " !", 3, BattleState.FIRSTCHOICE);
+	    	}
+	    	playAgain = false;
+			if (charactersInBattle.get(playingIndex).isAlive()) {
+				if (isAlly(playingIndex))
+					allyTurn();
+				else
+					ennemyTurn();
+			} else {
+				nextTurn();
+			}
     	}
-    	playAgain = false;
-		if (charactersInBattle.get(playingIndex).isAlive()) {
-			if (isAlly(playingIndex))
-				allyTurn();
-			else
-				ennemyTurn();
-		} else {
-			nextTurn();
-		}
     }
     
     private void allyTurn() {
@@ -72,6 +81,16 @@ public class BattleManager {
     
     private void ennemyTurn() {
 		nextTurn();
+    }
+    
+    private boolean anyAllyAlive() {
+    	for (int i = 0; i < charactersInBattle.size(); i++) {
+    	    Character character = charactersInBattle.get(i);
+    	    if (character.isAlive() && isAlly(i)) {
+    	    	return true;
+    	    }
+    	}
+    	return false;
     }
     
     public ObjectProperty<BattleState> getState() {
@@ -149,6 +168,14 @@ public class BattleManager {
 				nextTurn();
 				break;
 			case PERSONAATTACKSELECTION:
+				if ((spellSelected == Spell.RECARM || spellSelected == Spell.SAMARECARM) && charactersInBattle.get(index).isAlive()) {
+					showMessage("Impossible de lancer ce sort sur un allié en vie !", 2, state.get());
+					break;
+				}
+				if (spellSelected != Spell.RECARM && spellSelected != Spell.SAMARECARM && !charactersInBattle.get(index).isAlive() && spellSelected.targetAllies() && isAlly(index)) {
+					showMessage("Impossible de lancer ce sort sur un allié à terre !", 2, state.get());
+					break;
+				}
 				if (spellSelected.isGlobal()) {
 					if (spellSelected.targetAllies() && isAlly(index)) {
 						spellSelected.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(0), charactersInBattle.get(2), charactersInBattle.get(4))));
