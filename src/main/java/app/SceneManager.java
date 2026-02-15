@@ -22,7 +22,14 @@ public class SceneManager {
     public void switchTo(SceneType type) {
         Scene scene = scenes.get(type);
         if (scene != null) {
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+
             stage.setScene(scene);
+
+            stage.setWidth(width);
+            stage.setHeight(height);
+
             stage.show();
         } else {
             System.err.println("Scene '" + type + "' not found");

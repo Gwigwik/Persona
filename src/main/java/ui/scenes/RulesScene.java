@@ -20,7 +20,6 @@ public class RulesScene {
 
     public RulesScene(SceneManager sceneManager) {
 	    BorderPane globalPane = new BorderPane();
-	    globalPane.setPrefSize(1400, 800);
 	    globalPane.setStyle("-fx-background-color: grey;");
 	    
 	    VBox rulesPane = new VBox();
@@ -32,6 +31,7 @@ public class RulesScene {
 	    		+ "Survole un ennemi pour connaître ses statistiques et résistances\n"
 	    		+ "En mode difficile, tu ne connais pas les résistances d'un ennemi avant de l'avoir touché avec un sort de cet élément\n"
 	    		+ "Choisissez les kits de sorts pour chacun de vos personnages\n"
+	    		+ "Joker tape à distance, Makoto et Yu tape à l'épée\n"
 	    		+ "Eliminer tous les ennemis pour gagner !");
 
 	    title.setTextFill(Color.WHITE);
@@ -48,6 +48,8 @@ public class RulesScene {
 		    	sceneManager.switchTo(SceneType.SPELLKITSELECTION);
 		    }
 		});
+	    continueButton.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+	    continueButton.setFocusTraversable(false);
 	    rulesPane.getChildren().addAll(title, continueButton);
 	    globalPane.setCenter(rulesPane);
 

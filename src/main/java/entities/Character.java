@@ -12,10 +12,14 @@ import entities.stats.Stat;
 import entities.stats.StatStatus;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Character {
 
@@ -26,7 +30,7 @@ public class Character {
 	private int maxAP;
 	private IntegerProperty currentAP = new SimpleIntegerProperty();
 	private SpellElement attackType;
-	private List<Spell> spells;
+	private ListProperty<Spell> spells = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private Map<SpellElement, Resistance> resistances;
 	private Map<SpellElement, Boolean> discoveredResistances;
 	private Map<Stat, Double> stats;
@@ -45,7 +49,7 @@ public class Character {
 		this.maxAP = maxAP;
 		this.currentAP.set(maxAP);
 		this.attackType = attackType;
-		this.spells = spells;
+		this.spells.setAll(spells);
 		this.resistances = resistances;
 		this.discoveredResistances = discoveredResistances;
 		this.stats = stats;
@@ -110,10 +114,16 @@ public class Character {
 		return attackType;
 	}
 	
-	public Spell getISpell(int i) {
-		if (i >= 0 && i < spells.size())
-			return spells.get(i);
-		return null;
+	public ObservableList<Spell> getSpells() {
+	    return spells.get();
+	}
+
+	public ListProperty<Spell> spellsProperty() {
+	    return spells;
+	}
+	
+	public void setSpellKit(List<Spell> spells) {
+	    this.spells.setAll(spells);
 	}
 	
 	public Resistance getResistanceForElement(SpellElement element) {

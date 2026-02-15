@@ -29,15 +29,14 @@ public class Main extends Application {
         stage.setMinWidth(1050);
         stage.setMinHeight(600);
 
+        Character joker = new Character("Joker", 400, 200, true, SpellElement.PHYSICAL, SpellFactory.emptySpellKit(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character makoto = new Character("Makoto", 400, 200, true, SpellElement.GUN, SpellFactory.emptySpellKit(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        Character yu = new Character("Yu", 400, 200, true, SpellElement.PHYSICAL, SpellFactory.emptySpellKit(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
+        
         sceneManager.addScene(SceneType.MENU, new MenuScene(sceneManager).getScene());
         sceneManager.addScene(SceneType.INITIALSETTINGS, new InitialSettingsScene(sceneManager).getScene());
         sceneManager.addScene(SceneType.RULES, new RulesScene(sceneManager).getScene());
         
-        sceneManager.addScene(SceneType.SPELLKITSELECTION, new SpellKitSelectionScene(sceneManager).getScene());
-        
-        Character joker = new Character("Joker", 400, 200, true, SpellElement.PHYSICAL, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
-        Character makoto = new Character("Makoto", 400, 200, true, SpellElement.GUN, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
-        Character yu = new Character("Yu", 400, 200, true, SpellElement.PHYSICAL, SpellFactory.characterSpells(), ResistanceFactory.characterResistances(), ResistanceFactory.initialDiscoveredResistancesTrue(), StatFactory.CharacterStats(), "pompon");
         
 //      Chat 1
         
@@ -53,6 +52,9 @@ public class Main extends Application {
         charactersInBattle1.add(yu);
         charactersInBattle1.add(sophie);
         BattleManager battleManager1= new BattleManager(charactersInBattle1, sceneManager);
+        
+
+        sceneManager.addScene(SceneType.SPELLKITSELECTION, new SpellKitSelectionScene(sceneManager, battleManager1, joker, makoto, yu).getScene());
         sceneManager.addScene(SceneType.BATTLE1, new BattleScene(battleManager1).getScene());
         
         sceneManager.switchTo(SceneType.MENU);

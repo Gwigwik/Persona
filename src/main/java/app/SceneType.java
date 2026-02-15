@@ -21,5 +21,5 @@ public enum SceneType {
 	BATTLE7,
 	CHATFINAL,
 	RETRY,
-	CREDITS
+	CREDITS;
 }

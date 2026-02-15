@@ -124,7 +124,6 @@ public class BattleScene {
     	this.battleManager = battleManagerParam;
     	
 	    HBox globalPane = new HBox();
-	    globalPane.setPrefSize(1400, 800);
 	    globalPane.setStyle("-fx-background-color: grey;");
 	    
 	    //------------------------------ Attacks, persona, defend, stats, elements... ------------------------------
@@ -346,13 +345,8 @@ public class BattleScene {
 		personaSpellSelectionPane.setAlignment(Pos.CENTER);
 		personaSpellSelectionPane.setStyle(redBorderStyle());
 
-		for (int i = 0; i < 5; i++) {
-			Spell spell = battleManager.getCurrentCharacter().getISpell(i);
-			HBox spellPane = getISpellPane(spell, i);
-			VBox.setMargin(spellPane, new Insets(0, 0, 10, 0));
-			personaSpellSelectionPane.getChildren().add(spellPane);
-		}
-		
+	    battleManager.spellActualizer().get();
+
 		Button cancelAttackButton = new Button("RETOUR");
 		cancelAttackButton.setFocusTraversable(false);
 		cancelAttackButton.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty().multiply(.4));
@@ -363,10 +357,25 @@ public class BattleScene {
 			cancelAttackButton.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newW.doubleValue() * .05));
 		});
 
+		battleManager.spellActualizer().addListener(_ -> {
+			Character current = battleManager.getCurrentCharacter();
+	        if (current != null) {
+	            personaSpellSelectionPane.getChildren().clear();
+	
+	            for (Spell spell : current.getSpells()) {
+	            	HBox spellPane = getISpellPane(spell);
+	                VBox.setMargin(spellPane, new Insets(0, 0, 10, 0));
+	                personaSpellSelectionPane.getChildren().add(spellPane);
+	            }
+	
+	            personaSpellSelectionPane.getChildren().add(cancelAttackButton);
+	        }
+	    });
+
 		personaSpellSelectionPane.getChildren().add(cancelAttackButton);
 	}
-
-	private HBox getISpellPane(Spell spell, int i) {
+	
+	private HBox getISpellPane(Spell spell) {
 		HBox spellPane = new HBox();
 		spellPane.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty());
 		spellPane.prefHeightProperty().bind(personaSpellSelectionPane.heightProperty().multiply(.1));

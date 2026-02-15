@@ -11,7 +11,9 @@ import entities.spells.Spell;
 import entities.stats.Stat;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -25,7 +27,8 @@ public class BattleManager {
 	private StringProperty message = new SimpleStringProperty("");
     private Timeline messageTimeline;
     private SceneManager sceneManager;
-    
+    private IntegerProperty spellActualizer = new SimpleIntegerProperty(0);
+
     private static boolean playAgain = false;
 
     public BattleManager(List<Character> charactersInBattle, SceneManager sceneManager) {
@@ -77,6 +80,15 @@ public class BattleManager {
     }
     
     private void allyTurn() {
+    	setSpellActualizer();
+    }
+
+    public IntegerProperty spellActualizer() {
+        return spellActualizer;
+    }
+
+    public void setSpellActualizer() {
+        spellActualizer.set((spellActualizer.get()+1%2));
     }
     
     private void ennemyTurn() {
@@ -168,7 +180,7 @@ public class BattleManager {
 				nextTurn();
 				break;
 			case PERSONAATTACKSELECTION:
-				if ((spellSelected == Spell.RECARM || spellSelected == Spell.SAMARECARM) && charactersInBattle.get(index).isAlive()) {
+				if ((spellSelected == Spell.RECARM || spellSelected == Spell.SAMARECARM) && charactersInBattle.get(index).isAlive() && isAlly(index)) {
 					showMessage("Impossible de lancer ce sort sur un allié en vie !", 2, state.get());
 					break;
 				}

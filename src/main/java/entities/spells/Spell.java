@@ -23,11 +23,9 @@ public enum Spell {
 	EIGAON("Eigaon", SpellElement.CURSED, 12, "Dégats maudits à un ennemi", false, false),
 	GIDOLAON("Gidolaon", SpellElement.TRUEDAMAGE, 15, "Dégats bruts à un ennemi", false, false),
 	//Attaques sur plusieurs ennemis
-	MAPHYSIQUE("MaPhysique", SpellElement.PHYSICAL, 0, "Dégats physiques à tous les ennemis", false, true),
-	MAPISTOLET("MaPistolet", SpellElement.GUN, 0, "Dégats perforants à tous les ennemis", false, true),
 	MARAGIDYNE("Maragidyne", SpellElement.FIRE, 25, "Dégats de feu à tous les ennemis", false, true),
 	MABUFUDYNE("Mabufudyne", SpellElement.ICE, 25, "Dégats de glace à tous les ennemis", false, true),
-	MARIODYNE("Maziodyne", SpellElement.ELECTRIC, 25, "Dégats électriques à tous les ennemis", false, true),
+	MAZIODYNE("Maziodyne", SpellElement.ELECTRIC, 25, "Dégats électriques à tous les ennemis", false, true),
 	MAGARUDYNE("Magarudyne", SpellElement.WIND, 25, "Dégats de vent à tous les ennemis", false, true),
 	MAPSIODYNE("Mapsiodyne", SpellElement.PSY, 25, "Dégats psys à tous les ennemis", false, true),
 	MAFREIDYNE("Mafreidyne", SpellElement.NUCLEAR, 25, "Dégats nucléaires à tous les ennemis", false, true),
@@ -94,7 +92,7 @@ public enum Spell {
 				case PHYSIQUE, PISTOLET:
 					sender.setCurrentAP(sender.getCurrentAP() + sender.getMaxAP()/20);
 				case AGIDYNE, BUFUDYNE, ZIODYNE, GARUDYNE, PSIODYNE, FREIDYNE, KOUGAON, EIGAON,
-				MARAGIDYNE, MABUFUDYNE, MARIODYNE, MAGARUDYNE, MAPSIODYNE, MAFREIDYNE, MAKOUGAON, MAEIGAON:
+				MARAGIDYNE, MABUFUDYNE, MAZIODYNE, MAGARUDYNE, MAPSIODYNE, MAFREIDYNE, MAKOUGAON, MAEIGAON:
 					switch (receiver.getResistanceForElement(this.getElement())) {
 						case NEUTRAL:
 							neutralDamage(sender, receiver);

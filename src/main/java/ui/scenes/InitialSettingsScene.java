@@ -16,7 +16,6 @@ public class InitialSettingsScene {
 
     public InitialSettingsScene(SceneManager sceneManager) {
 	    BorderPane globalPane = new BorderPane();
-	    globalPane.setPrefSize(1400, 800);
 	    globalPane.setStyle("-fx-background-color: grey;");
 	    
 	    VBox settingsPane = new VBox();
@@ -29,6 +28,8 @@ public class InitialSettingsScene {
 		    	sceneManager.switchTo(SceneType.RULES);
 		    }
 		});
+	    continueButton.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+	    continueButton.setFocusTraversable(false);
 	    settingsPane.getChildren().addAll(difficulté, textSpeed, continueButton);
 	    globalPane.setCenter(settingsPane);
 
