@@ -122,50 +122,61 @@ public enum Spell {
 				//Heal
 				case DIARAMA, MEDIARAMA:
 					receiver.setCurrentHP(receiver.getCurrentHP() + receiver.getMaxHP()/2);
+					showAttackEffect(receiver, Resistance.ABSORB);
 					break;
 				case DIARAHAN, MEDIARAHAN:
 					receiver.setCurrentHP(receiver.getMaxHP());
+					showAttackEffect(receiver, Resistance.ABSORB);
 					break;
 				case RECARM:
 					if (!receiver.isAlive()) {
 						receiver.setIsAlive(true);
 						receiver.setCurrentHP(receiver.getMaxHP()/2);
+						showAttackEffect(receiver, Resistance.ABSORB);
 					}
 					break;
 				case SAMARECARM:
 					if (!receiver.isAlive()) {
 						receiver.setIsAlive(true);
 						receiver.setCurrentHP(receiver.getMaxHP());
+						showAttackEffect(receiver, Resistance.ABSORB);
 					}
 					break;
 				//Buff/Debuff
 				case TARUKAJA, MATARUKAJA:
 					receiver.upgradeStat(Stat.ATTACK);
 					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case TARUNDA, MATARUNDA:
 					receiver.decreaseStat(Stat.ATTACK);
 					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case RAKUKAJA, MARAKUKAJA:
 					receiver.upgradeStat(Stat.DEFENSE);
 					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case RAKUNDA, MARAKUNDA:
 					receiver.decreaseStat(Stat.DEFENSE);
 					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case SUKUKAJA, MASUKUKAJA:
 					receiver.upgradeStat(Stat.AGILITY);
 					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case SUKUNDA, MASUKUNDA:
 					receiver.decreaseStat(Stat.AGILITY);
 					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case REBELLION, REVOLUTION:
 					receiver.upgradeStat(Stat.CRITICAL);
 					receiver.setRemainingTurnsStat(Stat.CRITICAL, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case HEATRISER:
 					receiver.upgradeStat(Stat.ATTACK);
@@ -174,6 +185,7 @@ public enum Spell {
 					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
 					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
 					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				case DEBILITATE:
 					receiver.decreaseStat(Stat.ATTACK);
@@ -182,6 +194,7 @@ public enum Spell {
 					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
 					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
 					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+					showAttackEffect(receiver, Resistance.WEAK);
 					break;
 				default:
 		            System.out.println("Spell not implemented");
@@ -194,8 +207,8 @@ public enum Spell {
 		character.setAttackEffect(attackEffect);
 	    Timeline timeline = new Timeline(
 	            new KeyFrame(
-	                Duration.seconds(1),
-	                _ -> character.setAttackEffect(Resistance.UNKNOWN)
+	                Duration.seconds(2),
+	                _ -> character.setAttackEffect(Resistance.NONE)
 	            )
 	        );
 	    timeline.play();

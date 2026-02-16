@@ -7,7 +7,8 @@ public enum Resistance {
 	WEAK("weak"),
 	NULL("null"),
 	ABSORB("absorb"),
-	RETURN("return");
+	RETURN("return"),
+	NONE("none");
 	
 	private final String fileName;
 

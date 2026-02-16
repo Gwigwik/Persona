@@ -2,7 +2,9 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import app.SceneManager;
 import app.SceneType;
@@ -51,32 +53,47 @@ public class BattleManager {
     
     private void nextTurn() {
     	if (!anyAllyAlive()) {
-    		showMessage("Perdu !", 2, BattleState.PLAYERLOST);
+    		showMessage("Perdu !", 2, BattleState.PLAYERLOST, false);
     		sceneManager.switchTo(SceneType.MENU);
     	} else {
-	    	if (!playAgain) {
-	    		charactersInBattle.get(playingIndex).setIsPlaying(false);    		
-	    		playingIndex = (playingIndex + 1)%charactersInBattle.size();
-	    		charactersInBattle.get(playingIndex).setIsPlaying(true);
-	    		charactersInBattle.get(playingIndex).setIsStun(false);
-	    		charactersInBattle.get(playingIndex).setIsParrying(false);
-	    		List<Stat> statsToDefault = charactersInBattle.get(playingIndex).removeOneTurnFromStats();
-	    		String statsToPrint = statsToDefault.stream()
-	    				.map(stat -> stat.getName())
-	    				.collect(Collectors.joining(", "));
-	    		if (statsToDefault.size() > 0)
-	    			showMessage("Altération" + (statsToDefault.size() > 1?"s":"") + " sur " + statsToPrint + " de " + charactersInBattle.get(playingIndex).getName() + " terminée" + (statsToDefault.size() > 1?"s":"") + " !", 3, BattleState.FIRSTCHOICE);
-	    	}
-	    	playAgain = false;
-			if (charactersInBattle.get(playingIndex).isAlive()) {
-				if (isAlly(playingIndex))
-					allyTurn();
-				else
-					ennemyTurn();
-			} else {
-				nextTurn();
-			}
+    		if (!anyEnnemyAlive()) {
+    			resetCharacter(charactersInBattle.get(0));
+    			resetCharacter(charactersInBattle.get(2));
+    			resetCharacter(charactersInBattle.get(4));
+    			playAgain = false;
+        		sceneManager.switchTo(SceneType.BATTLE2);
+    		} else {
+		    	if (!playAgain) {
+		    		charactersInBattle.get(playingIndex).setIsPlaying(false);    		
+		    		playingIndex = (playingIndex + 1)%charactersInBattle.size();
+		    		charactersInBattle.get(playingIndex).setIsPlaying(true);
+		    		charactersInBattle.get(playingIndex).setIsStun(false);
+		    		charactersInBattle.get(playingIndex).setIsParrying(false);
+		    		if (charactersInBattle.get(playingIndex).isAlive()) {
+			    		List<Stat> statsToDefault = charactersInBattle.get(playingIndex).removeOneTurnFromStats();
+			    		String statsToPrint = statsToDefault.stream()
+			    				.map(stat -> stat.getName())
+			    				.collect(Collectors.joining(", "));
+			    		if (statsToDefault.size() > 0)
+			    			showMessage("Altération" + (statsToDefault.size() > 1?"s":"") + " sur " + statsToPrint + " de " + charactersInBattle.get(playingIndex).getName() + " terminée" + (statsToDefault.size() > 1?"s":"") + " !", 3, BattleState.FIRSTCHOICE, false);
+		    		}
+		    	}
+		    	playAgain = false;
+				if (charactersInBattle.get(playingIndex).isAlive()) {
+					if (isAlly(playingIndex))
+						allyTurn();
+					else
+						ennemyTurn();
+				} else {
+					nextTurn();
+				}
+    		}
     	}
+    }
+    
+    private void resetCharacter(Character character) {
+    	character.setCurrentHP(character.getMaxHP());
+    	character.setCurrentAP(character.getMaxAP());
     }
     
     private void allyTurn() {
@@ -92,13 +109,114 @@ public class BattleManager {
     }
     
     private void ennemyTurn() {
-		nextTurn();
+    	Character ennemyPlaying = charactersInBattle.get(playingIndex);
+    	switch (ennemyPlaying.getName()) {
+    		case "Matt":
+    			switch (ennemyPlaying.getSpells().get(ThreadLocalRandom.current().nextInt(1))) {
+    				case EIGAON:
+    					Character allyTargeted = getRandomAllyAlive();
+    					Spell.EIGAON.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
+    					showMessage("Matt lance Eigaon sur " + allyTargeted.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+    				case MAEIGAON:
+    					Spell.MAEIGAON.spellEffect(ennemyPlaying, getAllAlliesAlive());
+    					showMessage("Matt lance Maeigaon", 2, BattleState.FIRSTCHOICE, true);
+    					break;
+    				default:
+    			}
+    			break;
+    		case "Sophie", "Manon":
+    			Character matt = charactersInBattle.get(1);
+    			if (matt.isAlive()) {
+    				if (matt.getCurrentHP() < matt.getMaxHP()) {
+    					Spell.DIARAMA.spellEffect(ennemyPlaying, new ArrayList<>(List.of(matt))); //heal
+						showMessage(ennemyPlaying.getName() + " lance Diarama sur Matt", 2, BattleState.FIRSTCHOICE, true);
+    				}
+    				else {
+    					ennemyPlaying.getSpells().get(1).spellEffect(ennemyPlaying, new ArrayList<>(List.of(matt))); //buff
+						showMessage(ennemyPlaying.getName() + " lance " + ennemyPlaying.getSpells().get(1).getName() + " sur Matt", 2, BattleState.FIRSTCHOICE, true);
+    				}
+    			} else {
+					Spell.RECARM.spellEffect(ennemyPlaying, new ArrayList<>(List.of(matt))); //revive
+					showMessage(ennemyPlaying.getName() + " lance Recarm sur Matt", 2, BattleState.FIRSTCHOICE, true);
+    			}
+    			break;
+    		case "Flo":
+				switch (ThreadLocalRandom.current().nextInt(5)) {
+					case 0, 1:
+    					Character allyTargeted = getRandomAllyAlive();
+    					Spell.PSIODYNE.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
+    					showMessage("Flo lance " + Spell.PSIODYNE.getName() + " sur " + allyTargeted.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 2, 3, 4:
+						Spell.MAPSIODYNE.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Flo lance " + Spell.MAPSIODYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 5:
+						Spell.MASUKUKAJA.spellEffect(ennemyPlaying, new ArrayList<>(getAllEnnemiesAlive()));
+    					showMessage("Flo lance " + Spell.MASUKUKAJA.getName(), 2, BattleState.FIRSTCHOICE, true);
+						break;
+				}
+    		case "Hugo":
+				switch (ThreadLocalRandom.current().nextInt(5)) {
+					case 0, 1:
+    					Character allyTargeted = getRandomAllyAlive();
+    					Spell.FREIDYNE.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
+    					showMessage("Hugo lance " + Spell.FREIDYNE.getName() + " sur " + allyTargeted.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 2, 3, 4:
+						Spell.MAFREIDYNE.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Hugo lance " + Spell.MAFREIDYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 5:
+						Spell.MASUKUNDA.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Hugo lance " + Spell.MASUKUNDA.getName(), 2, BattleState.FIRSTCHOICE, true);
+						break;
+				}
+    			break;
+    		default:
+    	}
+    }
+    
+    private List<Character> getAllAlliesAlive() {
+		List<Character> allies = IntStream.range(0, 5)
+		        .filter(i -> i % 2 == 0)
+		        .mapToObj(charactersInBattle::get)
+		        .toList();   
+		return allies.stream()
+		        .filter(c -> c.isAlive())
+		        .collect(Collectors.toList());
+    }
+    
+    private Character getRandomAllyAlive() {
+    	List<Character> alliesAlive = getAllAlliesAlive();
+		return alliesAlive.get(ThreadLocalRandom.current().nextInt(alliesAlive.size()));
+    }
+
+    private List<Character> getAllEnnemiesAlive() {
+		List<Character> ennemies = IntStream.range(0, 5)
+		        .filter(i -> i % 2 != 0)
+		        .mapToObj(charactersInBattle::get)
+		        .toList();   
+		return ennemies.stream()
+		        .filter(c -> c.isAlive())
+		        .collect(Collectors.toList());
     }
     
     private boolean anyAllyAlive() {
     	for (int i = 0; i < charactersInBattle.size(); i++) {
     	    Character character = charactersInBattle.get(i);
     	    if (character.isAlive() && isAlly(i)) {
+    	    	return true;
+    	    }
+    	}
+    	return false;
+    }
+    
+    private boolean anyEnnemyAlive() {
+    	for (int i = 0; i < charactersInBattle.size(); i++) {
+    	    Character character = charactersInBattle.get(i);
+    	    if (character.isAlive() && !isAlly(i)) {
     	    	return true;
     	    }
     	}
@@ -115,13 +233,13 @@ public class BattleManager {
 		return message;
 	}
 	
-	public void showMessage(String text, double duration, BattleState nextState) {
+	public void showMessage(String text, double duration, BattleState nextState, boolean nextTurn) {
 		state.set(BattleState.MESSAGEDISPLAYING);
         message.set(text);
         if (messageTimeline != null)
         	messageTimeline.stop();
         messageTimeline = new Timeline(
-            new KeyFrame(Duration.seconds(duration), _ -> { message.set(""); state.set(nextState); })
+            new KeyFrame(Duration.seconds(duration), _ -> { message.set(""); state.set(nextState); if (nextTurn) nextTurn(); })
         );
         messageTimeline.setCycleCount(1);
         messageTimeline.play();
@@ -154,7 +272,7 @@ public class BattleManager {
 	
 	public void spellPersonaClicked(Spell spell) {
 		if (spell.getAPCost() > charactersInBattle.get(playingIndex).getCurrentAP()) {
-			showMessage("AP insuffisants !", 2, BattleState.PERSONASPELLSELECTION);
+			showMessage("AP insuffisants !", 2, BattleState.PERSONASPELLSELECTION, false);
 		} else {
 			spellSelected = spell;
 			state.set(BattleState.PERSONAATTACKSELECTION);
@@ -165,8 +283,8 @@ public class BattleManager {
 		Character playingCharacter = charactersInBattle.get(playingIndex);
 		switch (state.get()) {
 			case ATTACKSELECTION:
-//				if (isAlly(index)) TODO a remettre quand les tests sont finis et ajouter les check de en vie ou non pour resurrect (et inverse pour le reste)
-//					return;
+				if (isAlly(index))
+					return;
 				switch (playingCharacter.getAttackType()) {
 					case PHYSICAL:
 						Spell.PHYSIQUE.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(index))));
@@ -176,34 +294,30 @@ public class BattleManager {
 						break;
 					default:
 				}
-				showMessage(playingCharacter.getName() + " récupère des PA", 1.5, BattleState.FIRSTCHOICE);
-				nextTurn();
+				showMessage(playingCharacter.getName() + " récupère des PA", 1.5, BattleState.FIRSTCHOICE, true);
 				break;
 			case PERSONAATTACKSELECTION:
 				if ((spellSelected == Spell.RECARM || spellSelected == Spell.SAMARECARM) && charactersInBattle.get(index).isAlive() && isAlly(index)) {
-					showMessage("Impossible de lancer ce sort sur un allié en vie !", 2, state.get());
+					showMessage("Impossible de lancer ce sort sur un allié en vie !", 2, state.get(), false);
 					break;
 				}
 				if (spellSelected != Spell.RECARM && spellSelected != Spell.SAMARECARM && !charactersInBattle.get(index).isAlive() && spellSelected.targetAllies() && isAlly(index)) {
-					showMessage("Impossible de lancer ce sort sur un allié à terre !", 2, state.get());
+					showMessage("Impossible de lancer ce sort sur un allié à terre !", 2, state.get(), false);
 					break;
 				}
 				if (spellSelected.isGlobal()) {
 					if (spellSelected.targetAllies() && isAlly(index)) {
 						spellSelected.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(0), charactersInBattle.get(2), charactersInBattle.get(4))));
-						state.set(BattleState.FIRSTCHOICE);
-						nextTurn();
+						showMessage(playingCharacter.getName() + " lance " + spellSelected.getName(), 2, BattleState.FIRSTCHOICE, true);
 					}
 					if (!spellSelected.targetAllies() && !isAlly(index)) {
 						spellSelected.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(1), charactersInBattle.get(3), charactersInBattle.get(5))));
-						state.set(BattleState.FIRSTCHOICE);
-						nextTurn();
+						showMessage(playingCharacter.getName() + " lance " + spellSelected.getName(), 2, BattleState.FIRSTCHOICE, true);
 					}
 				} else {
 					if ((spellSelected.targetAllies() && isAlly(index)) || (!spellSelected.targetAllies() && !isAlly(index))) {
 						spellSelected.spellEffect(playingCharacter, new ArrayList<>(List.of(charactersInBattle.get(index))));
-						state.set(BattleState.FIRSTCHOICE);
-						nextTurn();
+						showMessage(playingCharacter.getName() + " lance " + spellSelected.getName() + " sur " + charactersInBattle.get(index).getName(), 2, BattleState.FIRSTCHOICE, true);
 					}
 				}
 				break;

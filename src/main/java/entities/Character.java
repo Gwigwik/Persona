@@ -38,7 +38,7 @@ public class Character {
 	private BooleanProperty isStun = new SimpleBooleanProperty();
 	private BooleanProperty isParrying = new SimpleBooleanProperty();
 	private BooleanProperty isPlaying = new SimpleBooleanProperty();
-	private ObjectProperty<Resistance> attackEffect = new SimpleObjectProperty<>(Resistance.UNKNOWN); 
+	private ObjectProperty<Resistance> attackEffect = new SimpleObjectProperty<>(Resistance.NONE); 
 	private String imagePath;
 	
 	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, List<Spell> spells, Map<SpellElement, Resistance> resistances, Map<SpellElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
@@ -82,9 +82,8 @@ public class Character {
 				stats.replaceAll(((stat, _) -> stat.getDefaultValue()));
 				remainingTurnsStats.replaceAll((_, _) -> 0);
 				isStun.set(false);
-			} else {
+			} else
 				this.currentHP.set(Math.min(currentHP, maxHP));
-			}
 		}
 	}
 	

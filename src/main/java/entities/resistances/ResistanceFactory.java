@@ -10,23 +10,80 @@ import entities.spells.SpellElement;
 public class ResistanceFactory {
 
     public static Map<SpellElement, Resistance> characterResistances() {
-        Map<SpellElement, Resistance> map = new EnumMap<>(SpellElement.class);
-        
-        map = getResistances(Arrays.asList(
+       return getResistances(Arrays.asList(
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
-        		Resistance.WEAK,
-        		Resistance.WEAK,
-        		Resistance.STRONG,
-        		Resistance.WEAK,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL)
         );
-        return map;
+    }
+    
+    public static Map<SpellElement, Resistance> getMattResistances() {
+       return getResistances(Arrays.asList(
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.WEAK,
+        		Resistance.STRONG)
+        );
     }
 
+    public static Map<SpellElement, Resistance> getSophieManonResistances() {
+        return getResistances(Arrays.asList(
+         		Resistance.ABSORB,
+         		Resistance.ABSORB,
+         		Resistance.WEAK,
+         		Resistance.WEAK,
+         		Resistance.WEAK,
+         		Resistance.WEAK,
+         		Resistance.WEAK,
+         		Resistance.WEAK,
+         		Resistance.WEAK,
+         		Resistance.WEAK)
+         );
+    }
+
+    public static Map<SpellElement, Resistance> getFloResistances() {
+       return getResistances(Arrays.asList(
+        		Resistance.WEAK,
+        		Resistance.WEAK,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.RETURN,
+        		Resistance.ABSORB,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL)
+        );
+    }
+
+    public static Map<SpellElement, Resistance> getHugoResistances() {
+       return getResistances(Arrays.asList(
+        		Resistance.WEAK,
+        		Resistance.WEAK,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.ABSORB,
+        		Resistance.RETURN,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL)
+        );
+    }
+    
     public static Map<SpellElement, Resistance> getResistances(List<Resistance> resistances) {
         Map<SpellElement, Resistance> resistancesMap = new EnumMap<>(SpellElement.class);
 

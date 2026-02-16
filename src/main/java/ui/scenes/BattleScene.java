@@ -612,7 +612,7 @@ public class BattleScene {
             protected javafx.scene.image.Image computeValue() {
             	Resistance attackEffect = battleManager.getICharacter(ennemyIndex).getAttackEffect().get();
 				switch (attackEffect) {
-            		case NEUTRAL, ABSORB, NULL, RETURN, STRONG, WEAK:
+            		case NEUTRAL, ABSORB, NULL, RETURN, STRONG, WEAK, UNKNOWN:
             			return ui.IconProvider.getCharacterResIcon(attackEffect, 100).getImage();
             		default:
             			return null;
@@ -725,9 +725,7 @@ public class BattleScene {
             protected javafx.scene.image.Image computeValue() {
             	Resistance attackEffect = battleManager.getICharacter(allyIndex).getAttackEffect().get();
 				switch (attackEffect) {
-            		case UNKNOWN:
-            			return null;
-            		case NEUTRAL, ABSORB, NULL, RETURN, STRONG, WEAK:
+            		case NEUTRAL, ABSORB, NULL, RETURN, STRONG, WEAK, UNKNOWN:
             			return ui.IconProvider.getCharacterResIcon(attackEffect, 100).getImage();
             		default:
             			return null;
@@ -738,8 +736,7 @@ public class BattleScene {
 		isDeadImage.visibleProperty().bind(ally.isAliveProperty().not());
 		ImageView isParryingImage = ui.IconProvider.getCommonIcon("isParrying",	150);
 		isParryingImage.visibleProperty().bind(ally.isParryingProperty());
-		StackPane spriteStack = new StackPane(allySprite.getView(), isStunSprite.getView(), isParryingImage, isDeadImage);
-		allyIconPane.setCenter(spriteStack);
+		allyIconPane.setCenter(new StackPane(allySprite.getView(), isStunSprite.getView(), isParryingImage, isDeadImage, effectImage));
 		allySprite.play();
 		isStunSprite.play();
 		ally.isAliveProperty().addListener(
