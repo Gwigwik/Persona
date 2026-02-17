@@ -41,8 +41,7 @@ public class SpellFactory {
 	public static List<Spell> getFloSpellKit() {
 		return Arrays.asList(
 				Spell.PSIODYNE,
-				Spell.MAPSIODYNE,
-				Spell.MASUKUKAJA);
+				Spell.MAPSIODYNE);
 	}
 
 	public static List<Spell> getHugoSpellKit() {
@@ -50,6 +49,33 @@ public class SpellFactory {
 				Spell.FREIDYNE,
 				Spell.MAFREIDYNE,
 				Spell.MASUKUNDA);
+	}
+
+	public static List<Spell> getMaraSpellKit() {
+		return Arrays.asList(
+				Spell.GARUDYNE,
+				Spell.MAGARUDYNE,
+				Spell.MASUKUKAJA);
+	}
+	
+	public static List<Spell> getAdrienSpellKit() {
+		return Arrays.asList(
+				Spell.AGIDYNE,
+				Spell.MARAGIDYNE,
+				Spell.MATARUNDA);
+	}
+
+	public static List<Spell> getNeoliSpellKit() {
+		return Arrays.asList(
+				Spell.ZIODYNE,
+				Spell.MAZIODYNE,
+				Spell.MARAKUKAJA);
+	}
+
+	public static List<Spell> getBriceSpellKit() {
+		return Arrays.asList(
+				Spell.BUFUDYNE,
+				Spell.MABUFUDYNE);
 	}
 	
 	public static List<Spell> getISpellKit(int i) {
@@ -100,7 +126,7 @@ public class SpellFactory {
 				return Arrays.asList(
 						Spell.BUFUDYNE,
 						Spell.MAGARUDYNE,
-						Spell.MEDIARAMA,
+						Spell.MEDIARAHAN,
 						Spell.MARAKUKAJA,
 						Spell.RAKUNDA);
 			case 7:
@@ -115,8 +141,8 @@ public class SpellFactory {
 						Spell.EIGAON,
 						Spell.MAEIGAON,
 						Spell.PSIODYNE,
-						Spell.MATARUKAJA,
-						Spell.RECARM);
+						Spell.RECARM,
+						Spell.MATARUKAJA);
 			case 9:
 				return Arrays.asList(
 						Spell.KOUGAON,

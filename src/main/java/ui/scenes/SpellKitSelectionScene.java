@@ -40,7 +40,7 @@ public class SpellKitSelectionScene {
         return scene;
     }
 
-    public SpellKitSelectionScene(SceneManager sceneManager, BattleManager battleManager, Character joker, Character makoto, Character yu) {
+    public SpellKitSelectionScene(SceneManager sceneManager, List<BattleManager> battleManagers, Character joker, Character makoto, Character yu) {
 	    VBox globalPane = new VBox();
 	    globalPane.setStyle("-fx-background-color: grey;");
 	    globalPane.setAlignment(Pos.CENTER);
@@ -59,7 +59,9 @@ public class SpellKitSelectionScene {
 	    		joker.setSpellKit(SpellFactory.getISpellKit(jokerKitIndice.get()));
 	    		makoto.setSpellKit(SpellFactory.getISpellKit(makotoKitIndice.get()));
 	    		yu.setSpellKit(SpellFactory.getISpellKit(yuKitIndice.get()));
-	    		battleManager.setSpellActualizer();
+	    		battleManagers.forEach(battleManager -> {
+	    			battleManager.setSpellActualizer();
+	    		});
 		    	sceneManager.switchTo(SceneType.BATTLE1);
 		    }
 		});

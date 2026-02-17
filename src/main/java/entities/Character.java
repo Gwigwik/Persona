@@ -66,6 +66,17 @@ public class Character {
 		return name;
 	}
 	
+	public void resetCharacter() {
+    	currentHP.set(getMaxHP());
+    	currentAP.set(getMaxAP());
+    	setIsPlaying(false);
+    	setIsParrying(false);
+    	setIsStun(false);
+		setIsAlive(true);
+		stats.replaceAll(((stat, _) -> stat.getDefaultValue()));
+		remainingTurnsStats.replaceAll((_, _) -> 0);
+	}
+	
 	public int getMaxHP() {
 		return maxHP;
 	}
@@ -85,6 +96,14 @@ public class Character {
 			} else
 				this.currentHP.set(Math.min(currentHP, maxHP));
 		}
+	}
+	
+	public void res(int hp) {
+		this.isAlive.set(true);
+    	setIsParrying(false);
+    	setIsStun(false);
+		setIsAlive(true);
+		this.currentHP.set(hp);
 	}
 	
 	public IntegerProperty currentHPProperty() {

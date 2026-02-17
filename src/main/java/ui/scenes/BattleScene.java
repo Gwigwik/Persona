@@ -345,8 +345,6 @@ public class BattleScene {
 		personaSpellSelectionPane.setAlignment(Pos.CENTER);
 		personaSpellSelectionPane.setStyle(redBorderStyle());
 
-	    battleManager.spellActualizer().get();
-
 		Button cancelAttackButton = new Button("RETOUR");
 		cancelAttackButton.setFocusTraversable(false);
 		cancelAttackButton.prefWidthProperty().bind(personaSpellSelectionPane.widthProperty().multiply(.4));

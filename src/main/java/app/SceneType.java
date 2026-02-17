@@ -3,7 +3,6 @@ package app;
 public enum SceneType {
 	MENU,
 	INITIALSETTINGS,
-	RULES,
 	SPELLKITSELECTION,
 	CHAT1,
 	BATTLE1,

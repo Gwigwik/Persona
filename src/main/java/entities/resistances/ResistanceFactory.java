@@ -49,8 +49,8 @@ public class ResistanceFactory {
          		Resistance.WEAK,
          		Resistance.WEAK,
          		Resistance.WEAK,
-         		Resistance.WEAK,
-         		Resistance.WEAK)
+         		Resistance.NEUTRAL,
+         		Resistance.NEUTRAL)
          );
     }
 
@@ -61,7 +61,7 @@ public class ResistanceFactory {
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
+        		Resistance.RETURN,
         		Resistance.RETURN,
         		Resistance.ABSORB,
         		Resistance.NEUTRAL,
@@ -76,11 +76,41 @@ public class ResistanceFactory {
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL,
-        		Resistance.NEUTRAL,
+        		Resistance.RETURN,
         		Resistance.ABSORB,
         		Resistance.RETURN,
         		Resistance.NEUTRAL,
         		Resistance.NEUTRAL)
+        );
+    }
+
+    public static Map<SpellElement, Resistance> getMaraResistances() {
+       return getResistances(Arrays.asList(
+        		Resistance.WEAK,
+        		Resistance.WEAK,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.ABSORB,
+        		Resistance.RETURN,
+        		Resistance.RETURN,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL)
+        );
+    }
+
+    public static Map<SpellElement, Resistance> getAdrienNeoliBriceResistances() {
+       return getResistances(Arrays.asList(
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NULL,
+        		Resistance.NULL,
+        		Resistance.NULL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.NEUTRAL,
+        		Resistance.RETURN,
+        		Resistance.WEAK)
         );
     }
     

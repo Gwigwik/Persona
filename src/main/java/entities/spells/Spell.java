@@ -33,10 +33,10 @@ public enum Spell {
 	MAEIGAON("Maeigaon", SpellElement.CURSED, 25, "Dégats maudits à tous les ennemis", false, true),
 	MEGIDOLAON("Megidolaon", SpellElement.TRUEDAMAGE, 32, "Dégats bruts à tous les ennemis", false, true),
 	//Heal
-	DIARAMA("Diarama", SpellElement.HEAL, 6, "Rend la moitié de sa vie à un allié", true, false),
-	DIARAHAN("Diarahan", SpellElement.HEAL, 18, "Rend toute sa vie à un allié", true, false),
-	MEDIARAMA("Mediarama", SpellElement.HEAL, 12, "Rend la moitié de sa vie à tous les alliés", true, true),
-	MEDIARAHAN("Mediarahan", SpellElement.HEAL, 30, "Rend toute sa vie à tous les alliés", true, true),
+	DIARAMA("Diarama", SpellElement.HEAL, 6, "Rend le quart de sa vie à un allié", true, false),
+	DIARAHAN("Diarahan", SpellElement.HEAL, 18, "Rend la moitié de sa vie à un allié", true, false),
+	MEDIARAMA("Mediarama", SpellElement.HEAL, 12, "Rend le quart de sa vie à tous les alliés", true, true),
+	MEDIARAHAN("Mediarahan", SpellElement.HEAL, 30, "Rend la moitié de sa vie à tous les alliés", true, true),
 	RECARM("Recarm", SpellElement.HEAL, 8, "Réanime un allié avec la moitié de sa vie", true, false),
 	SAMARECARM("Samarecarm", SpellElement.HEAL, 20, "Réanime un allié avec toute sa vie", true, true),
 	//Buffs/Debuffs
@@ -121,80 +121,96 @@ public enum Spell {
 					break;
 				//Heal
 				case DIARAMA, MEDIARAMA:
-					receiver.setCurrentHP(receiver.getCurrentHP() + receiver.getMaxHP()/2);
+					receiver.setCurrentHP(receiver.getCurrentHP() + receiver.getMaxHP()/4);
 					showAttackEffect(receiver, Resistance.ABSORB);
 					break;
 				case DIARAHAN, MEDIARAHAN:
-					receiver.setCurrentHP(receiver.getMaxHP());
+					receiver.setCurrentHP(receiver.getCurrentHP() + receiver.getMaxHP()/2);
 					showAttackEffect(receiver, Resistance.ABSORB);
 					break;
 				case RECARM:
 					if (!receiver.isAlive()) {
-						receiver.setIsAlive(true);
-						receiver.setCurrentHP(receiver.getMaxHP()/2);
+						receiver.res(receiver.getMaxHP()/2+1);
 						showAttackEffect(receiver, Resistance.ABSORB);
 					}
 					break;
 				case SAMARECARM:
 					if (!receiver.isAlive()) {
-						receiver.setIsAlive(true);
-						receiver.setCurrentHP(receiver.getMaxHP());
+						receiver.res(receiver.getMaxHP()+1);
 						showAttackEffect(receiver, Resistance.ABSORB);
 					}
 					break;
 				//Buff/Debuff
 				case TARUKAJA, MATARUKAJA:
-					receiver.upgradeStat(Stat.ATTACK);
-					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.upgradeStat(Stat.ATTACK);
+						receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case TARUNDA, MATARUNDA:
-					receiver.decreaseStat(Stat.ATTACK);
-					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.decreaseStat(Stat.ATTACK);
+						receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case RAKUKAJA, MARAKUKAJA:
-					receiver.upgradeStat(Stat.DEFENSE);
-					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.upgradeStat(Stat.DEFENSE);
+						receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case RAKUNDA, MARAKUNDA:
-					receiver.decreaseStat(Stat.DEFENSE);
-					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.decreaseStat(Stat.DEFENSE);
+						receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case SUKUKAJA, MASUKUKAJA:
-					receiver.upgradeStat(Stat.AGILITY);
-					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.upgradeStat(Stat.AGILITY);
+						receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case SUKUNDA, MASUKUNDA:
-					receiver.decreaseStat(Stat.AGILITY);
-					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.decreaseStat(Stat.AGILITY);
+						receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case REBELLION, REVOLUTION:
-					receiver.upgradeStat(Stat.CRITICAL);
-					receiver.setRemainingTurnsStat(Stat.CRITICAL, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.upgradeStat(Stat.CRITICAL);
+						receiver.setRemainingTurnsStat(Stat.CRITICAL, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case HEATRISER:
-					receiver.upgradeStat(Stat.ATTACK);
-					receiver.upgradeStat(Stat.DEFENSE);
-					receiver.upgradeStat(Stat.AGILITY);
-					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
-					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
-					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.upgradeStat(Stat.ATTACK);
+						receiver.upgradeStat(Stat.DEFENSE);
+						receiver.upgradeStat(Stat.AGILITY);
+						receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+						receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+						receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				case DEBILITATE:
-					receiver.decreaseStat(Stat.ATTACK);
-					receiver.decreaseStat(Stat.DEFENSE);
-					receiver.decreaseStat(Stat.AGILITY);
-					receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
-					receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
-					receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
-					showAttackEffect(receiver, Resistance.WEAK);
+					if (receiver.isAlive()) {
+						receiver.decreaseStat(Stat.ATTACK);
+						receiver.decreaseStat(Stat.DEFENSE);
+						receiver.decreaseStat(Stat.AGILITY);
+						receiver.setRemainingTurnsStat(Stat.ATTACK, 4);
+						receiver.setRemainingTurnsStat(Stat.DEFENSE, 4);
+						receiver.setRemainingTurnsStat(Stat.AGILITY, 4);
+						showAttackEffect(receiver, Resistance.WEAK);
+					}
 					break;
 				default:
 		            System.out.println("Spell not implemented");

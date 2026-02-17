@@ -22,6 +22,7 @@ import javafx.beans.property.StringProperty;
 import javafx.util.Duration;
 
 public class BattleManager {
+	private SceneType nextScene;
 	private final List<Character> charactersInBattle;
 	private int playingIndex = 0;
 	private Spell spellSelected;
@@ -33,7 +34,8 @@ public class BattleManager {
 
     private static boolean playAgain = false;
 
-    public BattleManager(List<Character> charactersInBattle, SceneManager sceneManager) {
+    public BattleManager(List<Character> charactersInBattle, SceneManager sceneManager, SceneType nextScene) {
+    	this.nextScene = nextScene;
         this.charactersInBattle = charactersInBattle;
         this.sceneManager = sceneManager;
         charactersInBattle.get(playingIndex).setIsPlaying(true);
@@ -57,11 +59,12 @@ public class BattleManager {
     		sceneManager.switchTo(SceneType.MENU);
     	} else {
     		if (!anyEnnemyAlive()) {
-    			resetCharacter(charactersInBattle.get(0));
-    			resetCharacter(charactersInBattle.get(2));
-    			resetCharacter(charactersInBattle.get(4));
+    			charactersInBattle.get(0).resetCharacter();
+    			charactersInBattle.get(2).resetCharacter();
+    			charactersInBattle.get(4).resetCharacter();
     			playAgain = false;
-        		sceneManager.switchTo(SceneType.BATTLE2);
+        		sceneManager.switchTo(nextScene);
+    			charactersInBattle.get(0).setIsPlaying(true);
     		} else {
 		    	if (!playAgain) {
 		    		charactersInBattle.get(playingIndex).setIsPlaying(false);    		
@@ -91,11 +94,6 @@ public class BattleManager {
     	}
     }
     
-    private void resetCharacter(Character character) {
-    	character.setCurrentHP(character.getMaxHP());
-    	character.setCurrentAP(character.getMaxAP());
-    }
-    
     private void allyTurn() {
     	setSpellActualizer();
     }
@@ -112,7 +110,7 @@ public class BattleManager {
     	Character ennemyPlaying = charactersInBattle.get(playingIndex);
     	switch (ennemyPlaying.getName()) {
     		case "Matt":
-    			switch (ennemyPlaying.getSpells().get(ThreadLocalRandom.current().nextInt(1))) {
+    			switch (ennemyPlaying.getSpells().get(ThreadLocalRandom.current().nextInt(2))) {
     				case EIGAON:
     					Character allyTargeted = getRandomAllyAlive();
     					Spell.EIGAON.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
@@ -152,13 +150,10 @@ public class BattleManager {
 						Spell.MAPSIODYNE.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
     					showMessage("Flo lance " + Spell.MAPSIODYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
     					break;
-					case 5:
-						Spell.MASUKUKAJA.spellEffect(ennemyPlaying, new ArrayList<>(getAllEnnemiesAlive()));
-    					showMessage("Flo lance " + Spell.MASUKUKAJA.getName(), 2, BattleState.FIRSTCHOICE, true);
-						break;
 				}
+				break;
     		case "Hugo":
-				switch (ThreadLocalRandom.current().nextInt(5)) {
+				switch (ThreadLocalRandom.current().nextInt(6)) {
 					case 0, 1:
     					Character allyTargeted = getRandomAllyAlive();
     					Spell.FREIDYNE.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
@@ -174,12 +169,76 @@ public class BattleManager {
 						break;
 				}
     			break;
+    		case "Mara":
+				switch (ThreadLocalRandom.current().nextInt(6)) {
+					case 0, 1:
+    					Character allyTargeted = getRandomAllyAlive();
+    					Spell.GARUDYNE.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
+    					showMessage("Mara lance " + Spell.GARUDYNE.getName() + " sur " + allyTargeted.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 2, 3, 4:
+						Spell.MAGARUDYNE.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Mara lance " + Spell.MAGARUDYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 5:
+						Spell.MASUKUKAJA.spellEffect(ennemyPlaying, new ArrayList<>(getAllEnnemiesAlive()));
+    					showMessage("Mara lance " + Spell.MASUKUKAJA.getName(), 2, BattleState.FIRSTCHOICE, true);
+						break;
+				}
+    			break;
+    		case "Adrien":
+				switch (ThreadLocalRandom.current().nextInt(6)) {
+					case 0, 1:
+    					Character allyTargeted = getRandomAllyAlive();
+    					Spell.AGIDYNE.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
+    					showMessage("Adrien lance " + Spell.AGIDYNE.getName() + " sur " + allyTargeted.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 2, 3, 4:
+						Spell.MARAGIDYNE.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Adrien lance " + Spell.MARAGIDYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 5:
+						Spell.MATARUNDA.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Adrien lance " + Spell.MATARUNDA.getName(), 2, BattleState.FIRSTCHOICE, true);
+						break;
+				}
+    			break;
+    		case "Neoli":
+				switch (ThreadLocalRandom.current().nextInt(6)) {
+					case 0, 1:
+    					Character allyTargeted = getRandomAllyAlive();
+    					Spell.ZIODYNE.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
+    					showMessage("Neoli lance " + Spell.ZIODYNE.getName() + " sur " + allyTargeted.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 2, 3, 4:
+						Spell.MAZIODYNE.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Neoli lance " + Spell.MAZIODYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 5:
+						Spell.MARAKUKAJA.spellEffect(ennemyPlaying, new ArrayList<>(getAllEnnemiesAlive()));
+    					showMessage("Neoli lance " + Spell.MARAKUKAJA.getName(), 2, BattleState.FIRSTCHOICE, true);
+						break;
+				}
+    			break;
+    		case "Brice":
+				switch (ThreadLocalRandom.current().nextInt(5)) {
+					case 0, 1:
+    					Character allyTargeted = getRandomAllyAlive();
+    					Spell.BUFUDYNE.spellEffect(ennemyPlaying, new ArrayList<>(List.of(allyTargeted)));
+    					showMessage("Brice lance " + Spell.BUFUDYNE.getName() + " sur " + allyTargeted.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+					case 2, 3, 4:
+						Spell.MABUFUDYNE.spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+    					showMessage("Brice lance " + Spell.MABUFUDYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
+    					break;
+				}
+    			break;
     		default:
     	}
     }
     
     private List<Character> getAllAlliesAlive() {
-		List<Character> allies = IntStream.range(0, 5)
+		List<Character> allies = IntStream.range(0, 6)
 		        .filter(i -> i % 2 == 0)
 		        .mapToObj(charactersInBattle::get)
 		        .toList();   
@@ -194,7 +253,7 @@ public class BattleManager {
     }
 
     private List<Character> getAllEnnemiesAlive() {
-		List<Character> ennemies = IntStream.range(0, 5)
+		List<Character> ennemies = IntStream.range(0, 6)
 		        .filter(i -> i % 2 != 0)
 		        .mapToObj(charactersInBattle::get)
 		        .toList();   
@@ -263,7 +322,7 @@ public class BattleManager {
 	
 	public void firstChoiceParry() {
 		charactersInBattle.get(playingIndex).setIsParrying(true);
-		nextTurn();
+		showMessage(charactersInBattle.get(playingIndex).getName() + " se prépare à parer", 2, BattleState.FIRSTCHOICE, true);
 	}
 	
 	public void firstChoicePersona() {
