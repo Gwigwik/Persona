@@ -53,8 +53,32 @@ public class BattleManager {
     	return index%2 == 0;
     }
     
+    private void playVictorySequence() {
+        showMessage("...", 3, BattleState.MESSAGEDISPLAYING, false);
+
+        messageTimeline.setOnFinished(_ -> {
+            showMessage("Pompon : Enfin débarassé de ces boloss", 3, BattleState.MESSAGEDISPLAYING, false);
+            messageTimeline.setOnFinished(_ -> {
+                showMessage("Pompon : Merci chef, tié un tigre", 3, BattleState.MESSAGEDISPLAYING, false);
+                messageTimeline.setOnFinished(_ -> {
+                    showMessage("Pompon : Que le Six Seven soit avec toi", 3, BattleState.MESSAGEDISPLAYING, false);
+	                messageTimeline.setOnFinished(_ -> {
+	                	charactersInBattle.get(1).setIsAlive(false);
+	                    showMessage("- Pompon repart dans la nature -", 3, BattleState.PLAYERWON, false);
+	                    messageTimeline.setOnFinished(_ -> {
+	                        sceneManager.switchTo(nextScene);
+	                    });
+	                });
+                });
+            });
+        });
+    }
+    
     private void nextTurn() {
-    	if (!anyAllyAlive()) {
+    	//Fin
+		if (nextScene == SceneType.CREDITS && !charactersInBattle.get(3).isAlive() && !charactersInBattle.get(5).isAlive()) {
+			playVictorySequence();
+		} else if (!anyAllyAlive()) {
     		showMessage("Perdu !", 2, BattleState.PLAYERLOST, false);
     		sceneManager.switchTo(SceneType.MENU);
     	} else {
@@ -232,6 +256,17 @@ public class BattleManager {
     					showMessage("Brice lance " + Spell.MABUFUDYNE.getName(), 2, BattleState.FIRSTCHOICE, true);
     					break;
 				}
+    			break;
+    		case "Pompon":
+    			Character leo = charactersInBattle.get(3);
+    			Character lisa = charactersInBattle.get(5);
+    			if (leo.isAlive() && lisa.isAlive()) {
+					showMessage("Pompon regarde ses deux maitres se battre", 2, BattleState.FIRSTCHOICE, true);
+    			} else if (leo.isAlive()) {
+					showMessage("Pompon regarde Leo avec pitié", 2, BattleState.FIRSTCHOICE, true);
+    			} else if (lisa.isAlive()) {
+					showMessage("Pompon regarde Lisa avec pitié", 2, BattleState.FIRSTCHOICE, true);
+    			}
     			break;
     		default:
     	}

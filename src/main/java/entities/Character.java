@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import entities.resistances.Resistance;
+import entities.resistances.ResistanceFactory;
 import entities.spells.Spell;
 import entities.spells.SpellElement;
 import entities.stats.Stat;
@@ -41,7 +42,7 @@ public class Character {
 	private ObjectProperty<Resistance> attackEffect = new SimpleObjectProperty<>(Resistance.NONE); 
 	private String imagePath;
 	
-	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, List<Spell> spells, Map<SpellElement, Resistance> resistances, Map<SpellElement, Boolean> discoveredResistances, Map<Stat, Double> stats, String imagePath) {
+	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, List<Spell> spells, Map<SpellElement, Resistance> resistances, Map<Stat, Double> stats, String imagePath) {
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
@@ -51,7 +52,7 @@ public class Character {
 		this.attackType = attackType;
 		this.spells.setAll(spells);
 		this.resistances = resistances;
-		this.discoveredResistances = discoveredResistances;
+		this.discoveredResistances = ResistanceFactory.initialDiscoveredResistancesTrue();
 		this.stats = stats;
 		this.remainingTurnsStats = new EnumMap<>(Stat.class);
 		remainingTurnsStats.put(Stat.ATTACK, 0);
@@ -262,6 +263,10 @@ public class Character {
 	
 	public void setDiscoveredResistance(SpellElement element, boolean discovered) {
 		discoveredResistances.put(element, discovered);
+	}
+	
+	public void hideResistances() {
+		discoveredResistances = ResistanceFactory.initialDiscoveredResistancesFalse();
 	}
 
 	public String getFileName() {

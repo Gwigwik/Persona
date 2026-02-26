@@ -114,6 +114,51 @@ public class ResistanceFactory {
         );
     }
     
+    public static Map<SpellElement, Resistance> getPomponResistances() {
+	    return getResistances(Arrays.asList(
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN,
+	     		Resistance.RETURN)
+	     );
+    }
+    
+    public static Map<SpellElement, Resistance> getLeoResistances() {
+    	return getResistances(Arrays.asList(
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG)
+    	);
+    }
+
+    public static Map<SpellElement, Resistance> getLisaResistances() {
+    	return getResistances(Arrays.asList(
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK,
+    			Resistance.STRONG,
+    			Resistance.WEAK)
+    	);
+    }
+    
     public static Map<SpellElement, Resistance> getResistances(List<Resistance> resistances) {
         Map<SpellElement, Resistance> resistancesMap = new EnumMap<>(SpellElement.class);
 
