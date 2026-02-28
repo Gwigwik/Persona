@@ -7,7 +7,7 @@ set BUILD_DIR=%~dp0build
 set DIST_DIR=%~dp0dist
 set RUNTIME_DIR=%~dp0runtime-persona
 set MODULE_NAME=Persona
-set VERSION=1.0
+set VERSION=1.1
 
 echo Creation du JAR modulaire...
 cd build
