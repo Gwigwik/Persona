@@ -84,6 +84,7 @@ public class BattleScene {
     VBox firstChoicePane = new VBox();
     BorderPane attackSelectionPane = new BorderPane();
     VBox personaSpellSelectionPane = new VBox();
+    BorderPane retryPane = new BorderPane();
 
 	Label messageLabel = new Label();
 	
@@ -132,6 +133,7 @@ public class BattleScene {
 		setFirstChoicePane();
 		setAttackSelectionPane();
 		setPersonnaSpellSelectionPane();
+		setRetryPane();
 	    
 	    Region globalPaneSpacer = new Region();
         globalPaneSpacer.prefWidthProperty().bind(globalPane.widthProperty().multiply(0.10));
@@ -171,7 +173,7 @@ public class BattleScene {
 		
 		actionPane.setStyle(greenBorderStyle());
 		actionPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.55));
-		actionPane.getChildren().addAll(firstChoicePane, attackSelectionPane, personaSpellSelectionPane);
+		actionPane.getChildren().addAll(firstChoicePane, attackSelectionPane, personaSpellSelectionPane, retryPane);
 
 		setAllyStatsPane(leftPane);
 		allyStatsPane.prefHeightProperty().bind(leftPane.heightProperty().multiply(0.1));
@@ -449,6 +451,24 @@ public class BattleScene {
 		return spellPane;
 	}
 	
+	private void setRetryPane() {
+		retryPane.visibleProperty().bind(battleManager.getState().isEqualTo(BattleState.PLAYERLOST));
+		retryPane.prefWidthProperty().bind(actionPane.widthProperty());
+		retryPane.prefHeightProperty().bind(actionPane.heightProperty());
+		retryPane.setStyle(purpleBorderStyle());
+		
+		Button retryButton = new Button("Réessayer");
+		retryButton.setFocusTraversable(false);
+		retryButton.prefWidthProperty().bind(retryPane.widthProperty().multiply(.4));
+		retryButton.setStyle(buttonStyle());
+		retryButton.setOnAction(_ -> battleManager.retryBattle());
+		retryPane.widthProperty().addListener((_, _, newW) -> {
+			retryButton.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, newW.doubleValue() * .05));
+		});
+		
+		retryPane.setCenter(retryButton);
+	}
+	
 	private void setAllyStatsPane(VBox leftPane) {
 		allyStatsPane.setStyle(greenBorderStyle());
 		allyStatsPane.setAlignment(Pos.CENTER);
@@ -716,8 +736,8 @@ public class BattleScene {
 		AnimatedSprite isStunSprite = ui.IconProvider.getAnimatedCommonIcon("isStun", 4, 150, 150, 150, 400);
 		isStunSprite.visibleProperty().bind(ally.isStunProperty().and(ally.isAliveProperty()));
 		ImageView effectImage = new ImageView();
-		effectImage.setFitWidth(50);
-		effectImage.setFitHeight(50);
+		effectImage.setFitWidth(75);
+		effectImage.setFitHeight(75);
 		effectImage.imageProperty().bind(new ObjectBinding<>() {
             { super.bind(battleManager.getICharacter(allyIndex).getAttackEffect()); }
             protected javafx.scene.image.Image computeValue() {

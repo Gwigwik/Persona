@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class StatFactory {
 
-    public static Map<Stat, Double> CharacterStats() {
+    public static Map<Stat, Double> characterStats() {
         Map<Stat, Double> map = new EnumMap<>(Stat.class);
         
         map = getStats(Arrays.asList(

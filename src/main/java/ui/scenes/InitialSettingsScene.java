@@ -12,9 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Popup;
 
 public class InitialSettingsScene {
@@ -36,9 +38,14 @@ public class InitialSettingsScene {
 		});
 	    easyButton.setStyle("-fx-background-color: black; -fx-text-fill: white;");
 	    easyButton.setFocusTraversable(false);
+	    easyButton.prefWidthProperty().bind(settingsPane.widthProperty().multiply(.1));
+	    easyButton.prefHeightProperty().bind(settingsPane.heightProperty().multiply(.1));
+	    settingsPane.widthProperty().addListener((_, _, newW) -> {
+			easyButton.setFont(Font.font("Arial", FontWeight.BOLD, newW.doubleValue() * .02));
+		});
 		BorderPane easyPane = new BorderPane();
 		easyPane.setStyle("-fx-background-color: white;");
-		Label easyLabel = new Label("Les résistances des ennemis sont dévoilées dès le début du combat");
+		Label easyLabel = new Label(" [RECOMMANDÉ] Les résistances des ennemis sont dévoilées dès le début du combat ");
 		easyLabel.setFont(Font.font(16));
 		easyLabel.setTextFill(Color.BLACK);
 		easyPane.setCenter(easyLabel);
@@ -56,6 +63,9 @@ public class InitialSettingsScene {
 			easyPopup.hide();
 		});
 		
+		Region spacer = new Region();
+		spacer.prefHeightProperty().bind(settingsPane.heightProperty().multiply(.1));
+		
 	    Button hardButton = new Button("Difficile");
 	    hardButton.setOnMouseClicked(event -> {
 		    if (event.getButton() == MouseButton.PRIMARY) {
@@ -67,9 +77,14 @@ public class InitialSettingsScene {
 		});
 	    hardButton.setStyle("-fx-background-color: black; -fx-text-fill: white;");
 	    hardButton.setFocusTraversable(false);
+	    hardButton.prefWidthProperty().bind(settingsPane.widthProperty().multiply(.1));
+	    hardButton.prefHeightProperty().bind(settingsPane.heightProperty().multiply(.1));
+	    settingsPane.widthProperty().addListener((_, _, newW) -> {
+	    	hardButton.setFont(Font.font("Arial", FontWeight.BOLD, newW.doubleValue() * .02));
+		});
 	    BorderPane hardPane = new BorderPane();
 	    hardPane.setStyle("-fx-background-color: white;");
-		Label hardLabel = new Label("Les résistances des ennemis sont cachées jusqu'à ce que vous les frappiez dans un élément");
+		Label hardLabel = new Label(" Les résistances des ennemis sont inconnues jusqu'à ce que vous les frappiez dans un élément ");
 		hardLabel.setFont(Font.font(16));
 		hardLabel.setTextFill(Color.BLACK);
 		hardPane.setCenter(hardLabel);
@@ -86,7 +101,7 @@ public class InitialSettingsScene {
 		hardButton.addEventHandler(MouseEvent.MOUSE_EXITED, _ -> {
 			hardPopoup.hide();
 		});
-	    settingsPane.getChildren().addAll(easyButton, hardButton);
+	    settingsPane.getChildren().addAll(easyButton, spacer, hardButton);
 	    globalPane.setCenter(settingsPane);
 
         scene = new Scene(globalPane);

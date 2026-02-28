@@ -75,12 +75,10 @@ public class BattleManager {
     }
     
     private void nextTurn() {
-    	//Fin
 		if (nextScene == SceneType.CREDITS && !charactersInBattle.get(3).isAlive() && !charactersInBattle.get(5).isAlive()) {
 			playVictorySequence();
 		} else if (!anyAllyAlive()) {
     		showMessage("Perdu !", 2, BattleState.PLAYERLOST, false);
-    		sceneManager.switchTo(SceneType.MENU);
     	} else {
     		if (!anyEnnemyAlive()) {
     			charactersInBattle.get(0).resetCharacter();
@@ -268,6 +266,10 @@ public class BattleManager {
 					showMessage("Pompon regarde Lisa avec pitié", 2, BattleState.FIRSTCHOICE, true);
     			}
     			break;
+    		case "Leo", "Lisa":
+    			ennemyPlaying.getSpells().get(0).spellEffect(ennemyPlaying, new ArrayList<>(getAllAlliesAlive()));
+				showMessage(ennemyPlaying.getName() + " lance " + ennemyPlaying.getSpells().get(0).getName(), 2, BattleState.FIRSTCHOICE, true);
+				break;
     		default:
     	}
     }
@@ -353,6 +355,19 @@ public class BattleManager {
 				break;
 			default:
 		}
+	}
+	
+	public void retryBattle() {
+		charactersInBattle.get(0).resetCharacter();
+		charactersInBattle.get(1).resetCharacter();
+		charactersInBattle.get(2).resetCharacter();
+		charactersInBattle.get(3).resetCharacter();
+		charactersInBattle.get(4).resetCharacter();
+		charactersInBattle.get(5).resetCharacter();
+		playAgain = false;
+		playingIndex = 0;
+		charactersInBattle.get(0).setIsPlaying(true);
+		state.set(BattleState.FIRSTCHOICE);
 	}
 	
 	public void firstChoiceParry() {

@@ -10,6 +10,7 @@ import entities.resistances.ResistanceFactory;
 import entities.spells.Spell;
 import entities.spells.SpellElement;
 import entities.stats.Stat;
+import entities.stats.StatFactory;
 import entities.stats.StatStatus;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -42,7 +43,7 @@ public class Character {
 	private ObjectProperty<Resistance> attackEffect = new SimpleObjectProperty<>(Resistance.NONE); 
 	private String imagePath;
 	
-	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, List<Spell> spells, Map<SpellElement, Resistance> resistances, Map<Stat, Double> stats, String imagePath) {
+	public Character(String name, int maxHP, int maxAP, boolean isAlive, SpellElement attackType, List<Spell> spells, Map<SpellElement, Resistance> resistances, String imagePath) {
 		this.name = name;
 		this.maxHP = maxHP;
 		this.currentHP.set(maxHP);
@@ -53,7 +54,7 @@ public class Character {
 		this.spells.setAll(spells);
 		this.resistances = resistances;
 		this.discoveredResistances = ResistanceFactory.initialDiscoveredResistancesTrue();
-		this.stats = stats;
+		this.stats = StatFactory.characterStats();
 		this.remainingTurnsStats = new EnumMap<>(Stat.class);
 		remainingTurnsStats.put(Stat.ATTACK, 0);
 		remainingTurnsStats.put(Stat.DEFENSE, 0);

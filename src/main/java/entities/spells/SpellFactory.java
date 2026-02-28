@@ -77,6 +77,20 @@ public class SpellFactory {
 				Spell.BUFUDYNE,
 				Spell.MABUFUDYNE);
 	}
+
+	public static List<Spell> getPomponSpellKit() {
+		return Arrays.asList();
+	}
+
+	public static List<Spell> getLeoSpellKit() {
+		return Arrays.asList(
+				Spell.MAEIGAON);
+	}
+
+	public static List<Spell> getLisaSpellKit() {
+		return Arrays.asList(
+				Spell.MAKOUGAON);
+	}
 	
 	public static List<Spell> getISpellKit(int i) {
 		switch (i) {
