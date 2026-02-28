@@ -37,9 +37,9 @@ public class Main extends Application {
         Character flo = new Character("Flo", 300, 999999, true, SpellElement.PHYSICAL, SpellFactory.getFloSpellKit(), ResistanceFactory.getFloResistances(), "flo");
         Character hugo = new Character("Hugo", 300, 999999, true, SpellElement.PHYSICAL, SpellFactory.getHugoSpellKit(), ResistanceFactory.getHugoResistances(), "hugo");
         Character mara = new Character("Mara", 300, 999999, true, SpellElement.PHYSICAL, SpellFactory.getMaraSpellKit(), ResistanceFactory.getMaraResistances(), "mara");
-        Character adrien = new Character("Adrien", 300, 999999, true, SpellElement.PHYSICAL, SpellFactory.getAdrienSpellKit(), ResistanceFactory.getAdrienNeoliBriceResistances(), "adrien");
-        Character neoli = new Character("Neoli", 300, 999999, true, SpellElement.PHYSICAL, SpellFactory.getNeoliSpellKit(), ResistanceFactory.getAdrienNeoliBriceResistances(), "neoli");
-        Character brice = new Character("Brice", 300, 999999, true, SpellElement.PHYSICAL, SpellFactory.getBriceSpellKit(), ResistanceFactory.getAdrienNeoliBriceResistances(), "brice");
+        Character adrien = new Character("Adrien", 250, 999999, true, SpellElement.PHYSICAL, SpellFactory.getAdrienSpellKit(), ResistanceFactory.getAdrienNeoliBriceResistances(), "adrien");
+        Character neoli = new Character("Neoli", 250, 999999, true, SpellElement.PHYSICAL, SpellFactory.getNeoliSpellKit(), ResistanceFactory.getAdrienNeoliBriceResistances(), "neoli");
+        Character brice = new Character("Brice", 250, 999999, true, SpellElement.PHYSICAL, SpellFactory.getBriceSpellKit(), ResistanceFactory.getAdrienNeoliBriceResistances(), "brice");
         Character pompon = new Character("Pompon", 999999, 999999, true, SpellElement.PHYSICAL, SpellFactory.getPomponSpellKit(), ResistanceFactory.getPomponResistances(), "pompon");
         Character leo = new Character("Leo", 400, 999999, true, SpellElement.PHYSICAL, SpellFactory.getLeoSpellKit(), ResistanceFactory.getLeoResistances(), "leo");
         Character lisa = new Character("Lisa", 400, 999999, true, SpellElement.PHYSICAL, SpellFactory.getLisaSpellKit(), ResistanceFactory.getLisaResistances(), "lisa");

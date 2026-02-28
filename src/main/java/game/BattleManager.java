@@ -57,7 +57,7 @@ public class BattleManager {
         showMessage("...", 3, BattleState.MESSAGEDISPLAYING, false);
 
         messageTimeline.setOnFinished(_ -> {
-            showMessage("Pompon : Enfin débarassé de ces boloss", 3, BattleState.MESSAGEDISPLAYING, false);
+            showMessage("Pompon : Enfin débarrassé de ces boloss", 3, BattleState.MESSAGEDISPLAYING, false);
             messageTimeline.setOnFinished(_ -> {
                 showMessage("Pompon : Merci chef, tié un tigre", 3, BattleState.MESSAGEDISPLAYING, false);
                 messageTimeline.setOnFinished(_ -> {
